@@ -2,14 +2,19 @@ import streamlit as st
 import os
 import toml
 import json
+import logging
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import google.generativeai as genai
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2 import pool as pg_pool
+from psycopg2.extras import DictCursor, RealDictCursor
 from scipy.optimize import curve_fit
 from sklearn.metrics import r2_score
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 # ==========================================
 # Configuración Inicial y Conexiones
@@ -27,34 +32,88 @@ try:
     if not GEMINI_API_KEY:
         st.error("Error: Configura GEMINI_API_KEY en .streamlit/secrets.toml")
         st.stop()
-except Exception:
-    st.error("Error leyendo secrets.toml")
+except Exception as e:
+    st.error(f"Error leyendo secrets.toml: {e}")
     st.stop()
 
+# ==========================================
+# CRÍTICO #2 — Connection Pool (thread-safe)
+# Reemplaza la conexión global frágil por un pool que:
+# - Soporta múltiples usuarios concurrentes en Streamlit
+# - Se recupera automáticamente de caídas de red
+# - Nunca deja la app en estado irrecuperable
+# ==========================================
 @st.cache_resource
-def get_connection():
-    conn = psycopg2.connect(
-        host=conn_params["host"],
-        database=conn_params["database"],
-        user=conn_params["user"],
-        password=conn_params["password"],
-        port=conn_params.get("port", 6543)
-    )
-    conn.autocommit = True
-    return conn
-
-def get_active_connection():
+def _get_pool():
+    """Crea y cachea un ThreadedConnectionPool para toda la sesión de Streamlit."""
     try:
-        connection = get_connection()
-        # Verificar la conexión con una consulta de prueba
-        with connection.cursor() as cur:
-            cur.execute("SELECT 1")
-        return connection
-    except Exception:
-        get_connection.clear()
-        return get_connection()
+        connection_pool = pg_pool.ThreadedConnectionPool(
+            minconn=1,
+            maxconn=10,
+            host=conn_params["host"],
+            database=conn_params["database"],
+            user=conn_params["user"],
+            password=conn_params["password"],
+            port=conn_params.get("port", 6543),
+            connect_timeout=10,
+        )
+        logger.info("Connection pool creado correctamente.")
+        return connection_pool
+    except Exception as e:
+        logger.error(f"Error creando connection pool: {e}")
+        raise
 
-conn = get_active_connection()
+def get_conn():
+    """
+    Obtiene una conexión del pool. Siempre usa este helper en lugar de 'conn' global.
+    La conexión se devuelve al pool automáticamente cuando ya no es necesaria.
+    Si el pool falla, intenta reconectar.
+    """
+    try:
+        connection_pool = _get_pool()
+        db_conn = connection_pool.getconn()
+        db_conn.autocommit = True
+        # Verificar que la conexión esté viva
+        try:
+            with db_conn.cursor() as cur:
+                cur.execute("SELECT 1")
+        except Exception:
+            # Conexión muerta — reponer con una nueva
+            try:
+                connection_pool.putconn(db_conn, close=True)
+            except Exception:
+                pass
+            db_conn = connection_pool.getconn()
+            db_conn.autocommit = True
+        return db_conn
+    except Exception as e:
+        logger.error(f"Error obteniendo conexión del pool: {e}")
+        # Fallback: conexión directa de emergencia
+        fallback = psycopg2.connect(
+            host=conn_params["host"],
+            database=conn_params["database"],
+            user=conn_params["user"],
+            password=conn_params["password"],
+            port=conn_params.get("port", 6543),
+        )
+        fallback.autocommit = True
+        return fallback
+
+def release_conn(db_conn):
+    """Devuelve una conexión al pool de forma segura."""
+    try:
+        connection_pool = _get_pool()
+        connection_pool.putconn(db_conn)
+    except Exception as e:
+        logger.warning(f"No se pudo devolver la conexión al pool: {e}")
+        try:
+            db_conn.close()
+        except Exception:
+            pass
+
+# Conexión de compatibilidad para pd.read_sql y operaciones directas de módulo
+# (se obtiene una vez al inicio; el pool gestiona la resiliencia)
+conn = get_conn()
 genai.configure(api_key=GEMINI_API_KEY)
 
 # ==========================================
@@ -890,13 +949,20 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo):
         return None
 
 def resolver_y_guardar_modelos(tech_name, df_hist):
+    # CRÍTICO #3 — Fallos silenciosos: cada except ahora loguea el error
+    # con su nombre de modelo para diagnóstico. Los modelos que no convergen
+    # simplemente se omiten (comportamiento esperado con datos escasos),
+    # pero el motivo es visible en los logs del servidor.
+    db_conn = get_conn()
     try:
         t_data = np.arange(len(df_hist))
         y_data = df_hist["adopcion_acumulada"].values
-        cursor = conn.cursor()
+        cursor = db_conn.cursor()
         
         # Eliminar modelos anteriores si existen
         cursor.execute("DELETE FROM model_parameters WHERE tecnologia = %s", (tech_name,))
+        modelos_ajustados = []
+        modelos_fallidos = []
         
         # Bass Clásico
         try:
@@ -906,8 +972,10 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (tech_name, 'Bass_Clasico', float(popt_bass[0]), float(popt_bass[1]), float(popt_bass[2]), float(r2_bass)))
-        except Exception:
-            pass # Falla silenciosa si no converge
+            modelos_ajustados.append(f'Bass Clásico (R²={r2_bass:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Bass Clásico no convergió: {e}")
+            modelos_fallidos.append('Bass Clásico')
             
         # Dual Market (Roset & Canals) - Búsqueda Óptima de Parámetros mediante Multi-Start NLLS
         try:
@@ -924,7 +992,6 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 [m_max * 0.2, 0.04, 0.35, m_max * 0.8, 0.015, 0.45],
                 [m_max * 0.4, 0.03, 0.45, m_max * 0.6, 0.008, 0.35]
             ]
-            
             bounds_dual = ([0, 1e-6, 0, 0, 1e-6, 0], [np.inf, 1.0, 1.0, np.inf, 1.0, 1.0])
             
             for p0_cand in candidate_p0s:
@@ -942,8 +1009,13 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                     INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, param_m2, param_p2, param_q2, r_cuadrado)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (tech_name, 'Dual_Market', float(best_popt[0]), float(best_popt[1]), float(best_popt[2]), float(best_popt[3]), float(best_popt[4]), float(best_popt[5]), float(best_r2)))
-        except Exception:
-            pass
+                modelos_ajustados.append(f'Dual Market (R²={best_r2:.4f})')
+            else:
+                logger.warning(f"[{tech_name}] Dual Market: ningún punto de partida convergió.")
+                modelos_fallidos.append('Dual Market')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Dual Market error inesperado: {e}")
+            modelos_fallidos.append('Dual Market')
 
         # Tanny & Derzko
         try:
@@ -955,8 +1027,10 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_m2, param_p2, param_q2, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """, (tech_name, 'Tanny_Derzko', float(popt_tanny[0]), float(popt_tanny[1]), float(popt_tanny[2]), float(popt_tanny[3]), float(popt_tanny[4]), float(r2_tanny)))
-        except Exception:
-            pass
+            modelos_ajustados.append(f'Tanny & Derzko (R²={r2_tanny:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Tanny & Derzko no convergió: {e}")
+            modelos_fallidos.append('Tanny & Derzko')
 
         # Steffens & Murthy
         try:
@@ -968,8 +1042,10 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, param_m2, param_q2, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """, (tech_name, 'Steffens_Murthy', float(popt_steffens[0]), float(popt_steffens[1]), float(popt_steffens[2]), float(popt_steffens[3]), float(popt_steffens[4]), float(r2_steffens)))
-        except Exception:
-            pass
+            modelos_ajustados.append(f'Steffens & Murthy (R²={r2_steffens:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Steffens & Murthy no convergió: {e}")
+            modelos_fallidos.append('Steffens & Murthy')
 
         # Muller & Yogev
         try:
@@ -981,8 +1057,10 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, param_m2, param_p2, param_q2, param_q12, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (tech_name, 'Muller_Yogev', float(popt_muller[0]), float(popt_muller[1]), float(popt_muller[2]), float(popt_muller[3]), float(popt_muller[4]), float(popt_muller[5]), float(popt_muller[6]), float(r2_muller)))
-        except Exception:
-            pass
+            modelos_ajustados.append(f'Muller & Yogev (R²={r2_muller:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Muller & Yogev no convergió: {e}")
+            modelos_fallidos.append('Muller & Yogev')
 
         # Van den Bulte & Joshi
         try:
@@ -994,8 +1072,10 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, param_m2, param_q2, param_p2, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (tech_name, 'VdB_Joshi', float(popt_vdb[0]), float(popt_vdb[1]), float(popt_vdb[2]), float(popt_vdb[3]), float(popt_vdb[4]), float(popt_vdb[5]), float(r2_vdb)))
-        except Exception:
-            pass
+            modelos_ajustados.append(f'VdB & Joshi (R²={r2_vdb:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] VdB & Joshi no convergió: {e}")
+            modelos_fallidos.append('VdB & Joshi')
             
         # Logistic Diffusion-Convergence (Ryu & Kim, 2025)
         try:
@@ -1003,19 +1083,32 @@ def resolver_y_guardar_modelos(tech_name, df_hist):
             y_min = y_data[0] if y_data[0] > 0 else 1.0
             bounds_log = ([y_max, 1e-8, 1e-8, -100.0], [np.inf, max(y_max, 2e-8), 5.0, len(t_data) * 3])
             p0_log = [y_max * 1.5, np.clip(y_min, 2e-8, y_max * 0.99), 0.1, len(t_data) / 2]
-            
             popt_log, _ = curve_fit(logistic_diffusion_convergence, t_data, y_data, p0=p0_log, bounds=bounds_log, maxfev=10000)
             r2_log = r2_score(y_data, logistic_diffusion_convergence(t_data, *popt_log))
             cursor.execute("""
                 INSERT INTO model_parameters (tecnologia, modelo_tipo, param_m1, param_p1, param_q1, param_p2, r_cuadrado)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
             """, (tech_name, 'Logistic_Diffusion_Convergence', float(popt_log[0]), float(popt_log[1]), float(popt_log[2]), float(popt_log[3]), float(r2_log)))
-        except Exception:
-            pass
+            modelos_ajustados.append(f'Logístico R&K (R²={r2_log:.4f})')
+        except Exception as e:
+            logger.warning(f"[{tech_name}] Logistic Diffusion-Convergence no convergió: {e}")
+            modelos_fallidos.append('Logístico R&K')
             
         cursor.close()
+        
+        # Resumen informativo del ajuste
+        logger.info(f"[{tech_name}] Modelos ajustados: {modelos_ajustados}")
+        if modelos_fallidos:
+            logger.warning(f"[{tech_name}] Modelos que no convergieron: {modelos_fallidos}")
+            if not modelos_ajustados:
+                st.error(f"Ningún modelo pudo ajustarse para '{tech_name}'. Verifica que los datos sean monótonamente crecientes y tengas al menos 5 puntos.")
+            else:
+                st.info(f"ℹ️ {len(modelos_ajustados)}/{len(modelos_ajustados)+len(modelos_fallidos)} modelos ajustados. Los siguientes no convergieron con estos datos: {', '.join(modelos_fallidos)}.")
     except Exception as e:
+        logger.error(f"Error crítico ajustando modelos para '{tech_name}': {e}")
         st.error(f"Error ajustando modelos matemáticos: {e}")
+    finally:
+        release_conn(db_conn)
 
 # ==========================================
 # Carga de Datos y Parámetros
@@ -1053,14 +1146,41 @@ def get_tecnologias_disponibles():
 
 @st.cache_data(ttl=600)
 def load_historical_data(tech):
-    query = f"SELECT * FROM historical_adoption WHERE tecnologia = '{tech}' ORDER BY anio"
-    return pd.read_sql(query, conn)
+    # CRÍTICO #1 — Query parametrizada: nunca interpolar datos de usuario en SQL
+    db_conn = get_conn()
+    try:
+        with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM historical_adoption WHERE tecnologia = %s ORDER BY anio",
+                (tech,)
+            )
+            rows = cur.fetchall()
+        return pd.DataFrame(rows) if rows else pd.DataFrame()
+    except Exception as e:
+        logger.error(f"Error cargando datos históricos para '{tech}': {e}")
+        return pd.DataFrame()
+    finally:
+        release_conn(db_conn)
 
 @st.cache_data(ttl=600)
 def load_model_parameters(tech):
-    query = f"SELECT * FROM model_parameters WHERE tecnologia = '{tech}'"
-    df = pd.read_sql(query, conn)
-    return {row["modelo_tipo"]: row.to_dict() for _, row in df.iterrows()} if not df.empty else {}
+    # CRÍTICO #1 — Query parametrizada
+    db_conn = get_conn()
+    try:
+        with db_conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(
+                "SELECT * FROM model_parameters WHERE tecnologia = %s",
+                (tech,)
+            )
+            rows = cur.fetchall()
+        if not rows:
+            return {}
+        return {row["modelo_tipo"]: dict(row) for row in rows}
+    except Exception as e:
+        logger.error(f"Error cargando parámetros de modelos para '{tech}': {e}")
+        return {}
+    finally:
+        release_conn(db_conn)
 
 
 # ==========================================
@@ -1200,7 +1320,7 @@ if nueva_tech:
                         if analisis_text:
                             guardar_analisis_cualitativo(nueva_tech, analisis_text)
                             
-                        df_new = pd.read_sql(f"SELECT * FROM historical_adoption WHERE tecnologia = '{nueva_tech}' ORDER BY anio", conn)
+                        df_new = load_historical_data(nueva_tech)
                         
                         st.sidebar.info("Ajustando los 6 modelos matemáticos con resolvedores RK4...")
                         resolver_y_guardar_modelos(nueva_tech, df_new)
@@ -1229,7 +1349,7 @@ if nueva_tech:
                         if analisis_text:
                             guardar_analisis_cualitativo(nueva_tech, analisis_text)
                         
-                        df_new = pd.read_sql(f"SELECT * FROM historical_adoption WHERE tecnologia = '{nueva_tech}' ORDER BY anio", conn)
+                        df_new = load_historical_data(nueva_tech)
                         
                         st.sidebar.info("Ajustando los 6 modelos matemáticos con resolvedores RK4...")
                         resolver_y_guardar_modelos(nueva_tech, df_new)
@@ -1290,7 +1410,7 @@ if not df_owid.empty:
                     if analisis_text:
                         guardar_analisis_cualitativo(owid_seleccionada, analisis_text)
                         
-                    df_new = pd.read_sql(f"SELECT * FROM historical_adoption WHERE tecnologia = '{owid_seleccionada}' ORDER BY anio", conn)
+                    df_new = load_historical_data(owid_seleccionada)
                     
                     st.sidebar.info("Ajustando los 6 modelos matemáticos con resolvedores RK4...")
                     resolver_y_guardar_modelos(owid_seleccionada, df_new)
