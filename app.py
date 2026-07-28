@@ -36,19 +36,20 @@ try:
 except Exception as e:
     pass
 
-# Encabezado de barra lateral estilo HUD
+# Encabezado de barra lateral — Corporate Panel
 sidebar_header_html = """
-<div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:1.5rem; border-bottom:1px solid rgba(0,229,255,0.25); padding-bottom:0.8rem;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
-         stroke="#00e5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-         style="width:20px; height:20px; filter:drop-shadow(0 0 3px #00e5ff);">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        <path d="M2 12h20"/>
-    </svg>
-    <span style="font-family:'Orbitron', sans-serif; font-weight:700; font-size:0.95rem; color:#00e5ff; letter-spacing:0.06em; text-transform:uppercase;">
-        HUD CONTROL
-    </span>
+<div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:1.4rem; padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.14);">
+    <div style="background:linear-gradient(135deg,#1a1a2e,#0f3460); width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1px solid rgba(255,255,255,0.12);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="#93c5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="width:17px; height:17px;">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+    </div>
+    <div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:0.82rem; color:#ffffff; letter-spacing:0.10em; text-transform:uppercase;">BASS Platform</div>
+        <div style="font-size:0.65rem; color:#6b7280; letter-spacing:0.04em; margin-top:1px;">Tech Adoption Intelligence</div>
+    </div>
 </div>
 """
 st.sidebar.markdown(sidebar_header_html, unsafe_allow_html=True)
@@ -66,8 +67,8 @@ if st.session_state.force_tech in tecnologias_disponibles:
     idx = tecnologias_disponibles.index(st.session_state.force_tech)
 
 tecnologia_seleccionada = st.sidebar.selectbox(
-    "Selecciona Tecnología", 
-    tecnologias_disponibles, 
+    "Seleccionar Tecnología",
+    tecnologias_disponibles,
     index=idx,
     key=f"tech_dropdown_{st.session_state.update_count}"
 )
@@ -77,14 +78,23 @@ header_html = f"""
 <div class="premium-header">
     <div class="header-left">
         <div class="header-logo-bg">
+            <!-- Logo: gráfico de área con línea de tendencia ascendente -->
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                 stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 style="width:22px;height:22px;">
-                <!-- Hexágono tecnológico de precisión con nodo central -->
-                <path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="rgba(0,0,0,0.05)"/>
-                <polyline points="12 22 12 12 22 7"/>
-                <polyline points="12 12 2 7"/>
-                <circle cx="12" cy="12" r="3" fill="black"/>
+                 stroke-linecap="round" stroke-linejoin="round"
+                 style="width:24px;height:24px;">
+                <!-- Área de relleno inferior -->
+                <path d="M3 18 L7 12 L11 15 L15 8 L19 10 L21 7 L21 18 Z"
+                      fill="rgba(147,197,253,0.15)" stroke="none"/>
+                <!-- Línea de tendencia principal -->
+                <polyline points="3,18 7,12 11,15 15,8 19,10 21,7"
+                          stroke="#93c5fd" stroke-width="2" fill="none"/>
+                <!-- Puntos de datos -->
+                <circle cx="7"  cy="12" r="1.5" fill="#93c5fd" stroke="none"/>
+                <circle cx="15" cy="8"  r="1.5" fill="#93c5fd" stroke="none"/>
+                <circle cx="21" cy="7"  r="1.5" fill="#bfdbfe" stroke="none"/>
+                <!-- Ejes -->
+                <line x1="3" y1="4" x2="3" y2="19" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="3" y1="19" x2="22" y2="19" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
             </svg>
         </div>
         <div class="header-title-container">

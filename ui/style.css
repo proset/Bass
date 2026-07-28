@@ -1,7 +1,7 @@
 /* ============================================================
    BASS — TECHADOPTION FORECAST PLATFORM
    Design: Premium Corporate / MercadoXR / Aumenta Solutions
-   Clean, Scientific, High Contrast, Dark Glass Aesthetic
+   v2.0 — Clean, Scientific, High Contrast, Dark Glass
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -25,13 +25,13 @@ h1, h2, h3, h4, h5, [data-testid="stHeading"] {
 .main .block-container {
     background: transparent !important;
     padding-top: 1rem !important;
+    max-width: 1400px !important;
 }
 
-/* ── Hide Streamlit chrome sin romper la flecha del sidebar ── */
+/* ── Hide Streamlit chrome ── */
 #MainMenu, footer { visibility: hidden !important; }
 div[data-testid="stDecoration"] { display: none !important; }
 
-/* Mantener el fondo transparente en la barra superior pero dejando visible el botón de expandir */
 header[data-testid="stHeader"] {
     background: transparent !important;
     border: none !important;
@@ -39,7 +39,7 @@ header[data-testid="stHeader"] {
     height: 3.5rem !important;
 }
 
-/* Botón de la flecha de expandir (Sidebar) en blanco/gris sobrio */
+/* Botón expandir sidebar */
 button[data-testid="collapsedControl"] {
     color: #ffffff !important;
     background: rgba(25, 25, 25, 0.8) !important;
@@ -49,22 +49,21 @@ button[data-testid="collapsedControl"] {
     margin-left: 0.5rem !important;
     z-index: 99999 !important;
 }
-
 button[data-testid="collapsedControl"]:hover {
     background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ======================================================
-   SIDEBAR — Corporate Panel
+   SIDEBAR — Corporate Panel v2
    ====================================================== */
 [data-testid="stSidebar"],
 [data-testid="stSidebar"] > div,
 [data-testid="stSidebar"] > div > div {
-    background: #080808 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: #0a0a0a !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.10) !important;
 }
 
-/* Encabezados en Sidebar */
+/* Encabezados en Sidebar — tamaño y peso uniformes */
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
 [data-testid="stSidebar"] h3,
@@ -73,15 +72,40 @@ button[data-testid="collapsedControl"]:hover {
 [data-testid="stSidebar"] .stMarkdown h3,
 [data-testid="stSidebar"] [data-testid="stHeading"] {
     color: #ffffff !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
+    letter-spacing: 0.12em !important;
+    font-family: 'Outfit', sans-serif !important;
 }
 
-/* Texto del sidebar */
+/* Texto general del sidebar */
 [data-testid="stSidebar"] * {
     color: #9ca3af !important;
+}
+
+/* Etiquetas de widgets del sidebar — igual tamaño para TODOS */
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] .stWidgetLabel label,
+[data-testid="stSidebar"] .stWidgetLabel p {
+    color: #ffffff !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.03em !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* Divisor blanco/gris entre secciones del sidebar */
+[data-testid="stSidebar"] hr,
+[data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Estilo especial para los st.divider() dentro del sidebar */
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] hr {
+    border: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    margin: 1rem 0 !important;
 }
 
 /* Inputs en Sidebar */
@@ -92,10 +116,11 @@ button[data-testid="collapsedControl"]:hover {
 [data-testid="stSidebar"] .stTextArea textarea,
 [data-testid="stSidebar"] .stNumberInput input,
 [data-testid="stSidebar"] [data-baseweb="select"] > div {
-    background: #000000 !important;
+    background: #111111 !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
     border-radius: 8px !important;
+    font-size: 0.84rem !important;
 }
 
 [data-testid="stSidebar"] input:focus,
@@ -103,112 +128,128 @@ button[data-testid="collapsedControl"]:hover {
     border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
+/* Caption del sidebar */
+[data-testid="stSidebar"] .stCaption,
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+    color: #6b7280 !important;
+    font-size: 0.72rem !important;
+}
+
 /* ======================================================
-   PREMIUM HEADER — Dark Glass Panel
+   PREMIUM HEADER — Dark Glass Panel v2
    ====================================================== */
 .premium-header {
-    background: rgba(25, 25, 25, 0.6) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    border-radius: 16px !important;
-    padding: 1.25rem 2rem !important;
+    background: rgba(18, 18, 18, 0.85) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 18px !important;
+    padding: 1.4rem 2rem !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 1.75rem !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.6) !important;
 }
 
 .header-left {
     display: flex !important;
     align-items: center !important;
-    gap: 1.1rem !important;
+    gap: 1.2rem !important;
 }
 
+/* Logo moderno: cuadrado con gradiente y símbolo de gráfico de área */
 .header-logo-bg {
-    background: #ffffff !important;
-    width: 44px !important;
-    height: 44px !important;
-    border-radius: 10px !important;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 12px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-shrink: 0 !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 2px 12px rgba(0,100,255,0.2) !important;
 }
 
 .header-logo-bg svg {
-    width: 22px !important;
-    height: 22px !important;
-    stroke: #000000 !important;
+    width: 24px !important;
+    height: 24px !important;
 }
 
 .header-title-container {
     display: flex !important;
     flex-direction: column !important;
-    gap: 0.1rem !important;
+    gap: 0.15rem !important;
 }
 
 .header-title {
-    font-size: 1.35rem !important;
-    font-weight: 700 !important;
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
     letter-spacing: 0.02em !important;
     color: #ffffff !important;
     margin: 0 !important;
     line-height: 1.2 !important;
+    font-family: 'Outfit', sans-serif !important;
 }
 
 .header-subtitle {
-    font-size: 0.75rem !important;
+    font-size: 0.76rem !important;
     color: #6b7280 !important;
     margin: 0 !important;
+    letter-spacing: 0.02em !important;
 }
 
 /* Badge activo */
 .badge-active {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: #d1d5db !important;
-    font-size: 0.65rem !important;
-    font-weight: 600 !important;
-    padding: 0.35rem 0.85rem !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    color: #9ca3af !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    padding: 0.38rem 0.9rem !important;
     border-radius: 9999px !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
     text-transform: uppercase !important;
     display: flex !important;
     align-items: center !important;
-    gap: 0.4rem !important;
+    gap: 0.45rem !important;
 }
 
 .badge-dot {
     width: 6px !important;
     height: 6px !important;
-    background: #ffffff !important;
+    background: #22c55e !important;
     border-radius: 50% !important;
+    box-shadow: 0 0 6px rgba(34,197,94,0.6) !important;
     animation: pulse-dot 2.2s ease infinite !important;
 }
 
 @keyframes pulse-dot {
-    0%   { opacity: 0.5; }
-    50%  { opacity: 1; }
-    100% { opacity: 0.5; }
+    0%   { opacity: 0.5; transform: scale(0.9); }
+    50%  { opacity: 1;   transform: scale(1.1); }
+    100% { opacity: 0.5; transform: scale(0.9); }
 }
 
-/* Botón de acción (Propuesta) */
+/* Botón de acción */
 .action-btn {
-    background: #ffffff !important;
-    border: none !important;
-    color: #000000 !important;
-    font-size: 0.78rem !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    color: #e5e7eb !important;
+    font-size: 0.76rem !important;
     font-weight: 600 !important;
-    padding: 0.5rem 1.25rem !important;
+    padding: 0.5rem 1.3rem !important;
     border-radius: 9999px !important;
     cursor: pointer !important;
-    transition: background 0.2s ease !important;
+    transition: all 0.2s ease !important;
     text-decoration: none !important;
+    letter-spacing: 0.03em !important;
 }
 
 .action-btn:hover {
-    background: #e5e7eb !important;
+    background: rgba(255,255,255,0.12) !important;
+    border-color: rgba(255,255,255,0.28) !important;
+    color: #ffffff !important;
 }
 
 /* ======================================================
@@ -218,106 +259,131 @@ button[data-testid="collapsedControl"]:hover {
     display: grid !important;
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
     gap: 1rem !important;
-    margin: 0.75rem 0 1.75rem !important;
+    margin: 0.75rem 0 2rem !important;
 }
 
 .kpi-card {
-    background: rgba(25, 25, 25, 0.6) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    background: rgba(18, 18, 18, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
     backdrop-filter: blur(12px) !important;
     border-radius: 16px !important;
-    padding: 1.15rem 1.4rem !important;
-    transition: border-color 0.25s, transform 0.25s !important;
+    padding: 1.25rem 1.5rem !important;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s !important;
 }
 
 .kpi-card:hover {
-    border-color: rgba(255, 255, 255, 0.18) !important;
-    transform: translateY(-2px) !important;
+    border-color: rgba(255, 255, 255, 0.16) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
 }
 
 .kpi-title {
-    font-size: 0.67rem !important;
+    font-size: 0.65rem !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.1em !important;
+    letter-spacing: 0.12em !important;
     color: #6b7280 !important;
-    margin-bottom: 0.45rem !important;
+    margin-bottom: 0.5rem !important;
+    font-family: 'Inter', sans-serif !important;
 }
 
 .kpi-value {
-    font-size: 2rem !important;
+    font-size: 2.1rem !important;
     font-weight: 700 !important;
     color: #ffffff !important;
-    letter-spacing: -0.02em !important;
+    letter-spacing: -0.03em !important;
     line-height: 1.1 !important;
     font-family: 'JetBrains Mono', monospace !important;
 }
 
 .kpi-desc {
-    font-size: 0.68rem !important;
+    font-size: 0.7rem !important;
     color: #4b5563 !important;
     margin-top: 0.5rem !important;
+    line-height: 1.4 !important;
 }
 
 /* ======================================================
-   TABS
+   TABS — más grandes y legibles
    ====================================================== */
 div[data-baseweb="tab-list"] {
     background: transparent !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    gap: 0.25rem !important;
 }
 
 button[data-baseweb="tab"] {
     background: transparent !important;
     border: none !important;
-    color: #4b5563 !important;
+    color: #6b7280 !important;
     font-weight: 600 !important;
-    font-size: 0.75rem !important;
+    font-size: 0.82rem !important;          /* ↑ más grande */
     text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    padding: 0.65rem 1.1rem !important;
+    letter-spacing: 0.07em !important;
+    padding: 0.75rem 1.2rem !important;
     transition: color 0.2s !important;
+    font-family: 'Outfit', sans-serif !important;
 }
 
-button[data-baseweb="tab"]:hover { color: #9ca3af !important; }
-button[aria-selected="true"] { color: #ffffff !important; }
+button[data-baseweb="tab"]:hover { color: #d1d5db !important; }
+button[aria-selected="true"] {
+    color: #ffffff !important;
+}
 
 div[data-baseweb="tab-highlight"] {
     background: #ffffff !important;
     height: 2px !important;
+    border-radius: 2px 2px 0 0 !important;
 }
 
 div[data-baseweb="tab-border"] { background: transparent !important; }
 
 /* ======================================================
-   TEXTOS Y ETIQUETAS
+   TEXTOS Y ETIQUETAS — área principal
    ====================================================== */
 label,
 .stWidgetLabel label,
 .stWidgetLabel p {
-    color: #ffffff !important;   /* Blanco puro para las etiquetas principales */
-    font-size: 0.95rem !important; /* Mayor tamaño para 'Horizonte' y 'Visualizar' */
+    color: #ffffff !important;
+    font-size: 0.95rem !important;
     font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
 }
 
 p, .stMarkdown p {
     color: #9ca3af !important;
-    line-height: 1.7 !important;
-    font-size: 0.85rem !important;
+    line-height: 1.75 !important;
+    font-size: 0.88rem !important;
 }
 
 .stMarkdown h2 {
-    font-size: 1.1rem !important;
+    font-size: 1.15rem !important;
     font-weight: 700 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
     padding-bottom: 0.5rem !important;
     margin-bottom: 0.75rem !important;
     color: #ffffff !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+
+.stMarkdown h3 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #e5e7eb !important;
+    font-family: 'Outfit', sans-serif !important;
 }
 
 .stCaption, [data-testid="stCaptionContainer"] {
     color: #6b7280 !important;
-    font-size: 0.72rem !important;
+    font-size: 0.74rem !important;
+}
+
+/* Títulos de sección dentro de tabs */
+[data-testid="stVerticalBlock"] h3,
+[data-testid="stVerticalBlock"] h4 {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #f3f4f6 !important;
 }
 
 /* ======================================================
@@ -328,35 +394,34 @@ input, textarea, select,
 .stTextArea textarea,
 .stNumberInput input,
 [data-baseweb="select"] > div {
-    background: #000000 !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    background: #0d0d0d !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
     color: #ffffff !important;
     border-radius: 8px !important;
-    font-size: 0.84rem !important;
+    font-size: 0.86rem !important;
     padding: 0.65rem 1rem !important;
     transition: border-color 0.2s !important;
 }
 
 input:focus, textarea:focus,
 [data-baseweb="select"] > div:focus-within {
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.38) !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.04) !important;
     outline: none !important;
 }
 
-/* Tags del multiselect en azul oscuro corporativo serio y legible */
+/* Tags del multiselect */
 [data-baseweb="tag"] {
-    background: #0d47a1 !important; /* Azul oscuro */
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;      /* Texto blanco */
+    background: #0d47a1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
     border-radius: 6px !important;
-    font-size: 0.85rem !important;
+    font-size: 0.82rem !important;
     font-weight: 500 !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
 }
 
-/* Garantizar que los elementos del tag se vean limpios sin fondos oscuros */
 [data-baseweb="tag"] span,
 [data-baseweb="tag"] div,
 [data-baseweb="tag"] svg {
@@ -368,7 +433,6 @@ input:focus, textarea:focus,
     outline: none !important;
 }
 
-/* Evitar que el input de escritura del select muestre el recuadro negro vacío */
 [data-baseweb="select"] input {
     background: transparent !important;
     border: none !important;
@@ -379,87 +443,145 @@ input:focus, textarea:focus,
 
 [data-baseweb="select"] svg { fill: #6b7280 !important; }
 
-/* Ocultar Start Enhancers residuales de color */
-[data-baseweb="tag"] > *:first-child:not(:nth-last-child(2)) {
-    display: none !important;
-}
-
+[data-baseweb="tag"] > *:first-child:not(:nth-last-child(2)) { display: none !important; }
 [data-baseweb="tag"] [role="presentation"],
 [data-baseweb="tag"] span:empty,
-[data-baseweb="tag"] div[class*="avatar"] {
-    display: none !important;
+[data-baseweb="tag"] div[class*="avatar"] { display: none !important; }
+
+/* ======================================================
+   SLIDER
+   ====================================================== */
+[data-testid="stSlider"] [data-baseweb="slider"] [role="slider"] {
+    background: #ffffff !important;
+    border: 2px solid rgba(255,255,255,0.3) !important;
 }
 
 /* ======================================================
    TABLAS OSCURAS
    ====================================================== */
 .dark-table-wrap {
-    border-radius: 12px !important;
+    border-radius: 14px !important;
     overflow: hidden !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.07) !important;
     margin: 0.75rem 0 !important;
 }
 
 .dark-table-wrap table {
     width: 100% !important;
     border-collapse: collapse !important;
-    background: rgba(25, 25, 25, 0.6) !important;
+    background: rgba(18, 18, 18, 0.7) !important;
 }
 
 .dark-table-wrap th {
-    background: rgba(255, 255, 255, 0.04) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     color: #6b7280 !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    font-size: 0.67rem !important;
-    padding: 0.6rem 0.9rem !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    letter-spacing: 0.10em !important;
+    font-size: 0.65rem !important;
+    padding: 0.65rem 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
     text-align: left !important;
 }
 
 .dark-table-wrap td {
     color: #d1d5db !important;
-    padding: 0.55rem 0.9rem !important;
+    padding: 0.6rem 1rem !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
     font-family: 'JetBrains Mono', monospace !important;
-    font-size: 0.78rem !important;
+    font-size: 0.80rem !important;
 }
 
-.dark-table-wrap tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
+.dark-table-wrap tr:hover td { background: rgba(255, 255, 255, 0.025) !important; }
 
 /* ======================================================
    BOTONES
    ====================================================== */
 .stButton > button {
     background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #e5e7eb !important;
     border-radius: 8px !important;
-    font-size: 0.82rem !important;
+    font-size: 0.84rem !important;
     font-weight: 500 !important;
-    padding: 0.5rem 1rem !important;
-    transition: background 0.2s, border-color 0.2s !important;
+    padding: 0.55rem 1.1rem !important;
+    transition: all 0.2s ease !important;
+    font-family: 'Inter', sans-serif !important;
 }
 
 .stButton > button:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    color: #ffffff !important;
 }
 
 .stButton > button[kind="primary"] {
     background: #ffffff !important;
     border: none !important;
     color: #000000 !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
 }
 
 .stButton > button[kind="primary"]:hover {
-    background: #e5e7eb !important;
+    background: #f3f4f6 !important;
+    box-shadow: 0 2px 16px rgba(255,255,255,0.15) !important;
 }
 
+/* ======================================================
+   PLOTLY CHART CONTAINER
+   ====================================================== */
 [data-testid="stPlotlyChart"] > div {
-    border-radius: 14px !important;
+    border-radius: 16px !important;
     overflow: hidden !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3) !important;
+}
+
+/* ======================================================
+   SIDEBAR DIVIDER CUSTOM — línea blanca visible
+   ====================================================== */
+.sidebar-section-divider {
+    border: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.18) !important;
+    margin: 1.1rem 0 1.1rem 0 !important;
+}
+
+/* Estilizar los st.divider nativos de Streamlit dentro del sidebar */
+[data-testid="stSidebar"] [data-testid="stDivider"] {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Expanders */
+[data-testid="stExpander"] {
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 10px !important;
+    background: rgba(18,18,18,0.5) !important;
+}
+
+/* Métricas de Streamlit */
+[data-testid="stMetric"] {
+    background: rgba(18,18,18,0.6) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 12px !important;
+    padding: 0.8rem 1rem !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #ffffff !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 1.6rem !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: #6b7280 !important;
+    font-size: 0.72rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* Info / Warning / Error boxes */
+[data-testid="stAlert"] {
+    border-radius: 10px !important;
+    border-left-width: 3px !important;
 }
