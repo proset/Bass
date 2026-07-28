@@ -7,6 +7,7 @@ import google.generativeai as genai
 from psycopg2 import connect
 from psycopg2.extras import DictCursor
 
+from config import get_conn, release_conn, GEMINI_PRIMARY
 from models.rk4_solver import (
     bass_classic,
     dual_market_bass,
@@ -20,22 +21,15 @@ from models.rk4_solver import (
     ladron_puts_model
 )
 
-# Cargar configuración
+# Leer API key de Gemini
 try:
     secrets = toml.load(os.path.join(".streamlit", "secrets.toml"))
-    conn_params = secrets["postgres"]
+    conn_params = secrets.get("postgres", {})
     api_key = secrets.get("gemini", {}).get("api_key") or secrets.get("gemini_api_key")
 except Exception:
-    conn_params = {
-        "host": os.environ.get("PG_HOST"),
-        "database": os.environ.get("PG_DATABASE", "postgres"),
-        "user": os.environ.get("PG_USER"),
-        "password": os.environ.get("PG_PASSWORD"),
-        "port": int(os.environ.get("PG_PORT", 6543))
-    }
+    conn_params = {}
     api_key = os.environ.get("GEMINI_API_KEY")
 
-from config import GEMINI_PRIMARY
 model_name = GEMINI_PRIMARY
 
 def reconstruct_popt(m_key, p):
@@ -112,7 +106,7 @@ def df_to_markdown_manual(df):
     return "\n".join(lines)
 
 def compilar_informe_global(tech):
-    conn = connect(**conn_params)
+    conn = get_conn()
     cursor = conn.cursor(cursor_factory=DictCursor)
     
     # 1. Cargar datos históricos
@@ -517,6 +511,6 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     output_file = f"informe_global_{tech}.md"
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(report_md)
-        
+
     cursor.close()
-    conn.close()
+    release_conn(conn)
