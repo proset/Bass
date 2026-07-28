@@ -38,13 +38,20 @@ if not conn_params or not GEMINI_API_KEY:
         logger.warning(f"No se pudo cargar secrets.toml directamente: {e}")
 
 # Fallback a variables de entorno (prioritario para despliegue en contenedores/CI)
-PG_HOST = os.environ.get("PG_HOST") or conn_params.get("host") or os.environ.get("DB_HOST") or os.environ.get("POSTGRES_HOST")
-PG_DATABASE = os.environ.get("PG_DATABASE") or conn_params.get("database") or os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DATABASE") or "postgres"
-PG_USER = os.environ.get("PG_USER") or conn_params.get("user") or os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER")
-PG_PASSWORD = os.environ.get("PG_PASSWORD") or conn_params.get("password") or os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD")
+PG_HOST = os.environ.get("PG_HOST") or conn_params.get("host")
+PG_DATABASE = os.environ.get("PG_DATABASE") or conn_params.get("database") or "postgres"
+PG_USER = os.environ.get("PG_USER") or conn_params.get("user")
+PG_PASSWORD = os.environ.get("PG_PASSWORD") or conn_params.get("password")
 
-env_port = os.environ.get("PG_PORT") or conn_params.get("port") or os.environ.get("DB_PORT") or os.environ.get("POSTGRES_PORT")
+env_port = os.environ.get("PG_PORT") or conn_params.get("port")
 PG_PORT = int(env_port) if env_port else 6543
+
+# Si por alguna razón el usuario se leyó vacío o fue sobreescrito con 'postgres' a secas en Docker,
+# pero tenemos el secrets con el ID del proyecto, forzamos el usuario largo correcto de Supabase
+if PG_USER == "postgres" and conn_params.get("user"):
+    PG_USER = conn_params.get("user")
+
+logger.info(f"Conectando a base de datos: host={PG_HOST}, database={PG_DATABASE}, user={PG_USER}, port={PG_PORT}")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or GEMINI_API_KEY
 
