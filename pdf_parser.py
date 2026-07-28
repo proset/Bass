@@ -16,10 +16,9 @@ if not all([SUPABASE_URL, SUPABASE_KEY, GEMINI_API_KEY]):
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 genai.configure(api_key=GEMINI_API_KEY)
 
-# Configurar modelos
-extraction_model = genai.GenerativeModel("gemini-1.5-pro")
+from config import GEMINI_PRIMARY
+extraction_model = genai.GenerativeModel(GEMINI_PRIMARY)
 EMBEDDING_MODEL = "models/text-embedding-004"
-
 def download_pdf(url):
     """Descarga el PDF a un archivo temporal"""
     response = requests.get(url, stream=True)

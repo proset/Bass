@@ -22,6 +22,9 @@ CREATE TABLE IF NOT EXISTS papers_embeddings (
     numero_pagina INT
 );
 
+-- Índice HNSW para búsqueda vectorial rápida
+CREATE INDEX IF NOT EXISTS papers_embeddings_hnsw_idx ON papers_embeddings USING hnsw (vector_embedding vector_cosine_ops);
+
 -- Tabla para almacenar menciones sociales / sentiment analysis
 CREATE TABLE IF NOT EXISTS social_listening (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -54,8 +57,10 @@ CREATE TABLE IF NOT EXISTS historical_adoption (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tecnologia TEXT,
     anio INT,
-    adopcion_anual INT, -- Nuevos adoptantes (ej. publicaciones ese año)
-    adopcion_acumulada INT, -- Adoptantes acumulados hasta ese año
+    adopcion_anual BIGINT, -- Nuevos adoptantes (ej. publicaciones ese año)
+    adopcion_acumulada BIGINT, -- Adoptantes acumulados hasta ese año
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
     UNIQUE(tecnologia, anio)
 );
 
@@ -84,7 +89,7 @@ BEGIN
   FROM papers_embeddings pe
   JOIN papers_metadata pm ON pe.paper_id = pm.id
   WHERE 1 - (pe.vector_embedding <=> query_embedding) > match_threshold
-    AND (tecnologia_filter IS NULL OR pm.tecnologia = tecnologia_filter)
+    AND (tecnologia_filter IS NULL OR pm.tecnologia = tecnologia_filter OR pm.tecnologia = 'general' OR pm.tecnologia IS NULL)
   ORDER BY pe.vector_embedding <=> query_embedding
   LIMIT match_count;
 END;

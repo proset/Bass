@@ -2,3 +2,27 @@ __pycache__/
 *.pyc
 .streamlit/secrets.toml
 *.log
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Informes y PDFs temporales generados
+informe_global_*.md
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.cif
+*.mmcif
+*.pdb
+
+# Directorios de datos y temporales
+scratch/
+.system_generated/
+.gemini/

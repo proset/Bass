@@ -1,0 +1,465 @@
+/* ============================================================
+   BASS — TECHADOPTION FORECAST PLATFORM
+   Design: Premium Corporate / MercadoXR / Aumenta Solutions
+   Clean, Scientific, High Contrast, Dark Glass Aesthetic
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Reset & Base ──────────────────────────────────────────── */
+html, body, [class*="css"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, [data-testid="stHeading"] {
+    font-family: 'Outfit', sans-serif !important;
+}
+
+/* ── App background ────────────────────────────────────────── */
+.stApp {
+    background-color: #000000 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+}
+
+.main .block-container {
+    background: transparent !important;
+    padding-top: 1rem !important;
+}
+
+/* ── Hide Streamlit chrome sin romper la flecha del sidebar ── */
+#MainMenu, footer { visibility: hidden !important; }
+div[data-testid="stDecoration"] { display: none !important; }
+
+/* Mantener el fondo transparente en la barra superior pero dejando visible el botón de expandir */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 3.5rem !important;
+}
+
+/* Botón de la flecha de expandir (Sidebar) en blanco/gris sobrio */
+button[data-testid="collapsedControl"] {
+    color: #ffffff !important;
+    background: rgba(25, 25, 25, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 6px !important;
+    margin-top: 0.5rem !important;
+    margin-left: 0.5rem !important;
+    z-index: 99999 !important;
+}
+
+button[data-testid="collapsedControl"]:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ======================================================
+   SIDEBAR — Corporate Panel
+   ====================================================== */
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] > div,
+[data-testid="stSidebar"] > div > div {
+    background: #080808 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Encabezados en Sidebar */
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] .stMarkdown h1,
+[data-testid="stSidebar"] .stMarkdown h2,
+[data-testid="stSidebar"] .stMarkdown h3,
+[data-testid="stSidebar"] [data-testid="stHeading"] {
+    color: #ffffff !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* Texto del sidebar */
+[data-testid="stSidebar"] * {
+    color: #9ca3af !important;
+}
+
+/* Inputs en Sidebar */
+[data-testid="stSidebar"] input,
+[data-testid="stSidebar"] textarea,
+[data-testid="stSidebar"] select,
+[data-testid="stSidebar"] .stTextInput input,
+[data-testid="stSidebar"] .stTextArea textarea,
+[data-testid="stSidebar"] .stNumberInput input,
+[data-testid="stSidebar"] [data-baseweb="select"] > div {
+    background: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+}
+
+[data-testid="stSidebar"] input:focus,
+[data-testid="stSidebar"] textarea:focus {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ======================================================
+   PREMIUM HEADER — Dark Glass Panel
+   ====================================================== */
+.premium-header {
+    background: rgba(25, 25, 25, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 16px !important;
+    padding: 1.25rem 2rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 1.75rem !important;
+}
+
+.header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.1rem !important;
+}
+
+.header-logo-bg {
+    background: #ffffff !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+.header-logo-bg svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke: #000000 !important;
+}
+
+.header-title-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.1rem !important;
+}
+
+.header-title {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+}
+
+.header-subtitle {
+    font-size: 0.75rem !important;
+    color: #6b7280 !important;
+    margin: 0 !important;
+}
+
+/* Badge activo */
+.badge-active {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #d1d5db !important;
+    font-size: 0.65rem !important;
+    font-weight: 600 !important;
+    padding: 0.35rem 0.85rem !important;
+    border-radius: 9999px !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+}
+
+.badge-dot {
+    width: 6px !important;
+    height: 6px !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    animation: pulse-dot 2.2s ease infinite !important;
+}
+
+@keyframes pulse-dot {
+    0%   { opacity: 0.5; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+/* Botón de acción (Propuesta) */
+.action-btn {
+    background: #ffffff !important;
+    border: none !important;
+    color: #000000 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 9999px !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease !important;
+    text-decoration: none !important;
+}
+
+.action-btn:hover {
+    background: #e5e7eb !important;
+}
+
+/* ======================================================
+   KPI CARDS
+   ====================================================== */
+.kpi-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+    gap: 1rem !important;
+    margin: 0.75rem 0 1.75rem !important;
+}
+
+.kpi-card {
+    background: rgba(25, 25, 25, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    border-radius: 16px !important;
+    padding: 1.15rem 1.4rem !important;
+    transition: border-color 0.25s, transform 0.25s !important;
+}
+
+.kpi-card:hover {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    transform: translateY(-2px) !important;
+}
+
+.kpi-title {
+    font-size: 0.67rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    color: #6b7280 !important;
+    margin-bottom: 0.45rem !important;
+}
+
+.kpi-value {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.1 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+
+.kpi-desc {
+    font-size: 0.68rem !important;
+    color: #4b5563 !important;
+    margin-top: 0.5rem !important;
+}
+
+/* ======================================================
+   TABS
+   ====================================================== */
+div[data-baseweb="tab-list"] {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+button[data-baseweb="tab"] {
+    background: transparent !important;
+    border: none !important;
+    color: #4b5563 !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.65rem 1.1rem !important;
+    transition: color 0.2s !important;
+}
+
+button[data-baseweb="tab"]:hover { color: #9ca3af !important; }
+button[aria-selected="true"] { color: #ffffff !important; }
+
+div[data-baseweb="tab-highlight"] {
+    background: #ffffff !important;
+    height: 2px !important;
+}
+
+div[data-baseweb="tab-border"] { background: transparent !important; }
+
+/* ======================================================
+   TEXTOS Y ETIQUETAS
+   ====================================================== */
+label,
+.stWidgetLabel label,
+.stWidgetLabel p {
+    color: #ffffff !important;   /* Blanco puro para las etiquetas principales */
+    font-size: 0.95rem !important; /* Mayor tamaño para 'Horizonte' y 'Visualizar' */
+    font-weight: 600 !important;
+}
+
+p, .stMarkdown p {
+    color: #9ca3af !important;
+    line-height: 1.7 !important;
+    font-size: 0.85rem !important;
+}
+
+.stMarkdown h2 {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    padding-bottom: 0.5rem !important;
+    margin-bottom: 0.75rem !important;
+    color: #ffffff !important;
+}
+
+.stCaption, [data-testid="stCaptionContainer"] {
+    color: #6b7280 !important;
+    font-size: 0.72rem !important;
+}
+
+/* ======================================================
+   INPUTS Y SELECTORES
+   ====================================================== */
+input, textarea, select,
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input,
+[data-baseweb="select"] > div {
+    background: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-size: 0.84rem !important;
+    padding: 0.65rem 1rem !important;
+    transition: border-color 0.2s !important;
+}
+
+input:focus, textarea:focus,
+[data-baseweb="select"] > div:focus-within {
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Tags del multiselect en azul oscuro corporativo serio y legible */
+[data-baseweb="tag"] {
+    background: #0d47a1 !important; /* Azul oscuro */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;      /* Texto blanco */
+    border-radius: 6px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+
+/* Garantizar que los elementos del tag se vean limpios sin fondos oscuros */
+[data-baseweb="tag"] span,
+[data-baseweb="tag"] div,
+[data-baseweb="tag"] svg {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Evitar que el input de escritura del select muestre el recuadro negro vacío */
+[data-baseweb="select"] input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 !important;
+}
+
+[data-baseweb="select"] svg { fill: #6b7280 !important; }
+
+/* Ocultar Start Enhancers residuales de color */
+[data-baseweb="tag"] > *:first-child:not(:nth-last-child(2)) {
+    display: none !important;
+}
+
+[data-baseweb="tag"] [role="presentation"],
+[data-baseweb="tag"] span:empty,
+[data-baseweb="tag"] div[class*="avatar"] {
+    display: none !important;
+}
+
+/* ======================================================
+   TABLAS OSCURAS
+   ====================================================== */
+.dark-table-wrap {
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    margin: 0.75rem 0 !important;
+}
+
+.dark-table-wrap table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: rgba(25, 25, 25, 0.6) !important;
+}
+
+.dark-table-wrap th {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #6b7280 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-size: 0.67rem !important;
+    padding: 0.6rem 0.9rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    text-align: left !important;
+}
+
+.dark-table-wrap td {
+    color: #d1d5db !important;
+    padding: 0.55rem 0.9rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.78rem !important;
+}
+
+.dark-table-wrap tr:hover td { background: rgba(255, 255, 255, 0.02) !important; }
+
+/* ======================================================
+   BOTONES
+   ====================================================== */
+.stButton > button {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1rem !important;
+    transition: background 0.2s, border-color 0.2s !important;
+}
+
+.stButton > button:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.stButton > button[kind="primary"] {
+    background: #ffffff !important;
+    border: none !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    background: #e5e7eb !important;
+}
+
+[data-testid="stPlotlyChart"] > div {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
