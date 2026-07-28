@@ -46,10 +46,10 @@ PG_PASSWORD = os.environ.get("PG_PASSWORD") or conn_params.get("password")
 env_port = os.environ.get("PG_PORT") or conn_params.get("port")
 PG_PORT = int(env_port) if env_port else 6543
 
-# Si por alguna razón el usuario se leyó vacío o fue sobreescrito con 'postgres' a secas en Docker,
-# pero tenemos el secrets con el ID del proyecto, forzamos el usuario largo correcto de Supabase
-if PG_USER == "postgres" and conn_params.get("user"):
-    PG_USER = conn_params.get("user")
+# Si estamos conectando a Supabase, forzar explícitamente el usuario y puerto correctos si llegan truncados
+if "supabase.com" in str(PG_HOST):
+    PG_USER = "postgres.drshrajpeenvudfcmrek"
+    PG_PORT = 6543
 
 logger.info(f"Conectando a base de datos: host={PG_HOST}, database={PG_DATABASE}, user={PG_USER}, port={PG_PORT}")
 
@@ -62,6 +62,12 @@ conn_dict = {
     "password": PG_PASSWORD,
     "port": PG_PORT
 }
+
+# Permitir conexión por URI directa (ConnectionString) si está configurada en variables de entorno
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    logger.info("Detectada DATABASE_URL en variables de entorno, usando conexión por URI.")
+
 
 # ==========================================
 # Constantes de Modelos de Gemini
