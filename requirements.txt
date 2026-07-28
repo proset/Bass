@@ -10,3 +10,4 @@ toml>=0.10.2
 pytest>=7.0.0
 matplotlib>=3.7.0
 reportlab>=4.0.0
+fpdf2>=2.7.0
