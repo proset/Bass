@@ -85,12 +85,19 @@ def get_pool():
     global _pool
     if _pool is None:
         try:
-            _pool = pg_pool.ThreadedConnectionPool(
-                minconn=1,
-                maxconn=15,
-                connect_timeout=10,
-                **conn_dict
-            )
+            if DATABASE_URL:
+                _pool = pg_pool.ThreadedConnectionPool(
+                    minconn=1,
+                    maxconn=15,
+                    dsn=DATABASE_URL
+                )
+            else:
+                _pool = pg_pool.ThreadedConnectionPool(
+                    minconn=1,
+                    maxconn=15,
+                    connect_timeout=10,
+                    **conn_dict
+                )
             logger.info("ThreadedConnectionPool de PostgreSQL inicializado correctamente.")
         except Exception as e:
             logger.error(f"Error inicializando Connection Pool: {e}")
@@ -123,7 +130,10 @@ def get_conn():
     except Exception as e:
         logger.error(f"Error obteniendo conexión del pool: {e}. Activando fallback de conexión directa.")
         try:
-            direct_conn = psycopg2.connect(connect_timeout=10, **conn_dict)
+            if DATABASE_URL:
+                direct_conn = psycopg2.connect(dsn=DATABASE_URL, connect_timeout=10)
+            else:
+                direct_conn = psycopg2.connect(connect_timeout=10, **conn_dict)
             direct_conn.autocommit = True
             return direct_conn
         except Exception as direct_e:
