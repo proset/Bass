@@ -13,7 +13,6 @@ env/
 .idea/
 
 # Informes y PDFs temporales generados
-informe_global_*.md
 *.pdf
 *.png
 *.jpg
