@@ -350,35 +350,180 @@ label,
     letter-spacing: 0.01em !important;
 }
 
-p, .stMarkdown p {
-    color: #9ca3af !important;
-    line-height: 1.75 !important;
-    font-size: 0.88rem !important;
-}
+/* ── Jerarquía tipográfica completa para informes ── */
 
-.stMarkdown h2 {
-    font-size: 1.15rem !important;
-    font-weight: 700 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
-    padding-bottom: 0.5rem !important;
-    margin-bottom: 0.75rem !important;
+/* H1 — Título principal del informe */
+.stMarkdown h1 {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
     color: #ffffff !important;
     font-family: 'Outfit', sans-serif !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.2 !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 2px solid rgba(255,255,255,0.10) !important;
+    padding-bottom: 0.6rem !important;
 }
 
+/* H2 — Sección principal */
+.stMarkdown h2 {
+    font-size: 1.45rem !important;
+    font-weight: 700 !important;
+    color: #f3f4f6 !important;
+    font-family: 'Outfit', sans-serif !important;
+    letter-spacing: -0.005em !important;
+    line-height: 1.3 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 0.75rem !important;
+    border-bottom: 1px solid rgba(255,255,255,0.09) !important;
+    padding-bottom: 0.45rem !important;
+}
+
+/* H3 — Subsección */
 .stMarkdown h3 {
-    font-size: 1rem !important;
-    font-weight: 600 !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
     color: #e5e7eb !important;
     font-family: 'Outfit', sans-serif !important;
+    line-height: 1.35 !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
 }
 
-.stCaption, [data-testid="stCaptionContainer"] {
+/* H4 — Apartado menor */
+.stMarkdown h4 {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #d1d5db !important;
+    font-family: 'Inter', sans-serif !important;
+    line-height: 1.4 !important;
+    margin-top: 1.2rem !important;
+    margin-bottom: 0.4rem !important;
+}
+
+/* H5, H6 — Nivel detalle */
+.stMarkdown h5,
+.stMarkdown h6 {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: #9ca3af !important;
+    font-family: 'Inter', sans-serif !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+}
+
+/* Párrafos — claros y legibles, NO grises oscuros */
+p, .stMarkdown p {
+    color: #d1d5db !important;      /* gris claro, no gris oscuro */
+    line-height: 1.85 !important;
+    font-size: 0.96rem !important;  /* tamaño cómodo de lectura */
+    margin-bottom: 0.75rem !important;
+}
+
+/* Listas dentro de markdown */
+.stMarkdown ul,
+.stMarkdown ol {
+    color: #d1d5db !important;
+    font-size: 0.95rem !important;
+    line-height: 1.8 !important;
+    padding-left: 1.5rem !important;
+}
+
+.stMarkdown li {
+    color: #d1d5db !important;
+    margin-bottom: 0.3rem !important;
+}
+
+/* Texto en negrita dentro del informe — blanco puro */
+.stMarkdown strong,
+.stMarkdown b {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* Cursiva */
+.stMarkdown em,
+.stMarkdown i {
+    color: #e5e7eb !important;
+}
+
+/* Código inline dentro de markdown */
+.stMarkdown code {
+    background: rgba(255,255,255,0.07) !important;
+    color: #93c5fd !important;
+    border-radius: 4px !important;
+    padding: 0.15em 0.45em !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 0.87rem !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Tablas dentro de markdown — mayor contraste */
+.stMarkdown table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 0.88rem !important;
+    margin: 1rem 0 !important;
+}
+
+.stMarkdown th {
+    background: rgba(255,255,255,0.06) !important;
+    color: #9ca3af !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-size: 0.72rem !important;
+    padding: 0.6rem 0.85rem !important;
+    border-bottom: 1px solid rgba(255,255,255,0.10) !important;
+    text-align: left !important;
+}
+
+.stMarkdown td {
+    color: #e5e7eb !important;       /* texto claro en celdas */
+    padding: 0.55rem 0.85rem !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+    font-size: 0.87rem !important;
+    vertical-align: top !important;
+}
+
+.stMarkdown tr:hover td {
+    background: rgba(255,255,255,0.03) !important;
+}
+
+/* Blockquote / cita */
+.stMarkdown blockquote {
+    border-left: 3px solid rgba(255,255,255,0.2) !important;
+    padding: 0.5rem 1rem !important;
+    margin: 1rem 0 !important;
+    color: #9ca3af !important;
+    font-style: italic !important;
+    background: rgba(255,255,255,0.03) !important;
+    border-radius: 0 8px 8px 0 !important;
+}
+
+/* Separador horizontal */
+.stMarkdown hr {
+    border: none !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
+    margin: 1.5rem 0 !important;
+}
+
+/* Caption y textos pequeños */
+.stCaption,
+[data-testid="stCaptionContainer"] p {
     color: #6b7280 !important;
     font-size: 0.74rem !important;
 }
 
-/* Títulos de sección dentro de tabs */
+/* Subheaders nativos de Streamlit (st.subheader) */
+[data-testid="stHeading"] h2,
+[data-testid="stHeading"] h3 {
+    color: #ffffff !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+
+/* Títulos de sección dentro de columnas y contenedores */
 [data-testid="stVerticalBlock"] h3,
 [data-testid="stVerticalBlock"] h4 {
     font-size: 1rem !important;
