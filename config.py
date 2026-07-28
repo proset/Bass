@@ -38,13 +38,13 @@ if not conn_params or not GEMINI_API_KEY:
         logger.warning(f"No se pudo cargar secrets.toml directamente: {e}")
 
 # Fallback a variables de entorno (prioritario para despliegue en contenedores/CI)
-PG_HOST = os.environ.get("PG_HOST") or os.environ.get("DB_HOST") or os.environ.get("POSTGRES_HOST") or conn_params.get("host")
-PG_DATABASE = os.environ.get("PG_DATABASE") or os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DATABASE") or conn_params.get("database", "postgres")
-PG_USER = os.environ.get("PG_USER") or os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER") or conn_params.get("user")
-PG_PASSWORD = os.environ.get("PG_PASSWORD") or os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD") or conn_params.get("password")
+PG_HOST = os.environ.get("PG_HOST") or conn_params.get("host") or os.environ.get("DB_HOST") or os.environ.get("POSTGRES_HOST")
+PG_DATABASE = os.environ.get("PG_DATABASE") or conn_params.get("database") or os.environ.get("DB_NAME") or os.environ.get("POSTGRES_DATABASE") or "postgres"
+PG_USER = os.environ.get("PG_USER") or conn_params.get("user") or os.environ.get("DB_USER") or os.environ.get("POSTGRES_USER")
+PG_PASSWORD = os.environ.get("PG_PASSWORD") or conn_params.get("password") or os.environ.get("DB_PASSWORD") or os.environ.get("POSTGRES_PASSWORD")
 
-env_port = os.environ.get("PG_PORT") or os.environ.get("DB_PORT") or os.environ.get("POSTGRES_PORT")
-PG_PORT = int(env_port) if env_port else int(conn_params.get("port", 6543))
+env_port = os.environ.get("PG_PORT") or conn_params.get("port") or os.environ.get("DB_PORT") or os.environ.get("POSTGRES_PORT")
+PG_PORT = int(env_port) if env_port else 6543
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or GEMINI_API_KEY
 
