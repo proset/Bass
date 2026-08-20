@@ -625,6 +625,26 @@ def compilar_informe_global(tech):
 
     # TODO R2: re.sub(...repl_ceiling...) aquí
 
+    # ==================================================================
+    # [R2.2] Correcciones LLM de primera pasada (agosto): las narrativas
+    # se corrigen por separado ANTES del ensamblaje, con los datos
+    # canónicos. Cada wrapper degrada a no-op si el LLM falla.
+    # ==================================================================
+    real_series = {int(a): float(v) for a, v in zip(anios_reales, y_true)}
+
+    analisis_cualitativo = corregir_analisis_cualitativo_llm(
+        analisis_cualitativo,
+        real_series,
+        canonical_block=canonical_block,
+    )
+    consenso_forecast = corregir_consenso_forecast_llm(
+        consenso_forecast,
+        summary_rows,
+        df_proj,
+        recommended_model_name,
+        canonical_block=canonical_block,
+    )
+
     # 6. RAG
     try:
         genai_client = genai.GenerativeModel(model_name)
