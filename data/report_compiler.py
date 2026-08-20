@@ -755,13 +755,15 @@ A continuación se detallan los datos reales acumulados (en millones de adoptant
         
     report_md += """
 ### Resumen del Error de Ajuste
-Métricas consolidadas de ajuste en la serie histórica (R² y MAPE):
-
-| Modelo de Difusión | R² | MAPE de Ajuste |
-| ------------------ | -- | -------------- |
+Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
+| Modelo de Difusión | R² | MAPE de Ajuste | Score | Nº Parám. | MAPE Backtest |
+| ------------------ | -- | -------------- | ----- | --------- | ------------- |
 """
     for row in summary_rows:
-        report_md += f"| {row['Modelo']} | {row['R²']} | {row['MAPE Ajuste']} |\n"
+        report_md += (
+            f"| {row['Modelo']} | {row['R²']} | {row['MAPE Ajuste']} "
+            f"| {row['Score']} | {row['Nº Parám.']} | {row['MAPE Backtest']} |\n"
+        )
         
     report_md += r"""
 ### 📐 Formulación Matemática de los Modelos Evaluados
@@ -834,94 +836,59 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 {informe_cientifico}
 """
 
-    from report_validator import validate_report
-    from apply_deterministic_corrections import apply_deterministic_corrections
-    from ai.analysis import auditar_informe_semantico, corregir_informe_semantico_ia
-    
-    real_series = {str(int(a)): float(y) for a, y in zip(anios_reales, y_true)}
-    models_projections = {}
-    for row in summary_rows:
-        m_name = row['Modelo']
-        col_name = f"{m_name} (M)"
-        if col_name in df_proj.columns:
-            models_projections[m_name] = {str(int(p_row['Año'])): float(p_row[col_name]) for _, p_row in df_proj.iterrows()}
-        
-    max_iter = 3
-    success = False
-    
-    for i in range(1, max_iter + 1):
-        print(f"\n--- [Iteración de Validación y Autocorrección {i}/{max_iter}] ---")
-        
-        # Limpiar todas las notas inyectadas de report_md antes de validar y corregir
+    from llm_reviewer import full_review, gate
+
+    gate_passed = False
+    last_blockers = []
+
+    for i in range(1, 6):  # agosto: máximo 5 iteraciones
+        print(f"\n--- [Iteración de Validación Red-Team {i}/5] ---")
+
+        # Limpiar notas inyectadas heredadas antes de validar (del bloque provisional)
         report_md = re.sub(
             r"\n?>\s*(?:[📌💡]\s*)?\*\*Nota [^(]+ \(MATH-(?:0[79]|RED|CONCIL|TRX|EQUIV|DOSE)\):[^\n]*(?:\n>\s*[^\n]*)*\n?",
             "",
             report_md,
             flags=re.DOTALL
         )
-        
-        # 1. Primera validación para recolectar correcciones (las notas estarán ausentes)
-        pre_val = validate_report(
-            report_md=report_md,
-            technology=tech,
-            launch_year=int(anios_reales[0]),
-            real_series=real_series,
-            models_projections=models_projections
+
+        # Capa 1 (determinista, con checks B3) + Capa 2 (semántica LLM)
+        issues = full_review(
+            report_md,
+            real_series,
+            model_fits_obj,
+            use_llm=True,
+            df_proj=df_proj,
         )
-        
-        # Aplicar correcciones deterministas para insertar las notas dinámicas y otros parches
-        report_md = apply_deterministic_corrections(report_md, pre_val)
-        
-        # Segunda validación sobre el reporte corregido final
-        val_res = validate_report(
-            report_md=report_md,
-            technology=tech,
-            launch_year=int(anios_reales[0]),
-            real_series=real_series,
-            models_projections=models_projections
-        )
-        
-        print(val_res.summary())
-        for f in val_res.findings:
-            print(f"[{f.severity}] {f.check_id} — {f.message}")
-            
-        if val_res.has_critical:
-            if i == max_iter:
-                raise ValueError(
-                    f"El informe finalizó con fallos críticos deterministas no corregibles: "
-                    f"{[f.message for f in val_res.findings if f.severity == 'CRITICAL']}"
-                )
-            print("[Advertencia] Fase 1 determinista sigue teniendo fallos críticos. Intentando re-corregir...")
-            continue
-            
-        # 2. Fase 2: Auditoría Semántica Red-Team con LLM
-        print("\n[Fase 2] Ejecutando Auditoria Semantica Red-Team con LLM...")
-        try:
-            audit_res = auditar_informe_semantico(report_md, tech)
-            veredict = audit_res.get("veredict", "PUBLICABLE")
-            hallazgos = audit_res.get("hallazgos", [])
-            
-            print(f"Veredicto Red-Team: {veredict}")
-            critical_sem_findings = [h for h in hallazgos if h.get("gravedad") == "CRITICO"]
-            
-            if veredict == "PUBLICABLE" or not critical_sem_findings:
-                print("¡Veredicto final: PUBLICABLE! El reporte está listo.")
-                success = True
-                break
-            else:
-                print(f"Encontrados {len(critical_sem_findings)} hallazgos semánticos críticos:")
-                for h in critical_sem_findings:
-                    print(f"  - [{h.get('check')}]: {h.get('descripcion')}")
-                
-                print("Aplicando corrección semántica automática con LLM...")
-                report_md = corregir_informe_semantico_ia(report_md, tech, critical_sem_findings)
-        except Exception as e:
-            print(f"Nota: Auditoria semantica no completada por error: {e}")
-            success = True
+
+        if gate(issues):
+            print(f"[RED-TEAM AUTO-FIX] Informe {tech} auditado con éxito en iteración {i}! GATE: True (0 BLOCKERs).")
+            gate_passed = True
             break
-            
-    if not success:
-        print("Advertencia: El informe finalizó el ciclo de auto-correcciones con algunos hallazgos semánticos pendientes. Se procede a guardar la mejor versión disponible.")
+
+        last_blockers = [it for it in issues if it.severity == "BLOCKER"]
+        print(f"[Red-Team] {len(last_blockers)} BLOCKERs pendientes:")
+        for it in last_blockers:
+            print(f"  - [{it.code}] {it.message}")
+
+        # [R2.3] Orden D2 (bytecode 4575-4820): LLM → fix_proj → fix_hist
+        report_md = correct_report_narrative_with_llm(
+            report_md=report_md,
+            blockers=[f"[{it.code}] {it.message}" for it in last_blockers],
+            real_series=real_series,
+            model_fits_obj=model_fits_obj,
+            canonical_block=canonical_block,
+        )
+        report_md = fix_projection_increments(
+            report_md, float(y_true[-1]), df_proj, recommended_model_name,
+            anios_reales=anios_reales, y_true=y_true,
+        )
+        report_md = fix_historical_increments(report_md, anios_reales, y_true)
+
+    if not gate_passed:
+        print(f"CRITICAL: El informe para '{tech}' no pudo converger a GATE: True tras 5 "
+              f"iteraciones de auto-corrección Red-Team. Blockers no resueltos: "
+              f"{[it.code for it in last_blockers]}")
 
     output_file = f"informe_global_{tech}.md"
     with open(output_file, "w", encoding="utf-8") as f:
