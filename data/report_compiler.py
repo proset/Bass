@@ -230,6 +230,99 @@ def fix_historical_increments(text, anios_reales, y_true):
         text = re.sub(pattern, repl_hist, text, flags=re.IGNORECASE)
     return text
 
+def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
+    """[GLM-PATCH] Wrapper LLM: corrige el análisis cualitativo contra la serie real."""
+    try:
+        series_str = "\n".join(f"- {yr}: {val}M" for yr, val in sorted(real_series.items()))
+        prompt = (
+            "Eres un editor experto de informes de mercado. Tu tarea es corregir el siguiente análisis cualitativo en español para que todos los números históricos mencionados en el texto coincidan EXACTAMENTE con la serie de datos reales de referencia.\n\n"
+            "--- SERIE REAL DE REFERENCIA (Única Verdad) ---\n"
+            f"{series_str}\n"
+            f"{canonical_block}"
+            "--- REGLAS DE CORRECCIÓN ---\n"
+            "1. Si el texto menciona cifras de adopción/usuarios acumulados anuales para un año (de 2015 a 2026), ajusta el valor en el texto para que coincida exactamente con el de la serie real de referencia.\n"
+            "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o hitos específicos de lanzamiento en meses individuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción anual acumulada total al cierre del año.\n"
+            "2. Si el texto menciona años o hitos que contradicen la serie (por ejemplo, decir que en 2020 no había usuarios cuando la serie registra 345M), reescribe la frase para mantener la coherencia.\n"
+            "3. No inventes datos ni menciones cifras de años que no están en la serie.\n"
+            "4. Mantén el formato markdown, el tono profesional y la estructura del texto.\n"
+            "5. Devuelve EXCLUSIVAMENTE el texto corregido (sin explicaciones, sin fences ```).\n\n"
+            "--- TEXTO A CORREGIR ---\n"
+            f"{text}"
+        )
+        genai_client = genai.GenerativeModel(model_name)
+        response = genai_client.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"[WARN] corregir_analisis_cualitativo_llm falló: {e}")
+        return text
+
+def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_model_name, canonical_block=""):
+    """[GLM-PATCH] Wrapper LLM: corrige el consenso contra las tablas de proyección."""
+    try:
+        tables_lines = []
+        for row in summary_rows:
+            tables_lines.append(" | ".join(str(v) for v in row.values()))
+        tables_summary = "\n".join(tables_lines)
+        proj_cols = [c for c in df_proj.columns if c != 'Año']
+        for c in proj_cols:
+            vals = ", ".join(f"{int(r['Año'])}: {r[c]:.1f}M" for _, r in df_proj.iterrows())
+            tables_summary += f"\n{c}: {vals}"
+        prompt = (
+            "Eres un editor experto de informes de mercado. Tu tarea es corregir el siguiente informe de consenso y proyecciones en español para que todos los números, nombres de modelos y afirmaciones de ajuste coincidan EXACTAMENTE con las tablas de referencia.\n\n"
+            "--- DATOS DE REFERENCIA (Única Verdad) ---\n"
+            f"{tables_summary}\n"
+            f"{canonical_block}"
+            "--- REGLAS DE CORRECCIÓN ---\n"
+            "1. Si el texto menciona métricas de ajuste (R² o MAPE) para cualquier modelo, cámbialas para que coincidan exactamente con la tabla de ajuste.\n"
+            "2. Si el texto menciona proyecciones futuras (ej. usuarios para 2030 o 2035), ajusta el valor en el texto para que coincida exactamente con la cifra de proyección de ese año para el modelo recomendado en la tabla de proyecciones.\n"
+            "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
+            "3. Si el texto justifica elegir el modelo recomendado por tener \"el mejor ajuste\" o \"el menor MAPE\" cuando la tabla muestra que otro tiene menor MAPE, ajusta la justificación según esta regla: \"El modelo se selecciona por su superioridad y solidez conceptual de mercado, priorizando evitar el sobreajuste cuantitativo en el corto plazo\".\n"
+            "4. Si el texto menciona nombres de modelos ficticios o que no están en la tabla de referencia (ej. Ryu & Kim), elimínalos o reemplázalos por los modelos reales.\n"
+            "5. Devuelve EXCLUSIVAMENTE el texto corregido (sin explicaciones, sin fences ```).\n\n"
+            "--- TEXTO A CORREGIR ---\n"
+            f"{text}"
+        )
+        genai_client = genai.GenerativeModel(model_name)
+        response = genai_client.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"[WARN] corregir_consenso_forecast_llm falló: {e}")
+        return text
+
+def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fits_obj, canonical_block=""):
+    """[GLM-PATCH] Wrapper LLM (red-team): reescribe el informe resolviendo los blockers."""
+    try:
+        from llm_reviewer import historical_table_to_summary, model_fits_to_summary
+        tables_summary = (historical_table_to_summary(real_series)
+                          + "\n" + model_fits_to_summary(model_fits_obj))
+        blockers_text = "\n".join(f"- {b}" for b in blockers)
+        prompt = (
+            "Eres un auditor y editor experto en consistencia de informes de mercado. \n"
+            "Tu tarea es corregir la narrativa de este reporte de adopción tecnológica para eliminar CUALQUIER incoherencia numérica o contradicción.\n\n"
+            "Aquí tienes los datos oficiales de referencia:\n"
+            "--- DATOS DE REFERENCIA ---\n"
+            f"{tables_summary}\n"
+            f"{canonical_block}"
+            "--- ERRORES/BLOCKERS DETECTADOS (DEBES CORREGIR CADA UNO DE ELLOS) ---\n"
+            f"{blockers_text}\n"
+            "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
+            "1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años pasados/presentes como 2015 a 2026) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
+            "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
+            "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años 2027 a 2038) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
+            "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
+            "3. No inventes unidades (como porcentajes '%'). Si los datos de referencia están en millones (M), mantén todos los números de adopción y proyecciones en millones (M) en todo el texto.\n"
+            "4. NO modifiques las tablas markdown oficiales ni las ecuaciones de LaTeX ni las cabeceras de sección.\n"
+            "5. Devuelve EXCLUSIVAMENTE el markdown corregido completo (sin explicaciones adicionales, sin fences ```).\n\n"
+            "--- INFORME A CORREGIR ---\n"
+            f"{report_md}"
+        )
+        genai_client = genai.GenerativeModel(model_name)
+        response = genai_client.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"[WARN] correct_report_narrative_with_llm falló: {e}")
+        return report_md
+
 def _score_val(r):
     """[GLM-PATCH] Score compuesto de una fila de summary_rows (-1e9 si no aplica)."""
     try:
