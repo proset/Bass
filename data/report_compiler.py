@@ -623,7 +623,7 @@ def compilar_informe_global(tech):
             return f"{word} de **{v:.2f} {unit}**"
         return m.group(0)
 
-    # TODO R2: re.sub(...repl_ceiling...) aquí
+
 
     # ==================================================================
     # [R2.2] Correcciones LLM de primera pasada (agosto): las narrativas
@@ -889,6 +889,22 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         print(f"CRITICAL: El informe para '{tech}' no pudo converger a GATE: True tras 5 "
               f"iteraciones de auto-corrección Red-Team. Blockers no resueltos: "
               f"{[it.code for it in last_blockers]}")
+
+    # ==================================================================
+    # [R2.4] Doble tap determinista final (fuera del loop, pre-guardado):
+    # techo de mercado + incrementos — la última pasada amarra los números
+    # aunque el gate ya haya pasado (sección 9 del mapa, bytecode ~6592).
+    # ==================================================================
+    report_md = re.sub(
+        r'\b(techo\s+de\s+mercado|l[ií]mite\s+de\s+adopci[oó]n|saturaci[oó]n|capacidad\s+m[aá]xima)\s+(?:[a-zA-Záéíóú]+\s+){0,3}?de\s*(?:\*\*)?\s*(\d+(?:[\.,]\d+)?)\s*(?:\*\*)?\s*(millones|M\b)',
+        repl_ceiling,
+        report_md, flags=re.IGNORECASE
+    )
+    report_md = fix_projection_increments(
+        report_md, float(y_true[-1]), df_proj, recommended_model_name,
+        anios_reales=anios_reales, y_true=y_true,
+    )
+    report_md = fix_historical_increments(report_md, anios_reales, y_true)
 
     output_file = f"informe_global_{tech}.md"
     with open(output_file, "w", encoding="utf-8") as f:
