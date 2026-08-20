@@ -8,6 +8,7 @@ from psycopg2 import connect
 from psycopg2.extras import DictCursor
 
 from config import get_conn, release_conn, GEMINI_PRIMARY
+from report_validator import ModelFit
 from models.rk4_solver import (
     bass_classic,
     dual_market_bass,
@@ -375,6 +376,15 @@ def compilar_informe_global(tech):
     }
     
     summary_rows = []
+    seen_sigs = set()
+    n_obs = len(anios_reales)
+    _N_PARAMS = {
+        "Bass_Clasico": 3, "Dual_Market": 6, "Fourt_Woodlock": 2,
+        "Gompertz": 3, "Generalized_Bass": 4, "Horsky_Simon": 4,
+        "Muller_Yogev": 7, "VdB_Joshi": 6,
+        "Logistic_Diffusion_Convergence": 4, "Ladron_Putsis": 5,
+    }
+
     for m_key in list(model_labels.keys()):
         if m_key not in params:
             continue
@@ -397,19 +407,68 @@ def compilar_informe_global(tech):
                 dev_vals.append(np.nan)
         df_dev[f"Desv {model_labels[m_key]} %"] = dev_vals
         
-        mape = calculate_mape(y_true, y_pred)
+        # ==================================================================
+        # [R2.1a] Summary_rows extendido (agosto): R²/MAPE/Score/NºParám/MAPEbt/Valid
+        # Score: BD si existe (fuente canónica del motor GLM); fallback: fórmula del motor
+        # ==================================================================
+        try:
+            r2 = float(p.get("r_cuadrado") or 0.0)
+        except (TypeError, ValueError):
+            r2 = 0.0
+        try:
+            mape_fit = float(p.get("mape_ajuste") or 999.0)
+        except (TypeError, ValueError):
+            mape_fit = 999.0
+
+        try:
+            k = int(p.get("n_params") or _N_PARAMS.get(m_key, 3))
+        except (TypeError, ValueError):
+            k = _N_PARAMS.get(m_key, 3)
+
+        mape_bt = p.get("mape_backtest")
+        try:
+            mape_bt = float(mape_bt) if mape_bt is not None else None
+        except (TypeError, ValueError):
+            mape_bt = None
+
+        score = p.get("score")
+        try:
+            score = float(score) if score is not None else None
+        except (TypeError, ValueError):
+            score = None
+        if score is None:
+            dof_pen = 12.0 * max(0, k - (n_obs - 1))
+            mape_bt_eff = mape_bt if mape_bt is not None else mape_fit
+            score = (r2 * 70.0) \
+                + (100.0 - min(mape_fit, 100.0)) * 0.15 \
+                + (100.0 - min(mape_bt_eff, 100.0)) * 0.15 \
+                - dof_pen
+
+        is_valid = (r2 > 0.0) and (mape_fit < 100.0)
+
+        sig = (round(r2, 5), round(mape_fit, 2), k)
+        if sig in seen_sigs:
+            continue
+        seen_sigs.add(sig)
+
         summary_rows.append({
             "Modelo": model_labels[m_key],
-            "R²": f"{p['r_cuadrado']:.4f}",
-            "MAPE Ajuste": f"{mape:.2f}%"
+            "R²": f"{r2:.4f}",
+            "MAPE Ajuste": f"{mape_fit:.2f}%",
+            "Score": f"{score:.2f}",
+            "Nº Parám.": k,
+            "MAPE Backtest": f"{mape_bt:.2f}%" if mape_bt is not None else "N/D",
+            "Valid": "✓" if is_valid else "✗",
         })
         
+
     # 5. Generar proyecciones
     ultimo_anio = anios_reales[-1]
     anios_proj = list(range(ultimo_anio + 1, ultimo_anio + 11))
     t_proj = np.arange(len(anios_reales), len(anios_reales) + 10)
     
     df_proj = pd.DataFrame({"Año": anios_proj})
+    
     for m_key in list(model_labels.keys()):
         if m_key not in params:
             continue
@@ -422,6 +481,40 @@ def compilar_informe_global(tech):
             continue
         y_proj = model_func(t_proj, *popt)
         df_proj[f"{model_labels[m_key]} (M)"] = y_proj
+
+    # ==================================================================
+    # ==================================================================
+    # [R2.1b] model_fits_obj: objetos ModelFit (proyecciones incluidas)
+    # para el validador determinista (checks B3) y el red-team LLM
+    # ==================================================================
+    model_fits_obj = []
+    _projections_by_model = {}
+    for m_key in list(model_labels.keys()):
+        if m_key not in params:
+            continue
+        p = params[m_key]
+        col_name = f"{model_labels[m_key]} (M)"
+        projections = {}
+        if col_name in df_proj.columns:
+            for _, r in df_proj.iterrows():
+                projections[int(r["Año"])] = float(r[col_name])
+        _projections_by_model[model_labels[m_key]] = projections
+
+        try:
+            r2 = float(p.get("r_cuadrado") or 0.0)
+        except (TypeError, ValueError):
+            r2 = 0.0
+        try:
+            mape_fit = float(p.get("mape_ajuste") or 999.0)
+        except (TypeError, ValueError):
+            mape_fit = 999.0
+
+        model_fits_obj.append(ModelFit(
+            name=model_labels[m_key],
+            r2=r2,
+            mape=mape_fit,
+            projections=projections,
+        ))
 
     # Identificar modelo recomendado para alinear Sección 6
     def detect_recommended_model(text: str) -> str:
