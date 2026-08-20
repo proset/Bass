@@ -105,6 +105,20 @@ def df_to_markdown_manual(df):
         lines.append("| " + " | ".join(row_str) + " |")
     return "\n".join(lines)
 
+def extract_consensus_metadata(consenso_text):
+    """
+    Extrae metadatos pre-computados de la cabecera del consenso (arquitectura data-first).
+    [GLM-PATCH] Regex canónico recuperado del bytecode de agosto (strings_extraidos.txt).
+    """
+    match = re.search(r'^<!--\s*CONSENSUS_METADATA:([\s\S]*?})\s*-->', consenso_text)
+    if match:
+        try:
+            import json
+            return json.loads(match.group(1))
+        except Exception:
+            return None
+    return None
+
 def fix_projection_increments(text, last_val, df_proj, rec_model_name,
                               anios_reales=None, y_true=None):
     """
@@ -193,6 +207,27 @@ def fix_projection_increments(text, last_val, df_proj, rec_model_name,
         r'([\s\S]{1,100}?)(?:\*\*)?\b(\d+(?:[\.,]\d+)?)\b(?:\*\*)?\s*'
         r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)',
         repl, text, flags=re.IGNORECASE)
+    return text
+
+def fix_historical_increments(text, anios_reales, y_true):
+    for i in range(1, len(anios_reales)):
+        yr = anios_reales[i]
+        prev_yr = anios_reales[i-1]
+        val = y_true[i]
+        prev_val = y_true[i-1]
+        real_inc = val - prev_val
+        pattern = (
+            r'\b(aumento|incremento|crecimiento|adici[oó]n|diferencia)\b'
+            r'([\s\S]{1,100}?)\b('
+            + re.escape(f"{val:.1f}") + r'|' + re.escape(f"{int(val)}") + r'|' + re.escape(f"{val:.2f}")
+            + r')\s*(?:\*\*)?\s*(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)'
+        )
+        def repl_hist(m):
+            word = m.group(1)
+            inter = m.group(2)
+            unit = m.group(4)
+            return f"{word}{inter}**{real_inc:.2f} {unit}**"
+        text = re.sub(pattern, repl_hist, text, flags=re.IGNORECASE)
     return text
 
 def _score_val(r):
@@ -375,6 +410,34 @@ def compilar_informe_global(tech):
         )
     except Exception:
         canonical_block = ""
+
+    def repl_ceiling(m):
+        word, val_str, unit = m.group(1), m.group(2), m.group(3)
+        try:
+            val = float(val_str.replace(',', '.'))
+        except ValueError:
+            return m.group(0)
+        anchor_year = 2036 if 2036 in set(df_proj['Año']) else int(df_proj['Año'].max())
+        r_anchor = df_proj[df_proj['Año'] == anchor_year]
+        num_cols = [c for c in df_proj.columns if c != 'Año']
+        tol = max(15.0, 0.02 * float(r_anchor[num_cols].max().max()))
+        rec_col = f"{recommended_model_name} (M)"
+        if rec_col in df_proj.columns and not r_anchor.empty:
+            v = float(r_anchor[rec_col].values[0])
+            if abs(val - v) < tol:
+                return f"{word} de **{v:.2f} {unit}**"
+        for c_name in num_cols:
+            if c_name == rec_col:
+                continue
+            v = float(r_anchor[c_name].values[0])
+            if abs(val - v) < tol:
+                return f"{word} de **{v:.2f} {unit}**"
+        if rec_col in df_proj.columns and not r_anchor.empty:
+            v = float(r_anchor[rec_col].values[0])
+            return f"{word} de **{v:.2f} {unit}**"
+        return m.group(0)
+
+    # TODO R2: re.sub(...repl_ceiling...) aquí
 
     # 6. RAG
     try:
