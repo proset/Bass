@@ -31,6 +31,9 @@ except Exception:
     conn_params = {}
     api_key = os.environ.get("GEMINI_API_KEY")
 
+if api_key:
+    genai.configure(api_key=api_key)
+
 model_name = GEMINI_PRIMARY
 
 def reconstruct_popt(m_key, p):
@@ -869,12 +872,12 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         last_blockers = [it for it in issues if it.severity == "BLOCKER"]
         print(f"[Red-Team] {len(last_blockers)} BLOCKERs pendientes:")
         for it in last_blockers:
-            print(f"  - [{it.code}] {it.message}")
+            print(f"  - [{it.category}] {it.message}")
 
         # [R2.3] Orden D2 (bytecode 4575-4820): LLM → fix_proj → fix_hist
         report_md = correct_report_narrative_with_llm(
             report_md=report_md,
-            blockers=[f"[{it.code}] {it.message}" for it in last_blockers],
+            blockers=[f"[{it.category}] {it.message}" for it in last_blockers],
             real_series=real_series,
             model_fits_obj=model_fits_obj,
             canonical_block=canonical_block,
@@ -888,7 +891,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     if not gate_passed:
         print(f"CRITICAL: El informe para '{tech}' no pudo converger a GATE: True tras 5 "
               f"iteraciones de auto-corrección Red-Team. Blockers no resueltos: "
-              f"{[it.code for it in last_blockers]}")
+              f"{[it.category for it in last_blockers]}")
 
     # ==================================================================
     # [R2.4] Doble tap determinista final (fuera del loop, pre-guardado):
