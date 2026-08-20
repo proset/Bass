@@ -105,6 +105,103 @@ def df_to_markdown_manual(df):
         lines.append("| " + " | ".join(row_str) + " |")
     return "\n".join(lines)
 
+def fix_projection_increments(text, last_val, df_proj, rec_model_name,
+                              anios_reales=None, y_true=None):
+    """
+    [GLM-PATCH] Reemplaza totales citados como incrementos por la diferencia
+    real entre los años que el propio texto menciona. No asume 2026: detecta
+    el año objetivo (total ~= cifra citada) y el año base del contexto; si el
+    base es proyectado usa df_proj, si es histórico usa y_true; si no hay
+    base explícita, usa el último año REAL. Tolerancia relativa a la escala.
+    """
+    series_scale = float(last_val) if last_val else 1.0
+    val_tol = max(1.0, series_scale * 0.02)
+
+    hist_by_year = {}
+    if anios_reales is not None and y_true is not None:
+        hist_by_year = {int(a): float(v) for a, v in zip(anios_reales, y_true)}
+
+    models_vals = {}
+    for c_name in df_proj.columns:
+        if c_name == 'Año':
+            continue
+        per_year = {int(row['Año']): float(row[c_name])
+                    for _, row in df_proj.iterrows()}
+        models_vals[c_name.replace(" (M)", "").lower()] = per_year
+
+    def get_model_for_context(ctx_lower):
+        for m_name, per_year in models_vals.items():
+            if "roset" in m_name or "dual" in m_name:
+                words = ["dual market", "roset", "canals"]
+            elif "putsis" in m_name or "ladron" in m_name or "ladrón" in m_name:
+                words = ["ladrón", "ladron", "putsis", "guevara"]
+            elif "convergencia" in m_name:
+                words = ["logístico de convergencia", "logistico de convergencia", "convergencia"]
+            elif "clasico" in m_name or "clásico" in m_name:
+                words = ["bass clásico", "bass clasico"]
+            elif "generalized" in m_name or "generalizado" in m_name:
+                words = ["generalizado", "gbm", "generalized"]
+            else:
+                words = [m_name]
+            if any(w in ctx_lower for w in words):
+                return per_year
+        for m_name, per_year in models_vals.items():
+            if rec_model_name.lower() in m_name or m_name in rec_model_name.lower():
+                return per_year
+        return next(iter(models_vals.values()), None)
+
+    def repl(m):
+        word, inter, val_str, unit = m.group(1), m.group(2), m.group(3), m.group(4)
+        try:
+            val = float(val_str.replace(',', '.'))
+        except ValueError:
+            return m.group(0)
+
+        context = text[max(0, m.start() - 160):min(len(text), m.end() + 160)]
+        ctx_lower = context.lower()
+        per_year = get_model_for_context(ctx_lower)
+        if not per_year:
+            return m.group(0)
+
+        years_in_ctx = [int(y) for y in re.findall(r'\b(20\d{2})\b', context)]
+        if not any(y in per_year for y in years_in_ctx):
+            return m.group(0)
+
+        target_year = None
+        for yr in sorted(per_year):
+            if abs(val - per_year[yr]) < val_tol:
+                target_year = yr
+                break
+        if target_year is None:
+            return m.group(0)
+
+        base_year = None
+        for y in years_in_ctx:
+            if y != target_year and (y in per_year or y in hist_by_year):
+                base_year = y
+                break
+        if base_year is None:
+            base_year = max(hist_by_year) if hist_by_year else min(per_year)
+
+        base_val = hist_by_year.get(base_year, per_year.get(base_year))
+        if base_val is None or base_val >= val:
+            return m.group(0)
+        return f"{word}{inter}**{val - base_val:.2f} {unit}**"
+
+    text = re.sub(
+        r'\b(aumento|incremento|crecimiento|adici[oó]n|diferencia)\b'
+        r'([\s\S]{1,100}?)(?:\*\*)?\b(\d+(?:[\.,]\d+)?)\b(?:\*\*)?\s*'
+        r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)',
+        repl, text, flags=re.IGNORECASE)
+    return text
+
+def _score_val(r):
+    """[GLM-PATCH] Score compuesto de una fila de summary_rows (-1e9 si no aplica)."""
+    try:
+        return float(str(r.get('Score', '')).replace(',', '.').strip() or -1e9)
+    except Exception:
+        return -1e9
+
 def compilar_informe_global(tech):
     conn = get_conn()
     cursor = conn.cursor(cursor_factory=DictCursor)
@@ -232,6 +329,53 @@ def compilar_informe_global(tech):
 
     recommended_model_name = detect_recommended_model(consenso_forecast)
 
+    # [GLM-PATCH] Selección canónica: score compuesto persistido por el motor
+    # (R² 70% + MAPE ajuste 15% + MAPE backtest 15% - penalización DoF).
+    # GUARD: dormido hasta que la Fase R2 reconstruya summary_rows con columna
+    # 'Score' (andamiaje de agosto). Sin ese andamiaje, no-op: no rompe el
+    # flujo de julio. NOTA R2: cuando el bloque de selección completo se
+    # reconstruya (metadata + min-MAPE + fallbacks), este selector debe
+    # quedar como ÚLTIMA palabra del bloque, tras todos los demás caminos.
+    try:
+        _sr = summary_rows
+    except NameError:
+        _sr = None
+    if _sr and any(_score_val(r) > -1e8 for r in _sr):
+        consenso_forecast = re.sub(
+            r'^<!--\s*CONSENSUS_METADATA:\{[\s\S]*\}\s*-->\n?', '',
+            consenso_forecast, flags=re.DOTALL)
+        recommended_model_name = max(_sr, key=_score_val)['Modelo']
+
+    # [GLM-PATCH] Canonical block: cifras canónicas para TODOS los prompts LLM.
+    # GUARD: se construye cuando df_proj/anios_reales/y_true están en scope
+    # (Fase R2 los garantiza tras las proyecciones). Hasta entonces, cadena
+    # vacía: los prompts no cambian y el flujo de julio no se rompe.
+    try:
+        _anchor31 = df_proj[df_proj['Año'] == 2031]
+        _anchor36 = df_proj[df_proj['Año'] == 2036]
+        _rec_col = f"{recommended_model_name} (M)"
+        _v2031 = float(_anchor31[_rec_col].values[0]) if (not _anchor31.empty and _rec_col in df_proj.columns) else None
+        _v2036 = float(_anchor36[_rec_col].values[0]) if (not _anchor36.empty and _rec_col in df_proj.columns) else None
+        _last_yr, _last_val = int(anios_reales[-1]), float(y_true[-1])
+        canonical_block = (
+            "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
+            f"- Último dato REAL: {_last_val:.1f}M en {_last_yr}.\n"
+            f"- Proyección del modelo recomendado ({recommended_model_name}): "
+            f"2031 = {_v2031:.1f}M; 2036 = {_v2036:.1f}M.\n"
+            f"- Incremento {_last_yr}->2031: {_v2031 - _last_val:.1f}M.\n"
+            f"- Incremento 2031->2036: {_v2036 - _v2031:.1f}M.\n"
+            f"- Techo de mercado a 2036 ({recommended_model_name}): {_v2036:.1f}M.\n"
+            "- REGLA: nunca cites un total proyectado como si fuera un incremento; "
+            "nunca intercambies los valores de 2031 y 2036.\n"
+            "- JUSTIFICACIÓN DEL MODELO: fue seleccionado por score compuesto (R² 70% + "
+            "MAPE ajuste 15% + MAPE backtest 15%, con penalización por exceso de parámetros "
+            "sobre los grados de libertad). Si otros modelos muestran mejor MAPE o R² brutos, "
+            "RECONÓCELO explícitamente y explica que la penalización de parsimonia los "
+            "descalifica con tan pocas observaciones. La tabla incluye la columna Score."
+        )
+    except Exception:
+        canonical_block = ""
+
     # 6. RAG
     try:
         genai_client = genai.GenerativeModel(model_name)
@@ -282,6 +426,8 @@ def compilar_informe_global(tech):
         Redacta en formato Markdown profesional, limpio y formal en español. No añadas introducciones o explicaciones.
         CRITICAL INSTRUCTION: DO NOT use LaTeX syntax for mathematical formulas (do NOT use $$, \, \theta, \gamma, \frac, \exp, etc.). Write all mathematical variables and formulas in PLAIN TEXT format (e.g. use "gamma", "theta", "e^").
         """
+        
+        prompt = prompt + canonical_block
         
         response = genai_client.generate_content(prompt)
         informe_cientifico = response.text.strip()
