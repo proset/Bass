@@ -174,14 +174,18 @@ def fit_all_models(t_data, n_data):
     m_max = max(n_data)
     n_nonzero = np.sum(n_data > 0)
     if n_nonzero <= 2:
-        m_limit_mult = 5.0
+        m_limit_mult = 3.0
     elif m_max < 5.0:
-        m_limit_mult = 15.0
+        m_limit_mult = 10.0
     else:
-        m_limit_mult = 50.0
+        m_limit_mult = 15.0
+
+    # Límite absoluto: mercado potencial nunca puede superar el TAM global de usuarios de internet (~5,000M)
+    _M_WORLD_POP = 5000.0
+    _m_upper = max(m_max * 1.05, min(m_limit_mult * m_max, _M_WORLD_POP))
     
     # 1. Bass Clásico
-    bounds_bass = ([0, 1e-8, 1e-8], [m_limit_mult * m_max, 1.0, 1.0])
+    bounds_bass = ([0, 1e-8, 1e-8], [_m_upper, 1.0, 1.0])
     p0_bass = [m_guess, 0.01, 0.1]
     try:
         popt, pcov = curve_fit(bass_classic, t_data, n_data, p0=p0_bass, bounds=bounds_bass, maxfev=10000)
@@ -207,7 +211,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 2. Dual Market (Multi-Start NLLS)
-    bounds_dual = ([0, 1e-6, 0, 0, 1e-6, 0], [m_limit_mult * m_max, 1.0, 1.0, m_limit_mult * m_max, 1.0, 1.0])
+    bounds_dual = ([0, 1e-6, 0, 0, 1e-6, 0], [_m_upper, 1.0, 1.0, _m_upper, 1.0, 1.0])
     candidate_p0s = [
         [m_max * 0.1, 0.03, 0.38, m_max * 0.9, 0.01, 0.4],
         [m_max * 0.3, 0.02, 0.40, m_max * 0.7, 0.005, 0.3],
@@ -258,7 +262,7 @@ def fit_all_models(t_data, n_data):
         }
 
     # 3. Fourt & Woodlock (1960) - Innovación Pura
-    bounds_fw = ([0.0, 1e-8], [m_limit_mult * m_max, 1.0])
+    bounds_fw = ([0.0, 1e-8], [_m_upper, 1.0])
     p0_fw = [m_guess, 0.01]
     try:
         popt, pcov = curve_fit(fourt_woodlock_model, t_data, n_data, p0=p0_fw, bounds=bounds_fw, maxfev=10000)
@@ -283,7 +287,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 4. Gompertz - Sigmoide Asimétrica
-    bounds_gomp = ([0.0, 1e-8, -10.0], [m_limit_mult * m_max, 2.0, 50.0])
+    bounds_gomp = ([0.0, 1e-8, -10.0], [_m_upper, 2.0, 50.0])
     p0_gomp = [m_guess, 0.1, len(t_data) / 2]
     try:
         popt, pcov = curve_fit(gompertz_model, t_data, n_data, p0=p0_gomp, bounds=bounds_gomp, maxfev=10000)
@@ -309,7 +313,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 5. Generalized Bass Model (GBM) - Difusión con Shocks de Marketing/Precio
-    bounds_gbm = ([0.0, 1e-8, 1e-8, -10.0], [m_limit_mult * m_max, 1.0, 1.0, 10.0])
+    bounds_gbm = ([0.0, 1e-8, 1e-8, -10.0], [_m_upper, 1.0, 1.0, 10.0])
     p0_gbm = [m_guess, 0.01, 0.1, 0.0]
     try:
         popt, pcov = curve_fit(generalized_bass_model, t_data, n_data, p0=p0_gbm, bounds=bounds_gbm, maxfev=15000)
@@ -336,7 +340,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 6. Horsky & Simon - Difusión con Publicidad
-    bounds_hs = ([0.0, 1e-8, 1e-8, 0.0], [m_limit_mult * m_max, 1.0, 1.0, 1.0])
+    bounds_hs = ([0.0, 1e-8, 1e-8, 0.0], [_m_upper, 1.0, 1.0, 1.0])
     p0_hs = [m_guess, 0.01, 0.1, 0.01]
     try:
         popt, pcov = curve_fit(horsky_simon_model, t_data, n_data, p0=p0_hs, bounds=bounds_hs, maxfev=15000)
@@ -363,7 +367,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 5. Muller & Yogev
-    bounds_muller = ([0, 1e-5, 0, 0, 1e-5, 0, 0], [m_limit_mult * m_max, 1.0, 1.0, m_limit_mult * m_max, 1.0, 1.0, 1.0])
+    bounds_muller = ([0, 1e-5, 0, 0, 1e-5, 0, 0], [_m_upper, 1.0, 1.0, _m_upper, 1.0, 1.0, 1.0])
     p0_muller = [m_max * 0.2, 0.01, 0.1, m_max * 0.8, 0.005, 0.05, 0.05]
     try:
         popt, pcov = curve_fit(muller_yogev_model, t_data, n_data, p0=p0_muller, bounds=bounds_muller, maxfev=15000)
@@ -393,7 +397,7 @@ def fit_all_models(t_data, n_data):
         pass
 
     # 6. Van den Bulte & Joshi
-    bounds_vdb = ([0, 1e-5, 0, 0, 0, 0.0], [m_limit_mult * m_max, 1.0, 1.0, m_limit_mult * m_max, 1.0, 1.0])
+    bounds_vdb = ([0, 1e-5, 0, 0, 0, 0.0], [_m_upper, 1.0, 1.0, _m_upper, 1.0, 1.0])
     p0_vdb = [m_max * 0.2, 0.01, 0.1, m_max * 0.8, 0.05, 0.5]
     try:
         popt, pcov = curve_fit(vdb_joshi_model, t_data, n_data, p0=p0_vdb, bounds=bounds_vdb, maxfev=15000)
@@ -421,11 +425,11 @@ def fit_all_models(t_data, n_data):
     except Exception:
         pass
 
-    # 7. Logistic Diffusion-Convergence (Ryu & Kim, 2025)
+    # 7. Logistic Diffusion-Convergence 
     try:
         y_max = max(max(n_data), 1e-5)
         y_min = n_data[0] if n_data[0] > 0 else 1.0
-        bounds_log = ([y_max, 1e-8, 1e-8, -100.0], [m_limit_mult * y_max, max(y_max, 2e-8), 5.0, len(t_data) * 3])
+        bounds_log = ([y_max, 1e-8, 1e-8, -100.0], [_m_upper, max(y_max, 2e-8), 5.0, len(t_data) * 3])
         p0_log = [y_max * 1.5, np.clip(y_min, 2e-8, y_max * 0.99), 0.1, len(t_data) / 2]
         
         popt, pcov = curve_fit(logistic_diffusion_convergence, t_data, n_data, p0=p0_log, bounds=bounds_log, maxfev=15000)
@@ -453,7 +457,7 @@ def fit_all_models(t_data, n_data):
 
     # 8. Ladrón-de-Guevara & Putsis (2011) - Mercado Potencial Dinámico
     try:
-        bounds_lgp = ([0, 1e-8, 0.0, 0.0, 0.0], [m_limit_mult * m_max, 1.0, 1.0, 1.0, 10.0])
+        bounds_lgp = ([0, 1e-8, 0.0, 0.0, 0.0], [_m_upper, 1.0, 1.0, 1.0, 10.0])
         p0_lgp = [m_max * 1.5, 0.01, 0.1, 0.5, 1.0]
         
         popt, pcov = curve_fit(ladron_puts_model, t_data, n_data, p0=p0_lgp, bounds=bounds_lgp, maxfev=15000)
@@ -519,8 +523,8 @@ def rank_and_select_best_model(results):
         if "bounds" in metrics and metrics["bounds"] is not None:
             b_upper = metrics["bounds"][1]
             if len(b_upper) >= 1:
-                # Si el bound superior es m_limit_mult * m_max, podemos inferir m_max.
-                # Como los bounds se guardaron con m_limit_mult * m_max, y m_limit_mult es 15 o 50,
+                # Si el bound superior es _m_upper, podemos inferir m_max.
+                # Como los bounds se guardaron con _m_upper, y m_limit_mult es 15 o 50,
                 # podemos estimar m_max de forma aproximada o exacta.
                 # Aquí, b_upper[0] es la cota superior del primer parámetro (m1).
                 # Si la cota superior es muy grande, estimamos m_max_inf.

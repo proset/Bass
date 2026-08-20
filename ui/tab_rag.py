@@ -102,7 +102,7 @@ ESTRUCTURA OBLIGATORIA DEL INFORME:
      F1(t) = (1 - exp(-(p1 + q1) * t)) / (1 + (q1 / p1) * exp(-(p1 + q1) * t))
      dF2/dt = q2 * (w * F1(t) + (1 - w) * F2(t)) * (1 - F2(t))
      N(t) = M1 * F1(t) + M2 * F2(t)
-   - **Modelo Logístico de Difusión-Convergencia (Ryu & Kim, 2025)**:
+   - **Modelo Logístico de Convergencia**:
      L(t) = b1 / (1 + ((b1 - b0) / b0) * exp(-k2 * (t - t0)))
    - **Modelo de Mercado Potencial Dinámico y Endógeno de Ladrón-de-Guevara & Putsis (2011)**:
      C(t) = 1.0 - theta * exp(-gamma * N(t) / S), donde M(t) = C(t) * S y la difusión es:

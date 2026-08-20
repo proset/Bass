@@ -135,7 +135,7 @@ def generate_report(
         if isinstance(context, str):
             if os.path.exists(context):
                 with open(context, "r", encoding="utf-8") as f:
-                    analisis_cualitativo = f.read()
+                    analisis_cualitativo = f.read
             else:
                 analisis_cualitativo = context
         else:
@@ -168,7 +168,7 @@ def generate_report(
         "Steffens_Murthy": "Steffens & Murthy",
         "Muller_Yogev": "Muller & Yogev",
         "VdB_Joshi": "Van den Bulte & Joshi",
-        "Logistic_Diffusion_Convergence": "Difusión Logística R&K",
+        "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
         "Ladron_Putsis": "Ladrón-de-Guevara & Putsis"
     }
     
@@ -230,7 +230,7 @@ def generate_report(
             ("Tanny & Derzko", ["tanny & derzko", "tanny derzko"]),
             ("Steffens & Murthy", ["steffens & murthy", "steffens murthy"]),
             ("Ladrón-de-Guevara & Putsis", ["ladrón-de-guevara", "ladrón de guevara", "ladron putsis", "ladron"]),
-            ("Difusión Logística R&K", ["logístico", "logistic", "ryu & kim", "difusión logística", "logística", "logistica"]),
+            ("Modelo Logístico de Convergencia", ["logístico", "logistic", "ryu & kim", "difusión logística", "logística", "logistica"]),
             ("Bass Clásico", ["bass clásico", "bass clasico", "bass estándar"]),
         ]
         sentences = re.split(r'[.\n]', text)
@@ -299,7 +299,7 @@ def generate_report(
         IMPORTANTE: La Sección 6 es el marco académico teórico que fundamenta la recomendación operativa de la Sección 5. El informe de la Sección 6 debe ser 100% conceptualmente coherente con la elección de **{recommended_model_name}** como el modelo operativo ideal. 
         - Si el modelo recomendado es **Dual Market (Roset & Canals)** o **Roset & Canals**, explica cómo la adopción secuencial en dos segmentos modela fielmente la evolución de {tech}, enfatizando que las dos curvas son matemáticamente independientes (sin parámetros de acoplamiento directo ni parametrización mutua en las ecuaciones del modelo operativo). Evita afirmar que el primer segmento parametriza matemáticamente al coeficiente de adopción externa del segundo; la relación es secuencial a nivel temporal y conceptual.
         - Si el modelo recomendado es **Ladrón-de-Guevara & Putsis (Market Dinámico)** o **Ladrón-de-Guevara & Putsis**, enfócate en el concept de expansión del techo del mercado potencial en el tiempo.
-        - Si el modelo recomendado es cualquier otro modelo (como **Difusión Logística R&K**, **Bass Clásico** o cualquier otro), fundamenta la explicación científica en ese modelo específico. En este caso, si la literatura menciona el modelo de Ladrón-de-Guevara & Putsis, preséntalo como un marco teórico descartado para esta tecnología debido a su menor ajuste empírico o falta de coherencia física en el ciclo de madurez de {tech}.
+        - Si el modelo recomendado es cualquier otro modelo (como **Modelo Logístico de Convergencia**, **Bass Clásico** o cualquier otro), fundamenta la explicación científica en ese modelo específico. En este caso, si la literatura menciona el modelo de Ladrón-de-Guevara & Putsis, preséntalo como un marco teórico descartado para esta tecnología debido a su menor ajuste empírico o falta de coherencia física en el ciclo de madurez de {tech}.
         - Evita inventar variables matemáticas ficticias o no modeladas en el reporte (como variables de red cruzadas inventadas 'gamma_hat_xy'). Limítate a las formulaciones reales del modelo operativo recomendado y los modelos de la literatura.
         
         Redacta en formato Markdown profesional, limpio y formal en español. No añadas introducciones o explicaciones.
@@ -312,9 +312,9 @@ def generate_report(
         print(f"Nota: Usando reporte analitico estructurado de respaldo por cuota API / 429 ({ex_api})")
         informe_cientifico = f"""### 1. Diagnóstico del Estado del Arte y Literatura Científica Relacionada
 
-El estudio de la adopción acumulada para **{tech.title()}** se enmarca en la teoría general de difusión de innovaciones (Bass, 1969; Rogers, 1995; Mahajan et al., 1990). La literatura académica establece que la adopción de tecnologías de alta diferenciación evoluciona a través de dos mecanismos impulsores fundamentales: la influencia externa (coeficiente de innovación p, guiado por marketing y prescripción profesional) y la influencia interna (coeficiente de imitación q, guiado por interacción social y efectos de red).
+El estudio de la adopción acumulada para **{tech.title}** se enmarca en la teoría general de difusión de innovaciones (Bass, 1969; Rogers, 1995; Mahajan et al., 1990). La literatura académica establece que la adopción de tecnologías de alta diferenciación evoluciona a través de dos mecanismos impulsores fundamentales: la influencia externa (coeficiente de innovación p, guiado por marketing y prescripción profesional) y la influencia interna (coeficiente de imitación q, guiado por interacción social y efectos de red).
 
-En el contexto específico de **{tech.title()}**, los modelos de difusión de **{recommended_model_name}** aportan el marco analítico correspondiente. Estos modelos dividen la población de adoptantes en dos segmentos o fases diferenciadas:
+En el contexto específico de **{tech.title}**, los modelos de difusión de **{recommended_model_name}** aportan el marco analítico correspondiente. Estos modelos dividen la población de adoptantes en dos segmentos o fases diferenciadas:
 1. **Segmento Prescriptor / Innovador (B2B o profesional)**: Caracterizado por alta sensibilidad al rigor técnico y validación clínica o científica.
 2. **Segmento Consumidor Masivo (B2C)**: Caracterizado por la adopción por contagio social, reconocimiento de marca y accesibilidad en distribución omnicanal.
 
@@ -331,17 +331,17 @@ La trayectoria de adopción cuantitativa ajustada en la serie histórica demuest
 
 ### 3. Contraste de Hipótesis Académicas sobre el Abismo de Moore
 
-Para la trayectoria de **{tech.title()}**, el análisis contrasta dos hipótesis estructurales sobre el cruce del "Abismo de Moore" (*Crossing the Chasm*):
+Para la trayectoria de **{tech.title}**, el análisis contrasta dos hipótesis estructurales sobre el cruce del "Abismo de Moore" (*Crossing the Chasm*):
 
 * **Hipótesis H1 — Efecto Cascada de Prescripción a Consumo (Aceptada)**:
   La superación del abismo entre los adoptantes tempranos (*Early Adopters*) y la mayoría temprana (*Early Majority*) no requiere reducir el posicionamiento premium, sino consolidar el liderazgo en el segmento profesional. La evidencia cuantitativa demuestra que la tasa de imitación masiva q2 está directamente correlacionada con la densidad de prescripción.
 
 * **Hipótesis H2 — Estabilización del Techo de Mercado (Aceptada)**:
-  Los modelos sin restricciones dinámicas de capacidad podrían sobreestimar la adopción a largo plazo. El techo de mercado M de **{tech.title()}** evolucionará respondiendo a la capacidad de absorción del segmento objetivo y a la elasticidad de precio del mercado masivo, en concordancia con el escenario base de consenso estratégico proyectado.
+  Los modelos sin restricciones dinámicas de capacidad podrían sobreestimar la adopción a largo plazo. El techo de mercado M de **{tech.title}** evolucionará respondiendo a la capacidad de absorción del segmento objetivo y a la elasticidad de precio del mercado masivo, en concordancia con el escenario base de consenso estratégico proyectado.
 """
 
     # Assemble report
-    report_md = f"""# Informe Global de Adopción Tecnológica y Benchmarking Científico: {tech.title()}
+    report_md = f"""# Informe Global de Adopción Tecnológica y Benchmarking Científico: {tech.title}
 
 ---
 
@@ -400,7 +400,7 @@ Métricas consolidadas de ajuste en la serie histórica (R² y MAPE):
   dF2/dt = q2 * (w * F1(t) + (1 - w) * F2(t)) * (1 - F2(t))
   N(t) = M1 * F1(t) + M2 * F2(t)
   
-* **Modelo Logístico de Difusión-Convergencia (Ryu & Kim, 2025)**:
+* **Modelo Logístico de Convergencia**:
   L(t) = b1 / (1 + ((b1 - b0) / b0) * exp(-k2 * (t - t0)))
   
 * **Modelo de Mercado Potencial Dinámico y Endógeno de Ladrón-de-Guevara & Putsis (2011)**:
@@ -438,10 +438,10 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 ---
 
 ## 🤖 6. Informe Analítico Científico RAG
-### Contraste Académico con Literatura Científica para {tech.title()}
+### Contraste Académico con Literatura Científica para {tech.title}
 {informe_cientifico}
 """
 
-    cursor.close()
-    conn.close()
+    cursor.close
+    conn.close
     return report_md

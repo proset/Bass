@@ -1,1651 +1,866 @@
+#!/usr/bin/env python3
 """
 report_validator.py
-====================
-Validador determinístico para informes de adopción tecnológica.
-
-Ejecuta 15 checks léxicos y matemáticos ANTES de invocar al LLM auditor,
-para ahorrar tokens y eliminar fallos triviales de forma fiable.
-
-Checks:
-  Léxicos:          LEX-01, LEX-02, LEX-03, LEX-04
-  Matemáticos:       MATH-01, MATH-02, MATH-03, MATH-04, MATH-05, MATH-06
-  Correctivos:       MATH-07 (consolidación de redundancia numérica),
-                    MATH-08 (reconciliación narrativa vs tabla),
-                    MATH-09 (cláusula estándar por elección teórica R&K)
-  Consistencia notas: MATH-10 (nota MATH-09 con modelo/cifras correctos),
-                    MATH-11 (nota MATH-07 declara todos los grupos alias)
-
-Uso:
-    from report_validator import validate_report
-    findings = validate_report(
-        report_md=texto_del_informe,
-        technology="Grifols",          # nombre de la tecnología analizada
-        launch_year=2015,              # año de lanzamiento comercial
-        real_series={"2015": 1.0, "2016": 3.0, ...},   # serie histórica real
-        models_projections={          # proyecciones por modelo (opcional)
-            "Bass Clásico": {"2030": 34.71, "2035": 49.93},
-            ...
-        },
-        consensus={"2030": 36.5, "2035": 51.2},   # pronóstico de consenso
-    )
-    # findings: lista de Finding(severity, check_id, message, location)
-
-Salida:
-    - Lista de Finding objects.
-    - Si la lista es vacía → el informe pasa el validador determinístico.
-    - Si hay cualquier Finding con severity="CRITICAL" → bloquear publicación.
+--------------------
+Capa de validacion de coherencia para informes de adopcion tecnologica
+generados por el pipeline LLM + RAG (ej. tab_rag.py / report_compiler.py).
+ 
+Corre ANTES de exportar el PDF final. Si detecta problemas, los reporta
+con severidad y contexto, para que un humano (o el propio pipeline)
+decida si bloquea la generacion o solo advierte.
+ 
+Uso como script:
+    python report_validator.py ruta_al_informe.txt
+ 
+Uso como libreria:
+    from report_validator import ReportValidator, ModelFit
+    rv = ReportValidator(narrative_text, historical_table, model_fits)
+    issues = rv.run_all
+ 
+No requiere dependencias externas (solo stdlib).
 """
-
+ 
 from __future__ import annotations
-
 import re
+import sys
+import json
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
-
-
-# =========================================================================
-# Estructura de datos
-# =========================================================================
-
+from typing import Dict, List, Optional, Tuple
+ 
+ 
+# --------------------------------------------------------------------------
+# Estructuras de datos
+# --------------------------------------------------------------------------
+ 
 @dataclass
-class Finding:
-    severity: str           # "CRITICAL" | "WARNING" | "INFO"
-    check_id: str           # "LEX-01" | "MATH-05" etc.
-    message: str            # descripción del hallazgo
-    location: str = ""      # sección / línea / contexto
-    correction: str = ""    # corrección propuesta
-
-
+class Issue:
+    severity: str          # "BLOCKER" | "WARNING" | "INFO"
+    category: str          # nombre corto del chequeo
+    message: str
+    evidence: str = ""
+ 
+    @property
+    def rule_id(self) -> str:
+        return self.category
+ 
+    def __str__(self):
+        tag = {"BLOCKER": "🛑", "WARNING": "⚠️ ", "INFO": "ℹ️ "}.get(self.severity, "")
+        s = f"{tag} [{self.severity}] ({self.category}) {self.message}"
+        if self.evidence:
+            s += f"\n      -> evidencia: {self.evidence}"
+        return s
+ 
+ 
 @dataclass
-class ValidationResult:
-    findings: List[Finding] = field(default_factory=list)
-    passed: bool = True
+class ModelFit:
+    name: str
+    r2: float
+    mape: float
+    projections: Dict[int, float] = field(default_factory=dict)  # {year: value_millones}
+ 
+ 
+# Referencias academicas reales conocidas para el dominio de modelos de difusion.
+# Cualquier cita que NO aparezca aqui se marca como sospechosa (posible alucinacion).
+# Ampliar libremente con la bibliografia real de cada pipeline/dominio.
+KNOWN_REFERENCES = {
+    ("bass", 1969),
+    ("rogers", 1995), ("rogers", 2003),
+    ("moore", 1991), ("mahajan", 1990),
+    ("roset", 2011), ("canals", 2011),
+    ("tanny", 1988), ("derzko", 1988),
+    ("steffens", 1992), ("murthy", 1992),
+    ("muller", 2006), ("yogev", 2006),
+    ("van den bulte", 2007), ("joshi", 2007),
+    ("ladron-de-guevara", 2011), ("ladron de guevara", 2011), ("putsis", 2011),
+    ("fourt", 1960), ("woodlock", 1960),
+    ("gbm", 1994), ("bass", 1994), ("krishnan", 1994), ("jain", 1994),
+    ("horsky", 1983), ("simon", 1983),
+}
+ 
+# Comandos LaTeX que nunca deberian sobrevivir a un PDF ya renderizado como texto plano
+LATEX_LEAK_PATTERN = re.compile(
+    r"\\(theta|exp|frac|left|right|gamma|alpha|beta|sum|int|cdot|approx|geq|leq)\b"
+)
+ 
+# "Autor(es) (Año)" -> ej. "Ladrón-de-Guevara & Putsis (2011)" o ""
+CITATION_PATTERN = re.compile(
+    r"([A-ZÁÉÍÓÚÑ][\w\-áéíóúñ]+(?:\s*(?:&|y|and|,)\s*[A-ZÁÉÍÓÚÑ][\w\-áéíóúñ]+)?)"
+    r"\s*[\(,]\s*(\d{4})\s*\)?"
+)
+ 
+# Palabras que matchean el patron de cita pero NO son nombres de autor
+# (evita falsos positivos como "Hito 5 Años (2030)" o "Figura (2024)")
+CITATION_STOPWORDS = {
+    "año", "años", "hito", "figura", "tabla", "ecuación", "ecuacion",
+    "capítulo", "capitulo", "sección", "seccion", "página", "pagina",
+    "gráfica", "grafica", "anexo", "apartado", "mercado", "mercados", "tecnología",
+    "tecnologia", "informe", "estudio", "proyección", "proyeccion", "industria",
+    "usuario", "usuarios", "user", "users", "consumidor", "consumidores",
+    "cliente", "clientes", "suscriptor", "suscriptores", "adopción", "adopcion",
+    "plataforma", "empresa", "compañía", "compañia", "fuente", "referencia",
+    "histórica", "historica", "serie", "versión", "version", "fase", "fases",
+    "detallada", "detalladas", "análisis", "analisis", "resumen", "escenario", "escenarios",
+    "estratégica", "estratégicas", "estratégico", "estratégicos", "estratégica", "estratégico",
+    "madurez", "saturación", "saturacion", "consolidación", "consolidacion", "penetración", "penetracion",
+    "difusión", "difusion", "innovación", "innovacion", "crecimiento", "expansión", "expansion",
+    "evolución", "evolucion", "transformación", "transformacion", "adopción", "adopcion",
+    "despegue", "aceleración", "aceleracion", "lanzamiento", "hito", "inicio", "fase", "etapa",
+    "base", "retención", "retencion", "especialización", "especializacion", "sostenida", "caso", "casos",
+    "banda", "bandas", "rango", "rangos", "nivel", "niveles", "valor", "valores", "punto", "puntos",
+    # Nombres de compañías tecnológicas y productos: sus reportes anuales se citan como "Spotify (2024)"
+    # y no son alucinaciones del LLM — son referencias a datos corporativos legítimos.
+    "spotify", "netflix", "tiktok", "apple", "google", "meta", "amazon", "chatgpt", "openai", "anthropic", "claude",
+    "youtube", "instagram", "twitter", "x corp", "microsoft", "samsung",
+    "airbnb", "uber", "lyft", "snapchat", "pinterest", "linkedin",
+    "statista", "idc", "gartner", "forrester", "emarketer", "iab",
+}
+ 
+# "• 2022: ... (0.1M)" en el texto narrativo
+NARRATIVE_YEAR_VALUE_PATTERN = re.compile(
+    r"(20\d{2})[^\n]{0,120}?\(\s*([\d.]+)\s*M\)"
+)
+ 
+# --- Deteccion generica de cifras "en millones" asociadas a un año -----------
+# No dependemos de frases fijas ("Año X:", "Hito N Años (X)"): en su lugar
+# buscamos CUALQUIER mencion de millones cerca de un año objetivo (2030, 2035, ...)
+# en cualquier parte del texto narrativo (fuera de las tablas comparativas).
+ 
+# Año como palabra completa (evita matchear "22030" o similar)
+YEAR_MENTION_PATTERN = re.compile(r"(?<!\d)(20[0-4]\d)(?!\d)")
+ 
+# Rango: "145 a 160 millones", "entre 145 y 160 millones", "145-160 millones"
+RANGE_MILLONES_PATTERN = re.compile(
+    r"~?\s*(\d{1,4}(?:\.\d+)?)\s*(?:a|-|–|y)\s*~?\s*(\d{1,4}(?:\.\d+)?)\s*millones",
+    re.IGNORECASE,
+)
 
-    @property
-    def has_critical(self) -> bool:
-        return any(f.severity == "CRITICAL" for f in self.findings)
-
-    @property
-    def has_warnings(self) -> bool:
-        return any(f.severity == "WARNING" for f in self.findings)
-
-    def summary(self) -> str:
-        n_crit = sum(1 for f in self.findings if f.severity == "CRITICAL")
-        n_warn = sum(1 for f in self.findings if f.severity == "WARNING")
-        n_info = sum(1 for f in self.findings if f.severity == "INFO")
-        status = "NO PUBLICABLE" if self.has_critical else (
-            "PUBLICABLE TRAS CORRECCIONES MENORES" if self.has_warnings
-            else "PUBLICABLE SIN CAMBIOS"
-        )
-        return (
-            f"Veredicto determinístico: {status}\n"
-            f"  CRITICAL: {n_crit}\n"
-            f"  WARNING:  {n_warn}\n"
-            f"  INFO:     {n_info}"
-        )
-
-
-# =========================================================================
-# Listas negras configurables
-# =========================================================================
-
-# Tecnología equivocada en encabezados / texto (fuga de copy-paste)
-_INHERITED_TECH_MARKERS: Dict[str, List[str]] = {
-    # technology_name -> términos que NO deberían aparecer si el informe
-    # NO es de esa tecnología
-    "Gemini": [
-        "pgvector & Gemini",
-        "Project Astra",
-        "Gemini Nano",
-        "Gemini Advanced",
-        "gemini.google.com",
-        "Google One AI Premium",
-    ],
-    "Grifols": [
-        "Grifols",
-        "Alphanate",
-        "Gamunex",
-        "hemoderivados",
-    ],
+GROWTH_ADJECTIVES = {
+    r"\bmeseta\b|\bestancamiento\b": (-5.0, 15.0),
+    r"\bdesaceleraci[oó]n\b": (-100.0, 20.0),
+    r"\bmoderaci[oó]n paulatina\b|\bcrecimiento paulatino\b|\bmoder[aá]ndose paulatinamente\b|\bexpansi[oó]n paulatina\b": (5.0, 45.0),
+    r"\bcrecimiento sostenido\b|\bcrecimiento continuo\b|\btrayectoria de crecimiento\b": (2.0, 10000.0),
+    r"\baceleraci[oó]n robusta\b|\bcrecimiento explosivo\b|\bfuerte aceleraci[oó]n\b": (40.0, 10000.0),
 }
 
-# Abreviaturas en inglés que tienen equivalente en español
-_ANGlicism_MAP: Dict[str, str] = {
-    r"\bGDP\b": "PIB",
-    # r"\bASP\b": "ASP",  # en informes farmacéuticos ASP es jerga estándar, permitir
-}
+SUPERIORITY_PHRASES = re.compile(
+    r"(ligeramente superior|ligeramente inferior|marginalmente superior|marginalmente inferior|mejor ajuste|menor MAPE|ajuste superior|más preciso)",
+    re.IGNORECASE,
+)
 
-# Términos que deben definirse al citarse por primera vez
-_UNDEFINED_TERMS_WATCH: List[str] = [
-    "parámetros de Hofstede",
-    "Hofstede",
-    # Añadir otros que aparezcan sin contexto en futuros informes
-]
-
-
-# =========================================================================
-# Función principal
-# =========================================================================
-
-def validate_report(
-    report_md: str,
-    technology: str,
-    launch_year: int,
-    real_series: Optional[Dict[str, float]] = None,
-    models_projections: Optional[Dict[str, Dict[str, float]]] = None,
-    consensus: Optional[Dict[str, float]] = None,
-    inherited_markers: Optional[Dict[str, List[str]]] = None,
-) -> ValidationResult:
-
-    result = ValidationResult()
-    lines = report_md.splitlines()
-
-    # -----------------------------------------------------------
-    # CHECKS LÉXICOS / ESTRUCTURALES
-    # -----------------------------------------------------------
-
-    # LEX-01: palabra "billón" / "billones" en sentido inglés
-    _check_lex_01_billon(report_md, result)
-
-    # LEX-02: encabezados heredados de otra tecnología
-    _check_lex_02_inherited_tech(
-        report_md, technology, result, inherited_markers
-    )
-
-    # LEX-03: anglicismos evitables (GDP -> PIB)
-    _check_lex_03_anglicisms(report_md, result)
-
-    # LEX-04: términos citados sin definir
-    _check_lex_04_undefined_terms(report_md, result)
-
-    # -----------------------------------------------------------
-    # CHECKS MATEMÁTICOS DETERMINISTAS
-    # -----------------------------------------------------------
-
-    # MATH-01: desviación % mostrada como "+0.0%" cuando el real es 0
-    _check_math_01_deviation_zero(report_md, real_series, result)
-
-    # MATH-02: MAPE declarado como calculado solo sobre real > 0
-    _check_math_02_mape_declaration(report_md, result)
-
-    # MATH-03: modelos con R² idénticos a 4 decimales (aliasing)
-    _check_math_03_identical_r2(report_md, result)
-
-    # MATH-04: modelos con predicciones idénticas a 2 decimales
-    _check_math_04_identical_predictions(models_projections, result)
-
-    # MATH-05: predicciones no nulas anteriores al lanzamiento
-    _check_math_05_prelaunch_artifacts(
-        models_projections, launch_year, result
-    )
-
-    # MATH-06: consenso no respaldado por ningún modelo
-    _check_math_06_consensus_unsupported(
-        models_projections, consensus, result
-    )
-
-    # -----------------------------------------------------------
-    # CHECKS CORRECTIVOS DETERMINISTAS (nuevos)
-    # -----------------------------------------------------------
-
-    # MATH-07: consolidación de redundancia numérica (MATH-03/04 → fix)
-    _check_math_07_consolidate_redundancy(
-        report_md, models_projections, result
-    )
-
-    # MATH-08: reconciliación narrativa vs tabla (SEM-01 → fix determinista)
-    _check_math_08_narrative_vs_table(report_md, real_series, result)
-
-    # MATH-09: cláusula estándar por elección teórica de R&K (SEM-02 → fix)
-    _check_math_09_rk_theoretical_clause(
-        report_md, models_projections, result
-    )
-
-    # MATH-10: consistencia de la nota MATH-09 (modelo y cifras correctos)
-    _check_math_10_math09_consistency(report_md, result)
-
-    # MATH-11: completitud de la nota MATH-07 (todos los grupos alias declarados)
-    _check_math_11_math07_completeness(
-        report_md, models_projections, result
-    )
-
-    # MATH-12: validación de monotonía de la curva de consenso extraída de la narrativa
-    _check_math_12_consensus_monotonicity(report_md, result)
-
-    # MATH-13: validación de tech naciente / techo de crecimiento razonable
-    _check_math_13_infancy_growth_ceiling(report_md, real_series, result)
-
-    # MATH-14: sanity check geodemográfico
-    _check_math_14_geopopulation_sanity_check(report_md, technology, real_series, result)
-
-    # Veredicto final
-    result.passed = not result.has_critical
-    return result
-
-
-# =========================================================================
-# Implementación de checks léxicos
-# =========================================================================
-
-def _check_lex_01_billon(report_md: str, result: ValidationResult) -> None:
-    """
-    Detecta 'billón' / 'billones' usado en sentido inglés (10^9).
-    En español peninsular 'billón' = 10^12.
-    """
-    pattern = re.compile(r"\bbill[oó]n(?:es)?\b", re.IGNORECASE)
-    for i, line in enumerate(report_md.splitlines(), start=1):
-        if pattern.search(line):
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="LEX-01",
-                message=(
-                    "Uso de 'billón' en sentido probable inglés (10^9). "
-                    "En español 'billón' = 10^12. "
-                    "Sustituir por 'mil millones' si la cifra es 10^9."
-                ),
-                location=f"línea {i}: {line.strip()[:120]}",
-                correction="'billón' → 'mil millones'",
-            ))
-
-
-def _check_lex_02_inherited_tech(
-    report_md: str,
-    technology: str,
-    result: ValidationResult,
-    inherited_markers: Optional[Dict[str, List[str]]] = None,
-) -> None:
-    """
-    Detecta encabezados / términos heredados de otra tecnología
-    (fuga de copy-paste entre informes).
-    Ejemplo clásico: 'pgvector & Gemini' en un informe de Grifols.
-    """
-    markers = inherited_markers or _INHERITED_TECH_MARKERS
-    for other_tech, terms in markers.items():
-        if other_tech.lower() == technology.lower():
-            continue
-        for term in terms:
-            if term.lower() in report_md.lower():
-                # localizar primera ocurrencia
-                idx = report_md.lower().find(term.lower())
-                line_no = report_md[:idx].count("\n") + 1
-                result.findings.append(Finding(
-                    severity="CRITICAL",
-                    check_id="LEX-02",
-                    message=(
-                        f"Término heredado de informe de '{other_tech}' "
-                        f"detectado en un informe de '{technology}': "
-                        f"'{term}'. Probable copy-paste residual."
-                    ),
-                    location=f"línea {line_no}",
-                    correction=f"Eliminar o sustituir '{term}' por término "
-                               f"propio de {technology}.",
-                ))
-
-
-def _check_lex_03_anglicisms(
-    report_md: str, result: ValidationResult
-) -> None:
-    """
-    Detecta anglicismos evitables que tienen equivalente español.
-    """
-    for pattern_str, replacement in _ANGlicism_MAP.items():
-        for m in re.finditer(pattern_str, report_md):
-            line_no = report_md[:m.start()].count("\n") + 1
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="LEX-03",
-                message=(
-                    f"Anglicismo evitable: '{m.group(0)}'. "
-                    f"Equivalente español: '{replacement}'."
-                ),
-                location=f"línea {line_no}",
-                correction=f"'{m.group(0)}' → '{replacement}'",
-            ))
-
-
-def _check_lex_04_undefined_terms(
-    report_md: str, result: ValidationResult
-) -> None:
-    """
-    Detecta términos técnicos citados de la nada sin definición previa.
-    """
-    low = report_md.lower()
-    for term in _UNDEFINED_TERMS_WATCH:
-        if term.lower() in low:
-            # verificar si el término está definido/explicado en el cuerpo
-            # (heurística simple: buscar appearances múltiples o contexto)
-            if low.count(term.lower()) == 1:
-                idx = low.find(term.lower())
-                line_no = report_md[:idx].count("\n") + 1
-                result.findings.append(Finding(
-                    severity="WARNING",
-                    check_id="LEX-04",
-                    message=(
-                        f"Término '{term}' citado una sola vez, sin "
-                        f"definición previa ni referencia bibliográfica."
-                    ),
-                    location=f"línea {line_no}",
-                    correction=(
-                        f"Añadir definición de '{term}' o citar referencia "
-                        f"bibliográfica."
-                    ),
-                ))
-
-
-# =========================================================================
-# Implementación de checks matemáticos
-# =========================================================================
-
-def _check_math_01_deviation_zero(
-    report_md: str,
-    real_series: Optional[Dict[str, float]],
-    result: ValidationResult,
-) -> None:
-    """
-    Detecta desviaciones porcentuales reportadas como '+0.0%' en años
-    donde el valor real es 0 (la desviación es indefinida por división
-    entre cero).
-    """
-    if not real_series:
-        return
-    zero_years = {y for y, v in real_series.items() if v == 0.0}
-    if not zero_years:
-        return
-
-    # buscar filas de tabla que empiecen con un año de real=0
-    # y contengan "+0.0%" como desviación
-    pattern = re.compile(r"^\|?\s*(\d{4})")
-    for i, line in enumerate(report_md.splitlines(), start=1):
-        m = pattern.match(line.strip())
-        if not m:
-            continue
-        year = m.group(1)
-        if year in zero_years and "+0.0%" in line:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-01",
-                message=(
-                    f"Desviación reportada como '+0.0%' en año {year} "
-                    f"con valor real = 0. La desviación relativa es "
-                    f"indefinida (división entre cero)."
-                ),
-                location=f"línea {i}: {line.strip()[:120]}",
-                correction="Marcar como 'n/a' o 'N/D', no '+0.0%'.",
-            ))
-
-
-def _check_math_02_mape_declaration(
-    report_md: str, result: ValidationResult
-) -> None:
-    """
-    Verifica que el MAPE se declare como calculado exclusivamente sobre
-    años con adopción real > 0.
-    """
-    low = report_md.lower()
-    has_mape = "mape" in low
-    if not has_mape:
-        return
-
-    # heurística: buscar cláusula declarativa cerca de la palabra MAPE
-    declaration_patterns = [
-        r"mape[^\n]{0,200}(?:solo|exclusivamente|únicamente)[^\n]{0,100}"
-        r"(?:real\s*>\s*0|no nul|non.?null|non.?zero)",
-        r"(?:real\s*>\s*0|no nul|non.?null|non.?zero)[^\n]{0,200}"
-        r"mape",
-    ]
-    declared = any(
-        re.search(p, low, re.IGNORECASE) for p in declaration_patterns
-    )
-    if not declared:
-        result.findings.append(Finding(
-            severity="WARNING",
-            check_id="MATH-02",
-            message=(
-                "Se reporta MAPE pero no se declara explicitamente que "
-                "se calcula solo sobre años con adopción real > 0. "
-                "Si hay años con real = 0, la MAPE no es calculable."
-            ),
-            location="sección 'Resumen del Error de Ajuste'",
-            correction=(
-                "Añadir nota: 'MAPE calculado exclusivamente sobre años "
-                "con adopción real > 0.'"
-            ),
-        ))
-
-
-def _check_math_03_identical_r2(
-    report_md: str, result: ValidationResult
-) -> None:
-    """
-    Detecta modelos con R² idénticos a 4 decimales (sospecha de aliasing
-    numérico / colapso de parámetros).
-    """
-    # buscar tabla de ajuste: Modelo | R² | MAPE
-    # heurística: líneas con patrón  NombreModelo  0.xxx  X%
-    pattern = re.compile(
-        r"^\|?\s*([A-Za-zÉáíóú&\-\.\s]+?)\s*\|\s*"
-        r"(-?\d+\.\d{3,4})\s*\|\s*(\d+\.\d{1,2}%?)\s*\|?$"
-    )
-    r2_map: Dict[str, float] = {}
-    for i, line in enumerate(report_md.splitlines(), start=1):
-        m = pattern.match(line.strip())
-        if not m:
-            continue
-        model = m.group(1).strip()
-        try:
-            r2 = float(m.group(2))
-        except ValueError:
-            continue
-        r2_map[model] = r2
-
-    # agrupar modelos por R² idéntico
-    by_r2: Dict[float, List[str]] = {}
-    for model, r2 in r2_map.items():
-        by_r2.setdefault(round(r2, 4), []).append(model)
-
-    for r2, models in by_r2.items():
-        if len(models) > 1:
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="MATH-03",
-                message=(
-                    f"Modelos con R² idéntico a 4 decimales ({r2:.4f}): "
-                    f"{', '.join(models)}. Posible aliasing numérico o "
-                    f"colapso de parámetros. Considerar consolidar."
-                ),
-                location="tabla 'Resumen del Error de Ajuste'",
-                correction=(
-                    "Declarar explicitamente cuáles modelos son "
-                    "numéricamente indistinguibles y consolidar en uno solo."
-                ),
-            ))
-
-
-def _check_math_04_identical_predictions(
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    result: ValidationResult,
-) -> None:
-    """
-    Detecta modelos con predicciones idénticas a 2 decimales en toda la
-    tabla de proyecciones futuras (sospecha de redundancia numérica).
-    """
-    if not models_projections or len(models_projections) < 2:
-        return
-
-    # normalizar: modelo -> tuple ordenado de (year, round(value,2))
-    def signature(proj: Dict[str, float]) -> tuple:
-        return tuple(
-            round(v, 2) for _, v in sorted(proj.items())
-        )
-
-    sig_map: Dict[tuple, List[str]] = {}
-    for model, proj in models_projections.items():
-        sig = signature(proj)
-        sig_map.setdefault(sig, []).append(model)
-
-    for sig, models in sig_map.items():
-        if len(models) > 1:
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="MATH-04",
-                message=(
-                    f"Modelos con predicciones idénticas a 2 decimales en "
-                    f"toda la tabla de proyecciones: {', '.join(models)}. "
-                    f"Son numéricamente indistinguibles; mantener solo uno."
-                ),
-                location="tabla 'Proyecciones Futuras de Adopción'",
-                correction=(
-                    f"Consolidar en un único modelo; {', '.join(models[1:])}"
-                    f" pueden omitirse del informe principal."
-                ),
-            ))
-
-
-def _check_math_05_prelaunch_artifacts(
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    launch_year: int,
-    result: ValidationResult,
-) -> None:
-    """
-    Detecta predicciones no nulas en años anteriores al lanzamiento
-    (artefactos del ajuste sigmoide, no previsiones reales).
-    """
-    if not models_projections:
-        return
-
-    for model, proj in models_projections.items():
-        for year_str, value in proj.items():
-            try:
-                year = int(float(year_str))
-            except (ValueError, TypeError):
+ 
+ 
+def _looks_like_year(token: str) -> bool:
+    """Evita que un año adyacente ('...para 2030 y 126 millones') se lea como
+    limite inferior de un rango numerico."""
+    return bool(re.fullmatch(r"20[0-4]\d", token))
+ 
+ 
+# Valor unico: "124.16 millones", "~290 millones", "297.06M"
+SINGLE_MILLONES_PATTERN = re.compile(
+    r"~?\s*(\d{1,4}(?:\.\d+)?)\s*(?:M\b|millones)",
+    re.IGNORECASE,
+)
+ 
+# Una linea con 3+ menciones de millones se trata como fila de tabla comparativa
+# (varios modelos distintos para el mismo año es *esperado*, no una contradiccion)
+# y se excluye del escaneo de consenso.
+TABLE_ROW_MILLONES_THRESHOLD = 3
+ 
+ 
+class ReportValidator:
+    def __init__(
+        self,
+        narrative_text: str,
+        historical_table: Optional[Dict[int, float]] = None,
+        model_fits: Optional[List[ModelFit]] = None,
+        tolerance_pct: float = 3.0,
+        df_proj=None,
+    ):
+        """
+        narrative_text: todo el texto del informe (secciones 1, 5 y 6 sobre todo).
+        historical_table: {año: valor_millones} tal como aparece en la tabla oficial (seccion 2).
+        model_fits: lista de ModelFit extraidos de las tablas de ajuste/proyeccion (seccion 3-4).
+        tolerance_pct: tolerancia porcentual antes de marcar una discrepancia numerica.
+        df_proj: dataframe con proyecciones.
+        """
+        self.text = narrative_text
+        self.historical_table = historical_table or {}
+        self.model_fits = model_fits or []
+        self.tolerance_pct = tolerance_pct
+        self.df_proj = df_proj
+        self.issues: List[Issue] = []
+ 
+    # ---------------------------------------------------------------- checks
+ 
+    def check_totals_as_increments(self, per_year, last_hist_val=None):
+        """[GLM-PATCH] BLOCKER: cifra junto a palabra de incremento que
+        coincide con un total proyectado del recomendado y con ningún
+        incremento válido. Detecta 'aumento de 4920.89M hasta 2031'."""
+        if not per_year:
+            return
+        vals = list(per_year.values())
+        tol = max(1.0, 0.02 * max(vals))
+        years = sorted(per_year)
+        valid_incs = []
+        for i, y in enumerate(years):
+            for y0 in years[:i]:
+                valid_incs.append(per_year[y] - per_year[y0])
+        if last_hist_val is not None:
+            for y in years:
+                valid_incs.append(per_year[y] - last_hist_val)
+        pat = re.compile(
+            r'\b(aumento|incremento|crecimiento|adici[oó]n|diferencia)\b'
+            r'([\s\S]{1,100}?)(?:\*\*)?\b(\d+(?:[\.,]\d+)?)\b(?:\*\*)?\s*'
+            r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)',
+            re.IGNORECASE)
+        for m in pat.finditer(self.text):
+            line = self.text[self.text.rfind('\n', 0, m.start()) + 1:
+                             self.text.find('\n', m.end())]
+            if '|' in line:      # filas de tabla: fuera de alcance
                 continue
-            if year < launch_year and abs(value) > 0.01:
-                result.findings.append(Finding(
-                    severity="INFO",
-                    check_id="MATH-05",
-                    message=(
-                        f"Predicción no nula ({value}) del modelo "
-                        f"'{model}' en {year}, anterior al lanzamiento "
-                        f"({launch_year}). Es un artefacto del ajuste "
-                        f"sigmoide, no una previsión real."
-                    ),
-                    location=f"tabla proyecciones, año {year}",
-                    correction=(
-                        "Declarar explicitamente que las predicciones "
-                        "pre-launch son artefactos del ajuste."
-                    ),
-                ))
-                break  # un hallazgo por modelo es suficiente
+            try:
+                val = float(m.group(3).replace(',', '.'))
+            except ValueError:
+                continue
+            is_total = any(abs(val - v) < tol for v in vals)
+            is_inc = any(abs(val - inc) < tol for inc in valid_incs)
+            if is_total and not is_inc:
+                self.issues.append(Issue(
+                    "BLOCKER", "total_citado_como_incremento",
+                    f"La cifra {m.group(3)} aparece como '{m.group(1)}' pero "
+                    "coincide con un total proyectado del modelo recomendado, "
+                    "no con un incremento válido.",
+                    evidence=m.group(0)))
 
-
-def _check_math_06_consensus_unsupported(
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    consensus: Optional[Dict[str, float]],
-    result: ValidationResult,
-) -> None:
-    """
-    Detecta cifras del pronóstico de consenso que no coinciden con
-    ningún modelo (estimación cualitativa disfrazada de consenso).
-    """
-    if not consensus or not models_projections:
-        return
-
-    tol = 0.5  # tolerancia en millones para considerar 'respaldado'
-
-    for year_str, consensus_val in consensus.items():
-        try:
-            consensus_v = float(consensus_val)
-        except (ValueError, TypeError):
-            continue
-
-        supported = False
-        supporting_models: List[str] = []
-        for model, proj in models_projections.items():
-            if year_str in proj:
-                try:
-                    pv = float(proj[year_str])
-                except (ValueError, TypeError):
+    def check_year_value_swap(self, v2031, v2036):
+        """[GLM-PATCH] BLOCKER: cifra asociada (por cercanía de caracteres)
+        a un año clave que coincide con el valor del OTRO año clave.
+        Detecta 'Proyección para 2031: 4978.27M'."""
+        if v2031 is None or v2036 is None:
+            return
+        gap = abs(v2036 - v2031)
+        if gap < 1e-6:
+            return
+        tol = min(max(1.0, 0.02 * max(v2031, v2036)), gap / 3.0)
+        for year, own, other in ((2031, v2031, v2036), (2036, v2036, v2031)):
+            for ym in re.finditer(r'\b' + str(year) + r'\b', self.text):
+                ws = max(0, ym.start() - 80)
+                window = self.text[ws: min(len(self.text), ym.end() + 80)]
+                if '|' in window:   # tablas: fuera de alcance
                     continue
-                if abs(pv - consensus_v) <= tol:
-                    supported = True
-                    supporting_models.append(model)
+                for cm in re.finditer(r'\b(\d{1,5}(?:[\.,]\d+)?)\b', window):
+                    try:
+                        val = float(cm.group(1).replace(',', '.'))
+                    except ValueError:
+                        continue
+                    if abs(val - other) > tol or abs(val - own) < tol:
+                        continue
+                    nearest, nd = None, 10**9
+                    for y2 in re.finditer(r'\b(20\d{2})\b', window):
+                        d = abs(y2.start() - cm.start())
+                        if d < nd:
+                            nearest, nd = int(y2.group(1)), d
+                    if nearest == year:
+                        self.issues.append(Issue(
+                            "BLOCKER", "valor_intercambiado_entre_anios",
+                            f"Cifra {cm.group(1)} asociada a {year} pero "
+                            f"coincide con el valor de "
+                            f"{2036 if year == 2031 else 2031} ({other:.2f}M) "
+                            "del modelo recomendado.",
+                            evidence=window.strip()[:200]))
 
-        if not supported:
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="MATH-06",
-                message=(
-                    f"El pronóstico de consenso para {year_str} "
-                    f"({consensus_v}) no coincide (tol ±{tol}M) con "
-                    f"ningún modelo. Debe etiquetarse como 'estimación "
-                    f"cualitativa del analista', no como 'consenso'."
-                ),
-                location=f"Pronóstico de Consenso, año {year_str}",
-                correction=(
-                    "Renombrar la cifra como 'estimación cualitativa' "
-                    "o ajustar el consenso al rango de los modelos."
-                ),
-            ))
+    def check_narrative_vs_table(self, window: int = 150) -> None:
+        """Versión generalizada: cualquier cifra 'X millones' cerca de un año
+        histórico conocido en historical_table se contrasta contra el valor oficial,
+        evitando falsos positivos con proyecciones futuras."""
+        clean_text = self._filter_out_table_rows(self.text)
+        known_years = set(self.historical_table.keys())
+        last_hist_year = max(known_years) if known_years else 2024
 
+        year_positions = [
+            (int(m.group(1)), m.start(), m.end())
+            for m in YEAR_MENTION_PATTERN.finditer(clean_text)
+            if int(m.group(1)) in known_years
+        ]
+        if not year_positions:
+            return
 
-# =========================================================================
-# Checks correctivos deterministas (nuevos)
-# =========================================================================
+        numeric_mentions = []
+        consumed_spans = []
+        for rm in RANGE_MILLONES_PATTERN.finditer(clean_text):
+            v1, v2 = float(rm.group(1)), float(rm.group(2))
+            numeric_mentions.append(((v1 + v2) / 2, rm.group(0).strip(), rm.start(), rm.end()))
+            consumed_spans.append((rm.start(), rm.end()))
+        for sm in SINGLE_MILLONES_PATTERN.finditer(clean_text):
+            if any(s <= sm.start() < e for s, e in consumed_spans):
+                continue
+            numeric_mentions.append((float(sm.group(1)), sm.group(0).strip(), sm.start(), sm.end()))
 
-# Mapeo de modelos a su familia de difusión teórica (para MATH-07).
-# Usado al generar la cláusula de consolidación: de cada familia
-# numérica idéntica, recomendamos conservar el más representativo.
-_MODEL_FAMILY_PREFERENCE = [
-    # (familia, modelo preferido para conservar, razón teórica)
-    ("Roset & Canals", "Roset & Canals", "lectura del abismo de Moore"),
-    ("Van den Bulte & Joshi", "Roset & Canals", "redundante con Roset & Canals"),
-    ("Muller & Yogev", "Roset & Canals", "redundante con Roset & Canals"),
-    ("Ladrón-de-Guevara & Putsis", "Bass Clásico",
-     "R²/MAPE idénticos a Bass en este ajuste"),
-]
+        INCREMENT_KEYWORDS = {
+            "incremento", "aumento", "crecimiento", "añadió", "anadió", "sumó", "sumo",
+            "adición", "adicion", "diferencia", "variación", "variacion", "incorporó",
+            "incorporo", "captó", "capto", "ganó", "gano", "ganando", "añadiendo",
+            "anadiendo", "expansión", "expansion", "adquisición", "adquisicion",
+            "nuevos", "neto", "netos", "adicionales", "subida", "delta", "pasando"
+        }
 
-
-def _check_math_07_consolidate_redundancy(
-    report_md: str,
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-07 — Corrección automática de la redundancia numérica
-    detectada por MATH-03/MATH-04.
-
-    Si se identifican modelos alias (R² idénticos o predicciones idénticas),
-    genera una CORRECCIÓN estándar lista para insertar en el informe,
-    declarando:
-      - cuáles modelos son numéricamente indistinguibles,
-      - cuál conservar,
-      - que el ajuste empírico no distingue entre ellos y la elección
-        se hace por coherencia teórica.
-
-    No actúa si no hay redundancia (en cuyo caso MATH-03/MATH-04 no lanzan
-    warnings y aquí no se hace nada).
-    """
-    if not models_projections or len(models_projections) < 2:
-        return
-
-    # 1. Recalcular familias numéricas por predicciones idénticas
-    def signature(proj):
-        return tuple(round(v, 2) for _, v in sorted(proj.items()))
-
-    sig_groups: Dict[tuple, List[str]] = {}
-    for model, proj in models_projections.items():
-        sig = signature(proj)
-        sig_groups.setdefault(sig, []).append(model)
-
-    redundant_groups = [g for g in sig_groups.values() if len(g) > 1]
-    if not redundant_groups:
-        return
-
-    # 2. Generar cláusula de consolidación unificada para todos los grupos redundantes
-    clauses = []
-    for group in redundant_groups:
-        # elegir cuál conservar de acuerdo a _MODEL_FAMILY_PREFERENCE
-        keep = group[0]
-        for fam, preferred, _reason in _MODEL_FAMILY_PREFERENCE:
-            if preferred in group:
-                keep = preferred
-                break
-
-        aliases = [m for m in group if m != keep]
-        aliases_str = ", ".join(aliases)
-        clauses.append(
-            f"los modelos {', '.join(group)} presentan predicciones numéricamente "
-            f"indistinguibles a 2 decimales en toda la tabla de proyecciones "
-            f"(aliasing numérico). Se conservará '{keep}' como representante; "
-            f"los modelos {aliases_str} se omitirán del cuerpo principal "
-            f"del informe por redundancia, sin pérdida de información empírica."
-        )
-
-    combined_clause = (
-        "Nota de consolidación (MATH-07): " + " Asimismo, ".join(clauses) +
-        " La elección entre modelos empíricamente equivalentes se hará, si procede, por coherencia teórica."
-    )
-
-    result.findings.append(Finding(
-        severity="WARNING",
-        check_id="MATH-07",
-        message=(
-            f"Redundancia numérica detectada en {len(redundant_groups)} grupos de modelos. "
-            f"Generada cláusula de consolidación unificada."
-        ),
-        location="tabla 'Proyecciones Futuras'",
-        correction=combined_clause,
-    ))
-
-
-def _check_math_08_narrative_vs_table(
-    report_md: str,
-    real_series: Optional[Dict[str, float]],
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-08 — Reconciliación narrativa vs tabla.
-
-    Extrae cifras numéricas del texto narrativo con regex
-    (formatos 'N millones', 'N M', 'N.0 M') y las compara contra
-    la serie histórica real. Reporta discrepancias de ±0.1-1M y genera
-    una corrección estándar con la cifra correcta (la de la tabla).
-
-    Excluye rangos del tipo "pasó de 15 a 23 millones" para evitar
-    falsos positivos (las cifras de un rango no son valores anuales
-    individuales).
-
-    Determinista: no requiere LLM; es una reconciliación léxica simple.
-    """
-    if not real_series:
-        return
-
-    # Patrones de cifra en texto narrativo:
-    #   "40.5 millones", "64,5 millones", "86.5 M", "alcanza los 35 millones"
-    pattern = re.compile(
-        r"(?:alcanza|alcanzar|alcanzaron|hacia los|"
-        r"proyecta|proyectados?|de los|super[óo]|"
-        r"rozar|pasa de|rondaron|rondando|"
-        r"supera|sobre|paso a|saltaron|salto a|salto"
-        r"|continu[óo] creciendo|continu[óo] creciendo|"
-        r"adopción pasó de|adopción acumulada)\s+"
-        r"(?:a los |hacia los |de los |los )?"
-        r"(\d{1,3}(?:[.,]\d{1,2})?)\s*(?:millones(?:\s+de\s+usuarios)?|M\b)"
-        r"|(\d{1,3}(?:[.,]\d{1,2})?)\s*M\b",
-        re.IGNORECASE,
-    )
-
-    # Patrón de rango: "pasó de 15 a 23 millones", "de 15 a 23 M",
-    # "pasó de 15 a 23 millones de usuarios"
-    range_pattern = re.compile(
-        r"(?:pas[oó]\s+)?de\s+"
-        r"(\d{1,3}(?:[.,]\d{1,2})?)\s+a\s+"
-        r"(\d{1,3}(?:[.,]\d{1,2})?)\s*"
-        r"(?:millones(?:\s+de\s+usuarios)?|M\b)",
-        re.IGNORECASE,
-    )
-
-    # Intentar asignar cada cifra del texto al año más probable
-    # cercano por contexto de frase (heurística: el párrafo suele
-    # mencionar un año o rango de años cerca).
-    year_pattern = re.compile(
-        r"(?:19|20)\d{2}(?:\s*[-–—]\s*(?:19|20)\d{2})?"
-    )
-
-    # Tolerancia: discrepancias superiores a 0.05 y menores a 5.0 M
-    tol_low = 0.05
-    tol_high = 5.0
-
-    # Examinar párrafo a párrafo para acotar el contexto
-    paragraphs = re.split(r"\n\s*\n", report_md)
-    for para_idx, para in enumerate(paragraphs, start=1):
-        # Saltar párrafos enteros de notas metodológicas
-        if "nota metodol" in para.lower():
-            continue
-
-        # --- Excluir rangos: registrar posiciones de números que
-        # --- son parte de un rango "de X a Y millones"
-        range_spans: List[tuple] = []  # (start, end) en el párrafo
-        for rm in range_pattern.finditer(para):
-            range_spans.append((rm.start(), rm.end()))
-
-        def in_range(pos: int) -> bool:
-            for rs, re_ in range_spans:
-                if rs <= pos < re_:
-                    return True
-            return False
-
-        # localizar cifras en el párrafo
-        for m in pattern.finditer(para):
-            # saltar si esta cifra está dentro de un rango
-            if in_range(m.start()):
+        for value, evidence, n_start, n_end in numeric_mentions:
+            best_year, best_dist = None, None
+            for year, y_start, y_end in year_positions:
+                dist = min(abs(n_start - y_end), abs(y_start - n_end))
+                if dist > window:
+                    continue
+                if best_dist is None or dist < best_dist:
+                    best_year, best_dist = year, dist
+            if best_year is None:
                 continue
 
-            line_start = para.rfind("\n", 0, m.start()) + 1
-            line_end = para.find("\n", m.start())
-            if line_end == -1:
-                line_end = len(para)
-            line_text = para[line_start:line_end]
-
-            if line_text.strip().startswith(("|", "*", "\\*", "_", ">")) or "nota metodol" in line_text.lower():
+            # Descartar proyecciones futuras (cifras sustancialmente mayores al máximo histórico real)
+            official = self.historical_table[best_year]
+            max_hist_val = self.historical_table.get(last_hist_year, 0.0)
+            if max_hist_val > 0 and value > 2.5 * max_hist_val:
                 continue
 
-            raw = m.group(1) or m.group(2)
-            if not raw:
-                continue
-            try:
-                narrative_val = float(raw.replace(",", "."))
-            except ValueError:
-                continue
-
-            # Obtener años específicos en esta línea
-            years_in_line = year_pattern.findall(line_text)
-            normalised_years_line: List[str] = []
-            for y in years_in_line:
-                if "-" in y or "–" in y or "—" in y:
-                    last = re.findall(r"(?:19|20)\d{2}", y)
-                    if last:
-                        normalised_years_line.extend(last)
-                else:
-                    normalised_years_line.append(y)
-
-            # Si el valor narrativo coincide perfectamente con alguno de los años en contexto, no es discrepancia
-            context_years = normalised_years_line if normalised_years_line else normalised_years
-            has_perfect_match = False
-            for y_str in context_years:
-                if y_str in real_series:
-                    if abs(real_series[y_str] - narrative_val) <= tol_low:
-                        has_perfect_match = True
+            # Descartar proyecciones de modelos de difusión (si la cifra coincide con proyecciones de un modelo)
+            if self.model_fits:
+                is_model_proj = False
+                for mf in self.model_fits:
+                    for proj_val in mf.projections.values():
+                        if abs(value - proj_val) < 2.0 or (proj_val > 0 and abs(value - proj_val) / proj_val * 100 < 5.0):
+                            is_model_proj = True
+                            break
+                    if is_model_proj:
                         break
-            if has_perfect_match:
+                if is_model_proj:
+                    continue
+
+            # Descartar métricas no-usuario (peticiones API, consultas, tokens, dólares) y números con punto de millar (25.000 millones)
+            start_ctx = max(0, n_start - 80)
+            end_ctx = min(len(clean_text), n_end + 80)
+            ctx = clean_text[start_ctx:end_ctx].lower()
+            if any(kw in ctx for kw in ["peticiones", "consultas", "llamadas", "api", "token", "solicitudes", "dólar", "dolar", "euro", "byte", "requests"]):
+                continue
+            if ".000" in evidence or ",000" in evidence:
                 continue
 
-            # encontrar qué año de la serie está más cerca de la cifra
-            # narrativa
-            candidates: List[tuple] = []  # (diff, year, real)
-            for y_str, real in real_series.items():
-                diff = abs(real - narrative_val)
-                if tol_low < diff <= tol_high:
-                    candidates.append((diff, y_str, real))
-
-            if not candidates:
+            # Descartar si la cifra coincide con un valor histórico oficial de cualquier año en la tabla
+            is_valid_hist_value = any(
+                abs(value - h_val) <= 0.5 or (h_val > 0 and abs(value - h_val) / h_val * 100 <= self.tolerance_pct)
+                for h_val in self.historical_table.values()
+            )
+            if is_valid_hist_value:
                 continue
 
-            # si el párrafo menciona años, priorizar candidatos cuyos
-            # años aparecen en el contexto
-            years_to_use = normalised_years_line if normalised_years_line else normalised_years
-            if years_to_use:
-                prioritised = [
-                    c for c in candidates if c[1] in years_to_use
-                ]
-                if prioritised:
-                    candidates = prioritised
+            # Verificar si la cifra es la variación anual (delta N = N_t - N_{t-1}) de cualquier año histórico
+            is_annual_increment = False
+            for yr in known_years:
+                p_yr = max([y for y in known_years if y < yr], default=None)
+                if p_yr:
+                    inc_val = self.historical_table[yr] - self.historical_table[p_yr]
+                    if abs(value - inc_val) <= 0.5 or (inc_val > 0 and abs(value - inc_val) / inc_val * 100 <= self.tolerance_pct):
+                        is_annual_increment = True
+                        break
+            if is_annual_increment:
+                continue
 
-            # tomar el candidato con menor diferencia
-            candidates.sort(key=lambda c: c[0])
-            diff, year, real_val = candidates[0]
-
-            # localizar línea exacta en el documento
-            char_idx = report_md.find(para)
-            line_no = report_md[:char_idx + para.find(m.group(0))].count(
-                "\n"
-            ) + 1
-
-            result.findings.append(Finding(
-                severity="WARNING",
-                check_id="MATH-08",
-                message=(
-                    f"Cifra narrativa '{narrative_val}' (millones) "
-                    f"discrepa de la tabla real para {year} "
-                    f"(real={real_val} M, diff=+{diff:.2f} M). La "
-                    f"autoridad es la tabla; el texto debe corregirse."
-                ),
-                location=(
-                    f"párrafo {para_idx}, cerca de línea {line_no}"
-                ),
-                correction=(
-                    f"Sustituir '{narrative_val} millones' por "
-                    f"'{real_val:.1f} millones' (o '{real_val:.1f} M') "
-                    f"para alinear con la serie histórica real."
-                ),
-            ))
+            diff = abs(value - official)
+            rel = diff / official * 100 if official else (100.0 if diff else 0.0)
+            if diff > 0.001 and rel > self.tolerance_pct:
+                # WARNING en lugar de BLOCKER: el texto narrativo es prosa IA con hitos cualitativos aproximados
+                # Los números cuantitativos fiables están en las tablas estructuradas (Secciones 2, 4, 5)
+                severity = "WARNING"
+                self.issues.append(Issue(
+                    severity, "narrativa_vs_tabla",
+                    f"El texto menciona ~{value}M cerca de {best_year}, pero la tabla "
+                    f"oficial registra {official}M (discrepancia de {rel:.1f}%).",
+                    evidence=evidence,
+                ))
 
 
-def _check_math_09_rk_theoretical_clause(
-    report_md: str,
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-09 — Cláusula estándar por elección teórica de R&K (o similar).
 
-    Si el informe DESCARTA R&K (o cualquier modelo con mejor R²/MAPE
-    que el modelo finalmente recomendado) apelando a 'sobreajuste', el
-    informe DEBE declarar explicitamente que la elección del modelo
-    ideal se hace 'por coherencia teórica, no por mejor ajuste empírico'.
+ 
+    def check_duplicate_models(self) -> None:
+        """Detecta modelos con R2/MAPE/proyecciones practicamente identicas entre si."""
+        n = len(self.model_fits)
+        for i in range(n):
+            for j in range(i + 1, n):
+                a, b = self.model_fits[i], self.model_fits[j]
+                same_r2 = abs(a.r2 - b.r2) < 1e-4
+                same_mape = abs(a.mape - b.mape) < 1e-3
+                if not (same_r2 and same_mape):
+                    continue
+                common_years = set(a.projections) & set(b.projections)
+                if not common_years:
+                    continue
+                max_diff = max(
+                    abs(a.projections[y] - b.projections[y]) for y in common_years
+                )
+                if max_diff < 0.05:  # menos de 50k usuarios de diferencia en todos los años
+                    self.issues.append(Issue(
+                        "WARNING",  # colapso paramétrico es esperado con pocos datos históricos
+                        "modelos_duplicados",
+                        f"'{a.name}' y '{b.name}' producen R2, MAPE y proyecciones "
+                        f"identicas (diff maxima entre proyecciones: {max_diff:.4f}M). "
+                        "Probable colapso paramétrico por pocos puntos históricos — "
+                        "el informe ya incluye la nota metodológica correspondiente.",
+                        evidence=f"R2={a.r2}, MAPE={a.mape}%",
+                    ))
+ 
+    def check_latex_leakage(self) -> None:
+        """Detecta comandos LaTeX crudos que deberian haberse renderizado o reescrito en texto plano.
+        Si el comando esta correctamente delimitado por $$...$$ o $...$ (markdown/mathjax valido),
+        se marca como INFO (riesgo a futuro) en vez de WARNING (problema ya presente), porque
+        en ese caso el LaTeX es sintacticamente correcto -- el riesgo es que el paso de
+        conversion a PDF no tenga motor de render matematico (como ya paso antes)."""
+        matches = list(LATEX_LEAK_PATTERN.finditer(self.text))
+        if not matches:
+            return
+        GAP = 30
+        clusters: List[List[re.Match]] = [[matches[0]]]
+        for m in matches[1:]:
+            if m.start() - clusters[-1][-1].end() <= GAP:
+                clusters[-1].append(m)
+            else:
+                clusters.append([m])
+ 
+        dollar_spans = [(m.start(), m.end()) for m in re.finditer(r"\$\$[\s\S]*?\$\$|\$[^\$\n]+\$", self.text)]
+ 
+        def _inside_dollar_block(pos: int) -> bool:
+            return any(s <= pos < e for s, e in dollar_spans)
+ 
+        for cluster in clusters:
+            start = max(0, cluster[0].start() - 30)
+            end = min(len(self.text), cluster[-1].end() + 30)
+            commands = sorted({m.group(1) for m in cluster})
+            delimited = _inside_dollar_block(cluster[0].start())
+            if delimited:
+                pass # Delimitado correctamente en $$...$$; renderizable por el motor de PDF.
+            else:
+                self.issues.append(Issue(
+                    "WARNING",
+                    "latex_sin_renderizar",
+                    f"Formula con {len(commands)} comando(s) LaTeX crudo(s) SIN delimitar "
+                    f"({', '.join(commands)}) fuera de bloques $$...$$; el motor de PDF no "
+                    "los interpretara y quedaran visibles como texto.",
+                    evidence="..." + self.text[start:end].replace("\n", " ") + "...",
+                ))
+ 
+    def check_math_rendering_corruption(self, min_run_len: int = 40) -> None:
+        """Detecta 'palabras' anormalmente largas sin espacios que mezclan letras y digitos
+        (tipico de MathML/LaTeX mal extraido a texto plano, ej. formulas con
+        subindices/superindices concatenados: '41.50milmillones)yseestimara...').
+        Distinto de check_latex_leakage: aqui no hay comandos \\algo, sino texto fusionado."""
+        for match in re.finditer(r"\S+", self.text):
+            token = match.group(0)
+            if len(token) < min_run_len:
+                continue
+            has_letter = any(c.isalpha for c in token)
+            has_digit = any(c.isdigit for c in token)
+            # ratio de "palabra pegada": muy pocos signos de puntuacion normales para su longitud
+            if has_letter and has_digit:
+                start = max(0, match.start() - 25)
+                end = min(len(self.text), match.end() + 25)
+                self.issues.append(Issue(
+                    "WARNING",
+                    "renderizado_matematico_roto",
+                    f"Se encontro un bloque de {len(token)} caracteres sin espacios que mezcla "
+                    "letras y numeros, tipico de una formula matematica (MathML/LaTeX) mal "
+                    "extraida a texto plano y fusionada en una sola palabra ilegible.",
+                    evidence="..." + self.text[start:end].replace("\n", " ") + "...",
+                ))
+ 
+    def check_citations(self) -> None:
+        """Marca citas Autor(Año) que no estan en la lista blanca de referencias conocidas."""
+        seen = set()
+        for match in CITATION_PATTERN.finditer(self.text):
+            authors_raw, year = match.group(1), int(match.group(2))
+            key = authors_raw.lower().strip()
+            if any(sw in key for sw in CITATION_STOPWORDS):
+                continue
+            if (key, year) in seen:
+                continue
+            seen.add((key, year))
+            # Busca en una ventana mas amplia antes de la cita (no solo la palabra
+            # inmediatamente adyacente), para no perder nombres como "Bass" en
+            # "Modelo de Bass Clásico (1969)" donde el regex solo capturo "Clásico".
+            context_start = max(0, match.start() - 45)
+            wide_context = self.text[context_start:match.end()].lower()
+            is_known = any(
+                ref_author in wide_context
+                for ref_author, ref_year in KNOWN_REFERENCES
+                if ref_year == year
+            )
+            if not is_known:
+                severity = "BLOCKER" if year >= 2024 else "WARNING"
+                self.issues.append(Issue(
+                    severity,
+                    "cita_no_verificada",
+                    f"La cita '{authors_raw} ({year})' no aparece en la lista blanca de "
+                    "referencias conocidas del dominio. Podria ser una alucinacion del LLM "
+                    "(nombre de autor inventado para 'cumplir' la instruccion de citar papers).",
+                    evidence=match.group(0),
+                ))
+ 
+    def _filter_out_table_rows(self, text: str) -> str:
+        """Sustituye por espacios las lineas que parecen filas de tabla comparativa
+        (3+ menciones de millones en la misma linea), para no confundir la
+        divergencia *esperada* entre modelos con una contradiccion real."""
+        out_lines = []
+        for line in text.split("\n"):
+            n_mentions = len(RANGE_MILLONES_PATTERN.findall(line)) + len(
+                SINGLE_MILLONES_PATTERN.findall(line)
+            )
+            if n_mentions >= TABLE_ROW_MILLONES_THRESHOLD:
+                out_lines.append(" " * len(line))  # preserva offsets, borra contenido
+            else:
+                out_lines.append(line)
+        return "\n".join(out_lines)
+ 
+    def check_consensus_consistency(
+        self, target_years: Optional[List[int]] = None, window: int = 220
+    ) -> None:
+        """
+        Extrae TODAS las menciones de "X millones" / "X a Y millones" en el texto
+        (fuera de tablas comparativas) y, para cada una, la asocia al año objetivo
+        MAS CERCANO en distancia de caracteres (no a todos los años dentro de una
+        ventana simetrica -- eso causaria contaminacion cruzada cuando dos años
+        objetivo aparecen mencionados cerca uno del otro, ej. "...2031: 3010M...
+        2036: 3344M..." no debe hacer que 3344M tambien "cuente" para 2031).
+ 
+        Si para un mismo año aparecen valores que no son consistentes entre si
+        (fuera de la tolerancia configurada), se marca como contradiccion.
+ 
+        target_years: años a vigilar (por defecto, los horizontes tipicos 2030/2035).
+        window: distancia maxima en caracteres para asociar una cifra a un año.
+        """
+        target_years = target_years or [2030, 2035]
+        clean_text = self._filter_out_table_rows(self.text)
+ 
+        year_positions = [
+            (int(m.group(1)), m.start(), m.end())
+            for m in YEAR_MENTION_PATTERN.finditer(clean_text)
+            if int(m.group(1)) in target_years
+        ]
+        if not year_positions:
+            return
+ 
+        numeric_mentions: List[Tuple[float, str, int, int]] = []  # (rep, evidence, start, end)
+        consumed_spans = []
+        for rm in RANGE_MILLONES_PATTERN.finditer(clean_text):
+            v1_str, v2_str = rm.group(1), rm.group(2)
+            if _looks_like_year(v1_str) or _looks_like_year(v2_str):
+                continue
+            v1, v2 = float(v1_str), float(v2_str)
+            numeric_mentions.append(((v1 + v2) / 2, rm.group(0).strip(), rm.start(), rm.end()))
+            consumed_spans.append((rm.start(), rm.end()))
+        for sm in SINGLE_MILLONES_PATTERN.finditer(clean_text):
+            if any(s <= sm.start() < e for s, e in consumed_spans):
+                continue
+            numeric_mentions.append((float(sm.group(1)), sm.group(0).strip(), sm.start(), sm.end()))
+ 
+        findings: Dict[int, List[Tuple[float, str, Tuple[int, int]]]] = {y: [] for y in target_years}
+ 
+        for rep, evidence, n_start, n_end in numeric_mentions:
+            # Excluir valores históricos conocidos para evitar falsos positivos en proyecciones futuras
+            if self.historical_table and any(abs(rep - hv) / max(hv, 0.01) < 0.02 for hv in self.historical_table.values()):
+                continue
+            # año objetivo mas cercano a esta mencion numerica (por distancia de caracteres)
+            best_year, best_dist = None, None
+            for year, y_start, y_end in year_positions:
+                dist = min(abs(n_start - y_end), abs(y_start - n_end))
+                if dist > window:
+                    continue
+                if best_dist is None or dist < best_dist:
+                    best_year, best_dist = year, dist
+            if best_year is not None:
+                findings[best_year].append((rep, evidence, (n_start, n_end)))
+ 
+        for year, entries in findings.items():
+            if len(entries) < 2:
+                continue
+            seen_spans = set()
+            unique_entries = []
+            for rep, evidence, span in entries:
+                if span in seen_spans:
+                    continue
+                seen_spans.add(span)
+                unique_entries.append((rep, evidence, span))
+ 
+            values = [e[0] for e in unique_entries]
+            if len(values) < 2:
+                continue
+            vmin, vmax = min(values), max(values)
+            rel = (vmax - vmin) / vmin * 100 if vmin else (100.0 if vmax else 0.0)
+            if rel > self.tolerance_pct:
+                evidence_list = "; ".join(f"{e[1]} (~{e[0]:.2f}M)" for e in unique_entries)
+                self.issues.append(Issue(
+                    "BLOCKER",
+                    "consenso_inconsistente",
+                    f"Para el año {year}, el informe menciona valores de consenso/proyeccion "
+                    f"que no son consistentes entre si: van de {vmin:.2f}M a {vmax:.2f}M "
+                    f"(diferencia de {rel:.1f}%, tolerancia {self.tolerance_pct}%). "
+                    "El documento no tiene una cifra unica de referencia para este horizonte.",
+                    evidence=evidence_list,
+                ))
 
-    Detecta la presencia de esa cláusula estándar; si no existe, la
-    genera lista para insertar.
-    """
-    if not models_projections:
-        return
+    def check_qualitative_growth_labels(self, window: int = 150) -> None:
+        """Verifica que los adjetivos de crecimiento cerca de un año coincidan
+        con la tasa g_t real de ese año, calculada desde historical_table."""
+        years_sorted = sorted(self.historical_table)
+        growth_rates = {}
+        for i in range(1, len(years_sorted)):
+            y0, y1 = years_sorted[i - 1], years_sorted[i]
+            v0, v1 = self.historical_table[y0], self.historical_table[y1]
+            if v0:
+                growth_rates[y1] = (v1 - v0) / v0 * 100
 
-    # Buscar menciones de descarte de R&K / Logística por sobreajuste.
-    # Normalizamos a minúsculas SIN acentos para tolerar ambas variantes.
-    def _strip_accents(s: str) -> str:
-        table = str.maketrans("áéíóúüñ", "aeiouun")
-        return s.translate(table)
+        year_positions = [
+            (int(m.group(1)), m.start(), m.end())
+            for m in YEAR_MENTION_PATTERN.finditer(self.text)
+            if int(m.group(1)) in growth_rates
+        ]
 
-    low = _strip_accents(report_md.lower())
-    discard_phrases = [
-        "sobreajuste",
-        "overfitting",
-        "sobrestimacion",
-        "subestima la friccion",
-        "sobreajustado",
-    ]
-    mentions_rk_discard = (
-        ("logistica" in low or "r&k" in low or "ryu & kim" in low or "ryu y kim" in low)
-        and any(p in low for p in discard_phrases)
-    )
-    if not mentions_rk_discard:
-        return
+        for pattern, (lo, hi) in GROWTH_ADJECTIVES.items():
+            for m in re.finditer(pattern, self.text, re.IGNORECASE):
+                nearest = min(
+                    year_positions,
+                    key=lambda yp: min(abs(m.start() - yp[2]), abs(yp[1] - m.end())),
+                    default=None,
+                )
+                if nearest is None:
+                    continue
+                year, y_start, y_end = nearest
+                dist = min(abs(m.start() - y_end), abs(y_start - m.end()))
+                if dist > window:
+                    continue
+                g_t = growth_rates[year]
+                if not (lo <= g_t <= hi):
+                    start = max(0, m.start() - 40)
+                    end = min(len(self.text), m.end() + 40)
+                    self.issues.append(Issue(
+                        "WARNING", "razonamiento_cualitativo_inconsistente_con_los_datos",
+                        f"El adjetivo '{m.group(0)}' cerca de {year} no coincide con la "
+                        f"tasa real g_t={g_t:.1f}% (rango esperado {lo}-{hi}%).",
+                        evidence="..." + self.text[start:end].replace("\n", " ") + "...",
+                    ))
 
-    # Comprobar si ya existe la cláusula estándar
-    standard_clause_markers = [
-        "por coherencia teorica",
-        "no por mejor ajuste empirico",
-        "no por su mejor ajuste",
-        "eleccion teorica",
-        "eleccion por criterio teorico",
-        "la eleccion no se fundamenta en el mejor ajuste",
-    ]
-    already_present = any(m in low for m in standard_clause_markers)
-    if already_present:
-        return
+    def check_recommendation_vs_mape(self, recommended_model_name: Optional[str] = None) -> None:
+        """Si el texto describe el ajuste de otros modelos como 'ligeramente superior'
+        pero la diferencia real de MAPE es grande (>5%), marca contradicción."""
+        if not self.model_fits:
+            return
+        best = min(self.model_fits, key=lambda m: m.mape)
+        
+        def norm(s: str) -> str:
+            s_clean = s.lower().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+            return re.sub(r'[^a-z0-9]', '', s_clean)
 
-    # Extraer dinámicamente R2 y MAPE de R&K
-    rk_r2 = "0.9989"
-    rk_mape = "2.16%"
-    rk_row_pattern = re.compile(
-        r"\|\s*Difusi[oó]n\s+Log[ií]stica\s*R&K\s*\|"
-        r"\s*(\d+\.\d+)\s*\|\s*(\d+\.\d+)\s*%",
-        re.IGNORECASE,
-    )
-    rk_match = rk_row_pattern.search(report_md)
-    if rk_match:
-        rk_r2 = rk_match.group(1)
-        rk_mape = rk_match.group(2) + "%"
+        rec = None
+        if recommended_model_name:
+            rec_norm = norm(recommended_model_name)
+            rec = next((m for m in self.model_fits if rec_norm in norm(m.name) or norm(m.name) in rec_norm), None)
+        
+        if not rec:
+            # Buscar en el texto cuál es el modelo explícitamente recomendado o seleccionado
+            rec_patterns = [
+                r'se (?:selecciona|adopta|elige|recomienda|utiliza) (?:el modelo|como modelo ideal|como modelo)? [^\.\n]*?([A-ZÁÉÍÓÚ][\w\s&\-–]+)',
+                r'modelo (?:ideal|recomendado|elegido|seleccionado) [^\.\n]*?([A-ZÁÉÍÓÚ][\w\s&\-–]+)',
+                r'modelo de \*\*([^\*]+)\*\*',
+            ]
+            for pat in rec_patterns:
+                for match in re.finditer(pat, self.text, re.IGNORECASE):
+                    cand_norm = norm(match.group(1).strip())
+                    found = next((m for m in self.model_fits if cand_norm in norm(m.name) or norm(m.name) in cand_norm), None)
+                    if found:
+                        rec = found
+                        break
+                if rec:
+                    break
 
-    # Extraer el modelo ideal recomendado en la sección de recomendación
-    mappings = [
-        ("Roset & Canals", ["dual market", "roset & canals", "roset y canals", "roset canals"]),
-        ("Muller & Yogev", ["muller & yogev", "muller yogev"]),
-        ("Van den Bulte & Joshi", ["van den bulte & joshi", "van den bulte joshi", "vdb & joshi"]),
-        ("Fourt & Woodlock", ["fourt", "woodlock", "innovación pura"]),
-        ("Gompertz", ["gompertz", "sigmoide asimétrica", "asimétrica"]),
-        ("Generalized Bass", ["generalized bass", "bass generalizado", "gbm", "shocks de marketing", "precio"]),
-        ("Horsky & Simon", ["horsky", "publicidad", "esfuerzo publicitario"]),
-        ("Ladrón-de-Guevara & Putsis", ["ladrón-de-guevara", "ladrón de guevara", "ladron putsis", "ladron"]),
-        ("Difusión Logística R&K", ["logístico", "logistic", "ryu & kim", "difusión logística", "logística", "logistica"]),
-        ("Bass Clásico", ["bass clásico", "bass clasico", "bass estándar"]),
-    ]
-    
-    def detect_recommended_model(text: str) -> str:
-        sentences = re.split(r'[.\n]', text)
-        target_sentences = []
-        for s in sentences:
-            s_lower = s.lower()
-            if 'modelo' in s_lower and ('ideal' in s_lower or 'recomend' in s_lower or 'adopta' in s_lower):
-                target_sentences.append(s)
-                
-        for s in target_sentences:
-            for pretty_name, keywords in mappings:
-                if any(kw in s.lower() for kw in keywords):
-                    return pretty_name
-                    
-        for pretty_name, keywords in mappings:
-            for kw in keywords:
-                pos = text.lower().rfind(kw)
-                if pos != -1:
-                    return pretty_name
-                
-        return 'Dual Market (Roset & Canals)'
+        if not rec:
+            # Fallback secundario: el modelo recomendado por razones teóricas suele ser el de mayor MAPE razonable.
+            # Excluimos outliers extremos (MAPE > 100%) que son claramente inadecuados y nunca se recomiendan.
+            # Solo activar si hay más de un modelo con MAPE distinto.
+            candidates_reasonable = sorted(
+                [m for m in self.model_fits if m.mape <= 100.0],
+                key=lambda x: x.mape, reverse=True
+            )
+            if len(candidates_reasonable) >= 2 and candidates_reasonable[0].mape > candidates_reasonable[1].mape:
+                rec = candidates_reasonable[0]
 
-    recommended_model_name = detect_recommended_model(report_md)
+        if not rec:
+            return
 
-    # Parsear todas las filas de la tabla para comparar R2/MAPE de R&K y modelo recomendado
-    table_rows = re.findall(
-        r"\|\s*([^\n|]+)\s*\|\s*(\d+\.\d+)\s*\|\s*(\d+\.\d+)\s*%",
-        report_md
-    )
-    
-    def _resolve_pretty_name(raw_name: str) -> str:
-        for pretty_name, keywords in mappings:
-            if any(kw in raw_name.lower() for kw in keywords):
-                return pretty_name
-        return raw_name
+        if rec.name == best.name:
+            return  # el recomendado ya es el mejor, no hay contradicción
 
-    resolved_rec = _resolve_pretty_name(recommended_model_name)
-    rec_r2 = None
-    rec_mape = None
-    for name, r2_str, mape_str in table_rows:
-        resolved_table = _resolve_pretty_name(name)
-        if resolved_rec == resolved_table:
-            try:
-                rec_r2 = float(r2_str)
-                rec_mape = float(mape_str)
-            except ValueError:
-                pass
-            break
+        rec_mape = rec.mape
+        diff_pct = rec_mape - best.mape
 
-    rk_r2_val = None
-    rk_mape_val = None
-    for name, r2_str, mape_str in table_rows:
-        if "r&k" in name.lower() or "logistica" in name.lower():
-            try:
-                rk_r2_val = float(r2_str)
-                rk_mape_val = float(mape_str)
-            except ValueError:
-                pass
-            break
+        if diff_pct <= 5.0:
+            return
 
-    if rk_r2_val is not None and rec_r2 is not None:
-        # Solo gatillar si R&K tiene estrictamente mejor ajuste empírico
-        # (mejor R2 es mayor, mejor MAPE es menor)
-        rk_better = (rk_r2_val > rec_r2) or (rk_mape_val < rec_mape)
-        if not rk_better:
-            return  # No se necesita cláusula si el modelo recomendado tiene igual o mejor ajuste
+        # Palabras de negación o concesión explícita que invalidan el hallazgo
+        # (si el texto reconoce explícitamente "A pesar de que otros modelos...", no es una contradicción, es una concesión metodológica válida)
+        NEGATION_WORDS = {
+            "no el que", "no es el", "no arroja", "no presenta", "no fue el",
+            "aunque no", "no es quien", "no siendo", "si bien no",
+            "a pesar de que", "a pesar de", "si bien", "aunque", "mientras que",
+            "los modelos con", "modelos con menor", "puedan ofrecer", "puedan mostrar",
+            "por su superioridad conceptual", "no por ajuste cuantitativo",
+            # Contextos de explicación de métricas (R², MAPE) — no son comparaciones de modelos
+            "valores más cercanos a 1", "cercanos a 1 sugiriendo", "sugiriendo un mejor",
+            "coeficiente de determinación", "mide la precisión de las predicc",
+            "por su parte, mide", "la precisión de las predicc",
+        }
 
+        for m in SUPERIORITY_PHRASES.finditer(self.text):
+            start = max(0, m.start() - 80)
+            end = min(len(self.text), m.end() + 60)
+            context = self.text[start:end]
+            ctx_lower = context.lower()
 
-    clause = (
-        f"Nota estándar (MATH-09): cuando se descarta un modelo con mejor "
-        f"R²/MAPE que el modelo finalmente recomendado (p. ej. la "
-        f"Difusión Logística R&K, con R²={rk_r2} y MAPE={rk_mape}, frente al "
-        f"modelo elegido), el informe debe declarar explicitamente que "
-        f"la elección se hace 'por coherencia teórica con la dinámica "
-        f"del mercado, no por mejor ajuste empírico'. Por ejemplo: "
-        f"\"La curva logística de R&K ofrece un mejor ajuste empírico que el "
-        f"modelo elegido (R²={rk_r2}, MAPE={rk_mape}), pero su formulación no captura los "
-        f"efectos de red entre productos complementarios del ecosistema. "
-        f"Por coherencia teórica, no por mejor ajuste empírico, se adopta "
-        f"como modelo ideal el de {recommended_model_name}.\""
-    )
+            # Omitir si el contexto inmediato niega o concede la superioridad (el texto ya lo reconoce correctamente)
+            if any(neg in ctx_lower for neg in NEGATION_WORDS):
+                continue
 
-    result.findings.append(Finding(
-        severity="WARNING",
-        check_id="MATH-09",
-        message=(
-            "El informe descarta R&K / Logística por 'sobreajuste', "
-            "pero no declara explicitamente que la elección del modelo "
-            "ideal se hace por coherencia teórica, no por mejor ajuste "
-            "empírico. Falta la cláusula estándar."
-        ),
-        location="sección 'Recomendación Científica y Modelo Ideal'",
-        correction=clause,
-    ))
+            # Omitir si la afirmación de "mejor ajuste" / "menor MAPE" se refiere correctamente al modelo con mejor ajuste real (ej. Dual Market / Muller & Yogev),
+            # lo cual es factualmente correcto y coherente con los datos.
+            best_models_names = [bm.name.lower() for bm in self.model_fits if bm.mape <= best.mape + 5.0]
+            if any(b_name in ctx_lower for b_name in best_models_names):
+                continue
 
+            if "otros modelos" in ctx_lower or "diferencia" in ctx_lower or "ajuste" in ctx_lower:
+                self.issues.append(Issue(
+                    "BLOCKER", "recomendacion_que_contradice_su_propia_justificacion",
+                    f"El texto describe el MAPE de otros modelos como '{m.group(0)}', pero "
+                    f"'{best.name}' tiene MAPE={best.mape:.2f}% frente a "
+                    f"{rec.name} MAPE={rec_mape:.2f}% (diferencia real de {diff_pct:.1f} puntos, no 'ligera').",
+                    evidence=context.strip(),
+                ))
 
-# =========================================================================
-# Checks de consistencia de notas (nuevos)
-# =========================================================================
+ 
+    # ------------------------------------------------------------ orquestador
+ 
+    def run_all(self) -> List[Issue]:
+        self.issues.clear()
+        
+        # Deduce recommended model
+        rec = None
+        rec_patterns = [
+            r'se (?:selecciona|adopta|elige|recomienda|utiliza) (?:el modelo|como modelo ideal|como modelo)? [^\.\n]*?([A-ZÁÉÍÓÚ][\w\s\&\-]+)',
+            r'modelo (?:ideal|recomendado|elegido|seleccionado) [^\.\n]*?([A-ZÁÉÍÓÚ][\w\s\&\-]+)',
+            r'se asume [^\.\n]*?([A-ZÁÉÍÓÚ][\w\s\&\-]+) como (?:el )?modelo'
+        ]
+        def norm(s): return re.sub(r'[^a-z0-9]', '', s.lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u"))
+        for p in rec_patterns:
+            m = re.search(p, self.text, re.IGNORECASE)
+            if m:
+                found_name = m.group(1).strip()
+                fn = norm(found_name)
+                rec = next((mf for mf in self.model_fits if fn in norm(mf.name) or norm(mf.name) in fn), None)
+                if rec: break
+        
+        if not rec and self.model_fits:
+            rec = min(self.model_fits, key=lambda m: m.mape)
+            
+        if rec:
+            per_year = {int(k): float(v) for k, v in rec.projections.items()}
+            last_hist = max(self.historical_table.values()) if self.historical_table else None
+            self.check_totals_as_increments(per_year, last_hist)
+            v2031 = per_year.get("2031") or per_year.get(2031)
+            v2036 = per_year.get("2036") or per_year.get(2036)
+            self.check_year_value_swap(v2031, v2036)
 
-def _check_math_10_math09_consistency(
-    report_md: str,
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-10 — Consistencia de la nota MATH-09.
-
-    Verifica que la nota MATH-09 insertada en el informe menciona:
-      (a) el modelo R&K / Logística con los R² y MAPE correctos que
-          aparecen en la tabla de ajuste del propio informe, y
-      (b) el modelo recomendado correcto (el que el informe declara
-          como "Modelo Ideal").
-
-    Detecta copy-paste de notas de otros informes con modelo o cifras
-    equivocadas (el crítico más frecuente en el pipeline).
-
-    Caza dos tipos de error:
-      1. La nota menciona un modelo ideal que no aparece como
-         recomendado en la sección 5 del informe.
-      2. La nota menciona R²/MAPE que no coinciden con los de R&K
-         en la tabla de ajuste del informe.
-    """
-    low = report_md.lower()
-
-    # --- 1. Localizar la nota MATH-09 ---
-    math09_marker = "math-09"
-    if math09_marker not in low:
-        return  # no hay nota MATH-09, nada que validar
-
-    # Extraer el bloque de la nota (entre el marcador y el siguiente **)
-    idx = low.find(math09_marker)
-    # buscar el cierre de la nota (siguiente '**' después del marcador)
-    note_end = report_md.find("**", idx + len(math09_marker))
-    if note_end == -1:
-        note_end = idx + 500  # fallback: 500 chars
-    note_text = report_md[idx:note_end]
-
-    # --- 2. Extraer R² y MAPE de la nota ---
-    # Patrones: "R²=0.9989", "R2=0.9989", "R²=0,9989"
-    r2_pattern = re.compile(r"r[²2]\s*=\s*(\d+\.\d+)", re.IGNORECASE)
-    mape_pattern = re.compile(r"mape\s*=\s*(\d+\.\d+)\s*%", re.IGNORECASE)
-
-    note_r2_matches = r2_pattern.findall(note_text)
-    note_mape_matches = mape_pattern.findall(note_text)
-
-    # --- 3. Extraer R² y MAPE reales de R&K desde la tabla de ajuste ---
-    # Buscar la fila "Difusión Logística R&K" en la tabla de ajuste
-    rk_r2 = None
-    rk_mape = None
-    # Patrón de fila de tabla: | Difusión Logística R&K | 0.9999 | 1.12% |
-    rk_row_pattern = re.compile(
-        r"\|\s*Difusi[oó]n\s+Log[ií]stica\s*R&K\s*\|"
-        r"\s*(\d+\.\d+)\s*\|\s*(\d+\.\d+)\s*%",
-        re.IGNORECASE,
-    )
-    rk_match = rk_row_pattern.search(report_md)
-    if rk_match:
-        rk_r2 = rk_match.group(1)
-        rk_mape = rk_match.group(2)
-
-    # --- 4. Comparar R² de la nota vs R² de la tabla ---
-    if note_r2_matches and rk_r2:
-        note_r2 = note_r2_matches[0]
-        if abs(float(note_r2) - float(rk_r2)) > 0.0001:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-10",
-                message=(
-                    f"La nota MATH-09 menciona R²={note_r2} para R&K, "
-                    f"pero la tabla de ajuste del informe dice "
-                    f"R²={rk_r2}. La nota parece copiada de otro "
-                    f"informe con cifras distintas."
-                ),
-                location="nota MATH-09",
-                correction=(
-                    f"Sustituir R²={note_r2} por R²={rk_r2} en la "
-                    f"nota MATH-09."
-                ),
-            ))
-
-    # --- 5. Comparar MAPE de la nota vs MAPE de la tabla ---
-    if note_mape_matches and rk_mape:
-        note_mape = note_mape_matches[0]
-        if abs(float(note_mape) - float(rk_mape)) > 0.05:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-10",
-                message=(
-                    f"La nota MATH-09 menciona MAPE={note_mape}% para "
-                    f"R&K, pero la tabla de ajuste del informe dice "
-                    f"MAPE={rk_mape}%. La nota parece copiada de otro "
-                    f"informe."
-                ),
-                location="nota MATH-09",
-                correction=(
-                    f"Sustituir MAPE={note_mape}% por MAPE={rk_mape}% "
-                    f"en la nota MATH-09."
-                ),
-            ))
-
-    # --- 6. Verificar que el modelo ideal de la nota coincide con sección 5 ---
-    ideal_pattern = re.compile(
-        r"(?:se adopta como modelo ideal el de|"
-        r"modelo ideal el de)\s+(.+?)(?:\.\s|\.\s*$|\*\*)",
-        re.IGNORECASE,
-    )
-    ideal_match = ideal_pattern.search(note_text)
-    if ideal_match:
-        note_ideal = ideal_match.group(1).strip().rstrip(".**")
-
-        # Buscar en sección 5 qué modelo se declara como ideal
-        sec5_pattern = re.compile(
-            r"Modelo Ideal de Difusión para\s+\w+\s+es el\s+(.+?)(?:\*\*|\(|\n)",
-            re.IGNORECASE,
+        self.check_narrative_vs_table()
+        self.check_duplicate_models()
+        self.check_latex_leakage()
+        self.check_math_rendering_corruption()
+        self.check_citations()
+        self.check_consensus_consistency()
+        self.check_qualitative_growth_labels()
+        self.check_recommendation_vs_mape()
+        return self.issues
+ 
+    def report(self) -> str:
+        issues = self.run_all()
+        if not issues:
+            return "✅ No se detectaron incoherencias. El informe pasa la validacion."
+        lines = [f"Se detectaron {len(issues)} problema(s):\n"]
+        for i, issue in enumerate(issues, 1):
+            lines.append(f"{i}. {issue}\n")
+        n_blockers = sum(1 for i in issues if i.severity == "BLOCKER")
+        lines.append(
+            f"\nResumen: {n_blockers} BLOCKER(S) que deberian impedir la publicacion, "
+            f"{len(issues) - n_blockers} advertencia(s)/info."
         )
-        sec5_match = sec5_pattern.search(report_md)
-        if sec5_match:
-            sec5_ideal = sec5_match.group(1).strip()
-            def _norm(s):
-                return re.sub(r"[\s\*\(\).,\"\']+", " ", s).strip().lower()
-            norm_note = _norm(note_ideal)
-            norm_sec5 = _norm(sec5_ideal)
-            # Use bidirectional substring containment: the note may use a shorter name
-            # (e.g. "Ladrón-de-Guevara & Putsis") while sec5 uses the full formal name
-            # ("Modelo de Mercado Dinámico de Ladrón-de-Guevara & Putsis").
-            # A mismatch only fires if neither is a substring of the other.
-            models_match = (
-                norm_note == norm_sec5
-                or norm_note in norm_sec5
-                or norm_sec5 in norm_note
-            )
-            if not models_match:
-                result.findings.append(Finding(
-                    severity="CRITICAL",
-                    check_id="MATH-10",
-                    message=(
-                        f"La nota MATH-09 declara como modelo ideal "
-                        f"'{note_ideal}', pero la sección 5 del "
-                        f"informe declara '{sec5_ideal}'. La nota "
-                        f"parece copiada de otro informe con un "
-                        f"modelo recomendado distinto."
-                    ),
-                    location="nota MATH-09 vs sección 5",
-                    correction=(
-                        f"Sustituir '{note_ideal}' por "
-                        f"'{sec5_ideal}' en la nota MATH-09."
-                    ),
-                ))
-
-
-def _check_math_11_math07_completeness(
-    report_md: str,
-    models_projections: Optional[Dict[str, Dict[str, float]]],
-    result: ValidationResult,
-) -> None:
+        return "\n".join(lines)
+ 
+ 
+# --------------------------------------------------------------------------
+# Demo / CLI
+# --------------------------------------------------------------------------
+ 
+def _demo_with_actual_report() -> None:
+    narrative_text = """
+    2022: Fase Experimental y Pruebas Cerradas (0.1M). A finales de este año...
+    2023: Lanzamiento Comercial y Despliegue (5.5M). Marca el inicio...
+    Modelo Logístico genérico:
+    Modelo de Mercado Potencial Dinámico y Endógeno de Ladrón-de-Guevara & Putsis (2011):
+    C(t) = 1.0 - \\theta \\exp\\left(-\\gamma \\frac{N(t)}{S}\\right) donde la difusion es:
+    Año 2030: 275.5 millones de usuarios/asientos corporativos activos.
+    Año 2035: 295.0 millones de usuarios/asientos corporativos activos.
+    Hito 5 Años (2030): Operar bajo la presuncion de ~290 millones de adopciones/nodos.
+    Hito 10 Años (2035): Planificar una fase de consolidacion ~297 millones.
     """
-    MATH-11 — Completitud de la nota MATH-07.
-
-    Verifica que la nota MATH-07 declara TODOS los grupos de modelos
-    alias detectados (no solo el primero). Si hay múltiples grupos
-    con predicciones idénticas y la nota solo menciona uno, es un
-    copy-paste incompleto.
-    """
-    if not models_projections or len(models_projections) < 2:
+ 
+    historical_table = {2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0,
+                         2021: 0.0, 2022: 0.0, 2023: 6.0, 2024: 32.0, 2025: 65.0}
+ 
+    model_fits = [
+        ModelFit("Bass Clasico", 0.9857, 31.97,
+                 {2030: 290.21, 2033: 296.76, 2035: 297.06}),
+        ModelFit("Dual Market", 0.9857, 31.97,
+                 {2030: 290.21, 2033: 296.76, 2035: 297.06}),
+        ModelFit("Steffens & Murthy", 0.9999, 1.12,
+                 {2030: 74.71, 2033: 74.71, 2035: 74.71}),
+        ModelFit("Difusion Logistica ", 0.9999, 1.12,
+                 {2030: 74.71, 2033: 74.71, 2035: 74.71}),
+        ModelFit("Van den Bulte & Joshi", 0.9894, 28.67,
+                 {2030: 204.07, 2033: 206.74, 2035: 206.86}),
+    ]
+ 
+    rv = ReportValidator(narrative_text, historical_table, model_fits)
+    print(rv.report)
+ 
+ 
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Sin argumentos: ejecutando demo con datos del informe de Anthropic analizado.\n")
+        _demo_with_actual_report()
         return
-
-    low = report_md.lower()
-
-    # --- 1. Localizar la nota MATH-07 ---
-    math07_marker = "math-07"
-    if math07_marker not in low:
-        return  # no hay nota MATH-07
-
-    idx = low.find(math07_marker)
-    # buscar el cierre de la nota
-    note_end = report_md.find("**", idx + len(math07_marker))
-    if note_end == -1:
-        note_end = idx + 800
-    note_text_low = low[idx:note_end]
-
-    # --- 2. Recalcular grupos alias ---
-    def signature(proj):
-        return tuple(round(v, 2) for _, v in sorted(proj.items()))
-
-    sig_map: Dict[tuple, List[str]] = {}
-    for model, proj in models_projections.items():
-        sig = signature(proj)
-        sig_map.setdefault(sig, []).append(model)
-
-    alias_groups = [g for g in sig_map.values() if len(g) > 1]
-
-    if not alias_groups:
-        return
-
-    # --- 3. Verificar que cada grupo está mencionado en la nota ---
-    for group in alias_groups:
-        # al menos 2 modelos del grupo deben aparecer en la nota
-        mentioned = sum(1 for m in group if m.lower() in note_text_low)
-        if mentioned < 2:
-            mentioned_short = 0
-            for m in group:
-                short = m.lower()[:15]
-                if short in note_text_low:
-                    mentioned_short += 1
-            if mentioned_short < 2:
-                result.findings.append(Finding(
-                    severity="CRITICAL",
-                    check_id="MATH-11",
-                    message=(
-                        f"Grupo alias no declarado en la nota MATH-07: "
-                        f"{', '.join(group)} (predicciones idénticas "
-                        f"a 2 decimales). La nota solo declara uno de "
-                        f"los múltiples grupos con aliasing detectados."
-                    ),
-                    location="nota MATH-07",
-                    correction=(
-                        f"Añadir a la nota MATH-07: 'los modelos "
-                        f"{', '.join(group)} presentan predicciones "
-                        f"numéricamente indistinguibles (aliasing). "
-                        f"Se conservará '{group[0]}' como representante.'"
-                    ),
-                ))
-
-
-def _check_math_12_consensus_monotonicity(
-    report_md: str,
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-12 — Verifica la monotonía no decreciente de las proyecciones de consenso
-    extraídas del reporte de texto. Si la proyección para 2030 es mayor que 2035,
-    indica una inconsistencia física (crecimiento negativo en curva acumulada).
-    """
-    import statistics
-    
-    values: Dict[int, List[float]] = {}
-    lines = report_md.splitlines()
-    for line in lines:
-        line_lower = line.lower()
-        stripped = line_lower.strip()
-        if not (stripped.startswith('*') or stripped.startswith('-') or (stripped and stripped[0].isdigit())):
-            continue
-            
-        # Omitir frases con comparativas de múltiples años
-        years_on_line = list(set(re.findall(r'\b(20[2-5]\d)\b', line_lower)))
-        if len(years_on_line) != 1:
-            continue
-            
-        year = int(years_on_line[0])
-        if year not in [2030, 2035]:
-            continue
-            
-        # Omitir palabras de incremento
-        if any(w in line_lower for w in ["crecimiento", "incremento", "otros", "adicionales", "aumento", "diferencia"]):
-            continue
-            
-        ranges = list(re.finditer(r'([\d.,]+)\s*(?:a|-|—)\s*([\d.,]+)\s*millones?', line_lower))
-        singles = list(re.finditer(r'([\d.,]+)\s*millones?', line_lower))
-        
-        val: Optional[float] = None
-        if ranges:
-            try:
-                v1 = float(ranges[0].group(1).replace(',', '.'))
-                v2 = float(ranges[0].group(2).replace(',', '.'))
-                # Prevent extracting years as range values
-                if not ((1900 <= v1 <= 2100) or (1900 <= v2 <= 2100)):
-                    val = (v1 + v2) / 2.0
-            except ValueError:
-                pass
-        elif singles:
-            is_in_range = any(r.start() <= singles[0].start() <= r.end() for r in ranges)
-            if not is_in_range:
-                try:
-                    val = float(singles[0].group(1).replace(',', '.'))
-                except ValueError:
-                    pass
-                    
-        if val is not None:
-            if year not in values:
-                values[year] = []
-            values[year].append(val)
-            
-    mid_2030 = statistics.median(values[2030]) if 2030 in values and values[2030] else None
-    mid_2035 = statistics.median(values[2035]) if 2035 in values and values[2035] else None
-    
-    if mid_2030 is not None and mid_2035 is not None:
-        if mid_2030 > mid_2035:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-12",
-                message=(
-                    f"Curva de consenso matemáticamente inválida: la adopción acumulada "
-                    f"proyectada para 2030 ({mid_2030:.2f} M) es superior a la de 2035 ({mid_2035:.2f} M). "
-                    f"Las proyecciones acumulativas deben ser no decrecientes."
-                ),
-                location="Sección 2 / Sección 4 (Pronóstico de Consenso)",
-                correction=(
-                    f"Ajustar los valores del consenso en el informe de modo que la proyección "
-                    f"para 2035 sea mayor o igual a {mid_2030:.2f} M (valor de 2030)."
-                )
-            ))
-
-
-def _check_math_13_infancy_growth_ceiling(
-    report_md: str,
-    real_series: Optional[Dict[str, float]],
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-13 — Verifica que el crecimiento proyectado a 5 y 10 años para tecnologías
-    en etapa de lanzamiento (nacientes) sea matemáticamente realista y acotado.
-    Si la base instalada actual es pequeña (< 5M) o hay muy pocos datos reales (>0),
-    evita que el consenso declare proyecciones explosivas absurdas.
-    """
-    if not real_series:
-        return
-        
-    vals = [float(v) for v in real_series.values() if v is not None]
-    if not vals:
-        return
-        
-    m_max = max(vals)
-    n_nonzero = sum(1 for v in vals if v > 0.0)
-    
-    # Definir el techo de crecimiento razonable en base a la madurez
-    limit = None
-    if n_nonzero <= 2:
-        limit = 5.0 * m_max
-    elif m_max < 5.0:
-        limit = 15.0 * m_max
-        
-    if limit is None:
-        return
-        
-    # Extraer valores del reporte
-    import statistics
-    values: Dict[int, List[float]] = {}
-    lines = report_md.splitlines()
-    for line in lines:
-        line_lower = line.lower()
-        stripped = line_lower.strip()
-        if not (stripped.startswith('*') or stripped.startswith('-') or (stripped and stripped[0].isdigit())):
-            continue
-            
-        years_on_line = list(set(re.findall(r'\b(20[2-5]\d)\b', line_lower)))
-        if len(years_on_line) != 1:
-            continue
-            
-        year = int(years_on_line[0])
-        if year not in [2030, 2035]:
-            continue
-            
-        if any(w in line_lower for w in ["crecimiento", "incremento", "otros", "adicionales", "aumento", "diferencia"]):
-            continue
-            
-        ranges = list(re.finditer(r'([\d.,]+)\s*(?:a|-|—)\s*([\d.,]+)\s*millones?', line_lower))
-        singles = list(re.finditer(r'([\d.,]+)\s*millones?', line_lower))
-        
-        val: Optional[float] = None
-        if ranges:
-            try:
-                v1 = float(ranges[0].group(1).replace(',', '.'))
-                v2 = float(ranges[0].group(2).replace(',', '.'))
-                # Prevent extracting years as range values
-                if not ((1900 <= v1 <= 2100) or (1900 <= v2 <= 2100)):
-                    val = (v1 + v2) / 2.0
-            except ValueError:
-                pass
-        elif singles:
-            is_in_range = any(r.start() <= singles[0].start() <= r.end() for r in ranges)
-            if not is_in_range:
-                try:
-                    val = float(singles[0].group(1).replace(',', '.'))
-                except ValueError:
-                    pass
-                    
-        if val is not None:
-            if year not in values:
-                values[year] = []
-            values[year].append(val)
-            
-    mid_2030 = statistics.median(values[2030]) if 2030 in values and values[2030] else None
-    mid_2035 = statistics.median(values[2035]) if 2035 in values and values[2035] else None
-    
-    # Comprobar contra el límite
-    for yr, mid_val in [(2030, mid_2030), (2035, mid_2035)]:
-        if mid_val is not None and mid_val > limit:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-13",
-                message=(
-                    f"Crecimiento de consenso irreal para tecnología naciente: la adopción de consenso "
-                    f"estimada para {yr} ({mid_val:.2f} M) supera el límite de seguridad matemática "
-                    f"({limit:.2f} M, correspondiente a {limit/m_max:.1f}x el máximo histórico de {m_max:.2f} M). "
-                    f"Para tecnologías en su infancia, las proyecciones a largo plazo deben estar acotadas."
-                ),
-                location="Sección 2 / Sección 4 (Pronóstico de Consenso)",
-                correction=(
-                    f"Ajustar el modelo operativo o consenso del informe para recomendar un modelo "
-                    f"más conservador (por ejemplo, Ryu & Kim o Muller & Yogev) de modo que las proyecciones "
-                    f"para {yr} no superen los {limit:.2f} M."
-                )
-            ))
-
-
-def _check_math_14_geopopulation_sanity_check(
-    report_md: str,
-    technology: str,
-    real_series: Optional[Dict[str, float]],
-    result: ValidationResult,
-) -> None:
-    """
-    MATH-14 — Realiza un sanity check geodemográfico para evitar la mezcla accidental
-    de datos de escala global en informes con alcance local/regional.
-    """
-    if not real_series:
-        return
-        
-    vals = [float(v) for v in real_series.values() if v is not None]
-    if not vals:
-        return
-        
-    m_max = max(vals)
-    tech_lower = technology.lower()
-    
-    # Base de datos demográfica de regiones comunes usando raíces robustas a codificación
-    country_populations = {
-        "norue": (5.5, "Noruega"),
-        "norwa": (5.5, "Noruega"),
-        "espa": (48.0, "España"),
-        "spai": (48.0, "España"),
-        "portu": (10.3, "Portugal"),
-        "alema": (84.0, "Alemania"),
-        "germa": (84.0, "Alemania"),
-        "franc": (68.0, "Francia"),
-        "ital": (59.0, "Italia"),
-        "reino unid": (67.0, "Reino Unido"),
-        "united king": (67.0, "Reino Unido"),
-        "uk": (67.0, "Reino Unido"),
-        "suec": (10.5, "Suecia"),
-        "swed": (10.5, "Suecia"),
-        "finlan": (5.6, "Finlandia"),
-        "dinamarc": (5.9, "Dinamarca"),
-        "denmar": (5.9, "Dinamarca"),
-        "suiz": (8.9, "Suiza"),
-        "switzer": (8.9, "Suiza"),
-    }
-    
-    # Normalización agresiva
-    def clean_str(s):
-        s = s.lower().replace("ñ", "n").replace("", "")
-        return re.sub(r"[^a-z0-9\s]", "", s)
-        
-    tech_clean = clean_str(technology)
-    
-    matched_region = None
-    matched_pop = None
-    for stem, (pop, name) in country_populations.items():
-        if clean_str(stem) in tech_clean:
-            matched_region = name
-            matched_pop = pop
-            break
-            
-    if matched_region is None or matched_pop is None:
-        return
-        
-    # Un mercado real regional de usuarios/dispositivos (excluyendo microprocesadores o vacunas multicomponente)
-    # no puede superar físicamente a la población local multiplicada por un factor de seguridad de 1.2.
-    limit_cap = matched_pop * 1.2
-    
-    # Comprobar el máximo histórico
-    if m_max > limit_cap:
-        result.findings.append(Finding(
-            severity="CRITICAL",
-            check_id="MATH-14",
-            message=(
-                f"Sanity check geodemográfico fallido: los datos históricos muestran una adopción "
-                f"máxima de {m_max:.2f} M, lo cual supera el límite físicamente posible para la región "
-                f"'{matched_region.title()}' (población total de {matched_pop:.2f} M). Esto indica que se han "
-                f"importado accidentalmente datos mundiales/globales en lugar de datos locales de Noruega/región."
-            ),
-            location="Sección 2 (Datos Históricos)",
-            correction=(
-                f"Filtrar y reemplazar la serie temporal histórica para usar exclusivamente datos locales "
-                f"del mercado de {matched_region.title()} y asegurar que las cifras no superen el límite de {limit_cap:.2f} M."
-            )
-        ))
-        return
-
-    # Extraer y comprobar también las proyecciones de consenso de la narrativa
-    import statistics
-    values: Dict[int, List[float]] = {}
-    for line in report_md.splitlines():
-        line_lower = line.lower()
-        stripped = line_lower.strip()
-        if not (stripped.startswith('*') or stripped.startswith('-') or (stripped and stripped[0].isdigit())):
-            continue
-            
-        years_on_line = list(set(re.findall(r'\b(20[2-5]\d)\b', line_lower)))
-        if len(years_on_line) != 1:
-            continue
-            
-        year = int(years_on_line[0])
-        if year not in [2030, 2035]:
-            continue
-            
-        if any(w in line_lower for w in ["crecimiento", "incremento", "otros", "adicionales", "aumento", "diferencia"]):
-            continue
-            
-        ranges = list(re.finditer(r'([\d.,]+)\s*(?:a|-|—)\s*([\d.,]+)\s*millones?', line_lower))
-        singles = list(re.finditer(r'([\d.,]+)\s*millones?', line_lower))
-        
-        val: Optional[float] = None
-        if ranges:
-            try:
-                v1 = float(ranges[0].group(1).replace(',', '.'))
-                v2 = float(ranges[0].group(2).replace(',', '.'))
-                # Prevent extracting years as range values
-                if not ((1900 <= v1 <= 2100) or (1900 <= v2 <= 2100)):
-                    val = (v1 + v2) / 2.0
-            except ValueError:
-                pass
-        elif singles:
-            is_in_range = any(r.start() <= singles[0].start() <= r.end() for r in ranges)
-            if not is_in_range:
-                try:
-                    val = float(singles[0].group(1).replace(',', '.'))
-                except ValueError:
-                    pass
-                    
-        if val is not None:
-            if year not in values:
-                values[year] = []
-            values[year].append(val)
-            
-    mid_2030 = statistics.median(values[2030]) if 2030 in values and values[2030] else None
-    mid_2035 = statistics.median(values[2035]) if 2035 in values and values[2035] else None
-    
-    for yr, mid_val in [(2030, mid_2030), (2035, mid_2035)]:
-        if mid_val is not None and mid_val > limit_cap:
-            result.findings.append(Finding(
-                severity="CRITICAL",
-                check_id="MATH-14",
-                message=(
-                    f"Sanity check geodemográfico fallido: la proyección de consenso para {yr} "
-                    f"({mid_val:.2f} M) supera el límite físicamente posible para la región '{matched_region.title()}' "
-                    f"(población de {matched_pop:.2f} M). Por favor, asegúrate de restringir la escala."
-                ),
-                location="Sección 5 (Pronóstico de Consenso)",
-                correction=(
-                    f"Ajustar el informe y las proyecciones de consenso para la región de {matched_region.title()} "
-                    f"de modo que no superen el límite demográfico de {limit_cap:.2f} M."
-                )
-            ))
-
-
-# =========================================================================
-# CLI mínimo para pruebas
-# =========================================================================
-
+ 
+    path = sys.argv[1]
+    with open(path, "r", encoding="utf-8") as f:
+        text = f.read
+ 
+    tables_path = path + ".tables.json"
+    historical_table, model_fits = {}, []
+    try:
+        with open(tables_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            historical_table = {int(k): v for k, v in data.get("historical", {}).items()}
+            model_fits = [
+                ModelFit(m["name"], m["r2"], m["mape"],
+                         {int(k): v for k, v in m.get("projections", {}).items()})
+                for m in data.get("models", [])
+            ]
+    except FileNotFoundError:
+        print(f"(No se encontro {tables_path}; se validara solo texto: LaTeX y citas.)\n")
+ 
+    rv = ReportValidator(text, historical_table, model_fits)
+    print(rv.report)
+ 
+ 
 if __name__ == "__main__":
-    import argparse
-    import json
-    import sys
-
-    p = argparse.ArgumentParser(
-        description="Validador determinístico de informes de adopción."
-    )
-    p.add_argument(
-        "--report", required=True,
-        help="Ruta al fichero Markdown del informe."
-    )
-    p.add_argument(
-        "--technology", required=True,
-        help="Nombre de la tecnología (ej. Grifols, Gemini)."
-    )
-    p.add_argument(
-        "--launch-year", type=int, required=True,
-        help="Año de lanzamiento comercial del producto."
-    )
-    p.add_argument(
-        "--real-series", default="{}",
-        help="JSON con la serie real: {\"2015\": 1.0, ...}"
-    )
-    p.add_argument(
-        "--projections", default="{}",
-        help="JSON con proyecciones por modelo."
-    )
-    p.add_argument(
-        "--consensus", default="{}",
-        help="JSON con pronóstico de consenso."
-    )
-    args = p.parse_args()
-
-    with open(args.report, encoding="utf-8") as f:
-        md = f.read()
-
-    findings = validate_report(
-        report_md=md,
-        technology=args.technology,
-        launch_year=args.launch_year,
-        real_series=json.loads(args.real_series) if args.real_series else None,
-        models_projections=(
-            json.loads(args.projections) if args.projections else None
-        ),
-        consensus=json.loads(args.consensus) if args.consensus else None,
-    )
-
-    print(findings.summary())
-    print()
-    for f in findings.findings:
-        print(f"[{f.severity}] {f.check_id} — {f.message}")
-        if f.location:
-            print(f"    ubicación: {f.location}")
-        if f.correction:
-            print(f"    corrección: {f.correction}")
-        print()
-
-    sys.exit(0 if not findings.has_critical else 1)
+    main

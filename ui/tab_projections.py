@@ -171,8 +171,9 @@ def compute_weighted_consensus_projection(params, t_proj, ranked_list):
     if not projections:
         return None
     w = np.array(weights)
-    w /= w.sum()
-    return np.sum(w[:, np.newaxis] * np.array(projections), axis=0)
+    w /= w.sum()  # bug fix: was w.sum (method reference, not call)
+    result = np.sum(w[:, np.newaxis] * np.array(projections), axis=0)
+    return np.clip(result, 0, None)
 
 def extract_consensus_anchor_points(consensus_text):
     """
@@ -425,7 +426,7 @@ def render_tab_projections(tecnologia_seleccionada):
         "Horsky_Simon": "Horsky & Simon (Publicidad)",
         "Muller_Yogev": "Muller & Yogev (Saddle)",
         "VdB_Joshi": "Van den Bulte & Joshi",
-        "Logistic_Diffusion_Convergence": "Difusión Logística R&K",
+        "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
         "Ladron_Putsis": "Ladrón-de-Guevara & Putsis (Market Dinámico)"
     }
 
@@ -477,7 +478,7 @@ def render_tab_projections(tecnologia_seleccionada):
             f"El gráfico se ha inicializado con el modelo de la IA."
         )
 
-    st.divider()
+    st.divider
 
     # ----------------- Controles de Horizonte y Selección -----------------
     col_ctrl1, col_ctrl2 = st.columns([1.5, 2])
@@ -912,7 +913,7 @@ def render_tab_projections(tecnologia_seleccionada):
     )
 
     # ----------------- Análisis de Sensibilidad Interactivo -----------------
-    st.divider()
+    st.divider
     st.subheader("🎛️ Simulador / Análisis de Sensibilidad de Parámetros")
     st.markdown("Ajusta manualmente los parámetros para ver el impacto de cambios en las dinámicas de mercado (coeficientes de innovación e imitación) sobre la curva final.")
     

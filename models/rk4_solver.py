@@ -18,7 +18,7 @@ def dual_market_bass(t, m1, p1, q1, m2, p2, q2):
 
 def logistic_diffusion_convergence(t, b1, b0, k2, t0):
     """
-    Modelo Logístico de Difusión-Convergencia (Ryu & Kim, 2025)
+    Modelo Logístico de Convergencia
     """
     b0 = max(b0, 1e-8)
     b1 = max(b1, b0 + 1e-8)

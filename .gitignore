@@ -25,3 +25,9 @@ env/
 scratch/
 .system_generated/
 .gemini/
+.env
+.streamlit/secrets.toml
+__pycache__/
+*.pyc
+Bass_recovered/
+*.patch

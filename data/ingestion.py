@@ -19,6 +19,12 @@ def insertar_historico_db(tech, datos_json):
         # Primero eliminar registros anteriores para esta tecnología normalizada para evitar conflictos UNIQUE
         cursor.execute("DELETE FROM historical_adoption WHERE LOWER(TRIM(tecnologia)) = %s", (tech_norm,))
         
+        # Filtrar ceros iniciales excesivos: mantener máximo 1 año cero previo al primer año con adopción > 0
+        non_zero_indices = [i for i, d in enumerate(datos_json) if float(d.get("usuarios_millones", 0)) > 0]
+        if non_zero_indices and non_zero_indices[0] > 1:
+            first_nz = non_zero_indices[0]
+            datos_json = datos_json[first_nz - 1:]
+
         prev_acumulada = 0.0
         records = []
         for d in datos_json:
@@ -37,6 +43,7 @@ def insertar_historico_db(tech, datos_json):
                 adopcion_acumulada = EXCLUDED.adopcion_acumulada,
                 updated_at = now();
         """, records)
+        db_conn.commit()
         cursor.close()
         logger.info(f"Datos históricos insertados correctamente para la tecnología: {tech_norm}")
         return True
@@ -58,6 +65,7 @@ def guardar_analisis_cualitativo(tech, analisis_text):
             ON CONFLICT (tecnologia) 
             DO UPDATE SET analisis = EXCLUDED.analisis, fecha_analisis = now()
         """, (tech_norm, analisis_text))
+        db_conn.commit()
         cursor.close()
         logger.info(f"Análisis cualitativo guardado para la tecnología: {tech_norm}")
         return True
@@ -79,6 +87,7 @@ def guardar_consenso_forecast(tech, consenso_text):
             ON CONFLICT (tecnologia) 
             DO UPDATE SET consenso = EXCLUDED.consenso, fecha_calculo = now()
         """, (tech_norm, consenso_text))
+        db_conn.commit()
         cursor.close()
         logger.info(f"Pronóstico de consenso guardado para la tecnología: {tech_norm}")
         return True
@@ -102,6 +111,7 @@ def eliminar_tecnologia(tech):
         # Eliminar papers relacionados (la tabla embeddings tiene cascade delete)
         cursor.execute("DELETE FROM papers_metadata WHERE LOWER(TRIM(tecnologia)) = %s", (tech_norm,))
         
+        db_conn.commit()
         cursor.close()
         logger.info(f"Tecnología '{tech_norm}' y sus datos asociados eliminados de forma permanente.")
         return True
@@ -249,6 +259,7 @@ def guardar_parametros_db(tech, fits):
             query = f"INSERT INTO model_parameters ({', '.join(cols)}) VALUES ({placeholders})"
             cursor.execute(query, vals)
             
+        db_conn.commit()
         cursor.close()
         logger.info(f"Parámetros de modelos guardados para la tecnología: {tech_norm}")
         return True

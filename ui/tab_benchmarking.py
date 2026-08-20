@@ -92,7 +92,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
         "Horsky_Simon": "Horsky & Simon (Publicidad)",
         "Muller_Yogev": "Muller & Yogev (Saddle)",
         "VdB_Joshi": "Van den Bulte & Joshi",
-        "Logistic_Diffusion_Convergence": "Difusión Logística R&K",
+        "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
         "Ladron_Putsis": "Ladrón-de-Guevara & Putsis (Market Dinámico)",
         "Consenso IA": "Consenso IA (Anclado al Informe)",
         "Consenso Matemático": "Consenso Ponderado Matemático"
@@ -128,7 +128,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 params_temp = load_model_parameters(tech)
                 best_temp, _ = rank_and_select_best_model(params_temp)
                 custom_models[tech] = st.selectbox(
-                    f"Modelo para {tech.title()}",
+                    f"Modelo para {tech.title}",
                     options=list(model_labels.keys()),
                     index=list(model_labels.keys()).index(best_temp) if best_temp in model_labels else 0,
                     key=f"bench_custom_model_{tech}"
@@ -296,7 +296,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 x=data["anios_reales"],
                 y=data["reales"],
                 mode='markers',
-                name=f"{tech.title()} (Histórico)",
+                name=f"{tech.title} (Histórico)",
                 marker=dict(color=color, size=8, symbol='circle')
             ))
             
@@ -305,7 +305,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 x=data["anios_proj"],
                 y=data["proj"],
                 mode='lines',
-                name=f"{tech.title()} ({model_labels[data['modelo_usado']]})",
+                name=f"{tech.title} ({model_labels[data['modelo_usado']]})",
                 line=dict(color=color, width=2.5)
             ))
             
@@ -345,7 +345,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 y=df_share[f"{tech}_pct"],
                 mode='lines',
                 stackgroup='one', # Habilita stacked area
-                name=f"{tech.title()} (%)",
+                name=f"{tech.title} (%)",
                 line=dict(color=color, width=1.5),
                 hoverinfo='x+y+name'
             ))
@@ -380,7 +380,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
         val_map = dict(zip(data["anios_proj"], data["proj"]))
         hist_years = set(data["anios_reales"])
 
-        col_name = f"{tech.title()} (M)"
+        col_name = f"{tech.title} (M)"
         vals_list = []
         for y in milestone_years:
             val = val_map.get(y, 0.0)
@@ -392,7 +392,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
     st.markdown(dark_table_html(df_milestones), unsafe_allow_html=True)
 
     # 7. Análisis RAG / IA de Consenso Comparativo
-    st.divider()
+    st.divider
     st.markdown("#### Análisis de Consenso e Inteligencia Competitiva")
     st.markdown("Solicita un informe comparativo a la IA para interpretar la dinámica de adopción, contrastar los coeficientes $p$ y $q$ de las marcas, y estimar tendencias estratégicas.")
     
@@ -437,7 +437,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 proj_10_idx = min(len(data["anios_reales"]) + 9, len(data["proj"]) - 1)
                 
                 brief_brands.append(
-                    f"- **Tecnología/Marca**: {tech.upper()}\n"
+                    f"- **Tecnología/Marca**: {tech.upper}\n"
                     f"  - Modelo Proyección Usado: {model_labels[m_usado]}\n"
                     f"  - Historial (años): {data['anios_reales']}\n"
                     f"  - Valores Reales (millones): {data['reales']}\n"

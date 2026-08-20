@@ -54,6 +54,8 @@ if "supabase.com" in str(PG_HOST):
 logger.info(f"Conectando a base de datos: host={PG_HOST}, database={PG_DATABASE}, user={PG_USER}, port={PG_PORT}")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") or GEMINI_API_KEY
+if GEMINI_API_KEY:
+    os.environ["GEMINI_API_KEY"] = GEMINI_API_KEY
 
 conn_dict = {
     "host": PG_HOST,

@@ -51,7 +51,7 @@ PLOTLY_DARK = dict(
 )
 
 
-def apply_dark_theme(fig: go.Figure, **layout_overrides) -> go.Figure:
+def apply_dark_theme(fig: go.Figure(), **layout_overrides) -> go.Figure():
     """
     Apply the MercadoXR-inspired dark theme to a Plotly figure.
     """

@@ -121,7 +121,7 @@ def apply_deterministic_corrections(report_md: str, result: ValidationResult) ->
                 return m.group(1) + " Por coherencia teórica, no por mejor ajuste empírico, se adopta el modelo recomendado como modelo ideal de difusión."
             fixed_md = _overfit_pat.sub(_inject_clause, fixed_md, count=1)
 
-    # 5. Parches MATH-09 (Cláusula estándar por elección teórica R&K)
+    # 5. Parches MATH-09 (Cláusula estándar por elección teórica )
     for f in result.findings:
         if f.check_id == "MATH-09" and f.correction:
             if "Nota estándar (MATH-09)" not in fixed_md:
@@ -132,7 +132,7 @@ def apply_deterministic_corrections(report_md: str, result: ValidationResult) ->
                     clean_note = f"Nota estándar (MATH-09): {quote_match.group(1)}"
                 else:
                     # Fallback
-                    clean_note = f.correction.replace("Nota estándar (MATH-09): cuando se descarta un modelo con mejor R²/MAPE que el modelo finalmente recomendado (p. ej. la Difusión Logística R&K... frente al modelo elegido), el informe debe declarar explicitamente que la elección se hace 'por coherencia teórica con la dinámica del mercado, no por mejor ajuste empírico'. Por ejemplo: ", "")
+                    clean_note = f.correction.replace("Nota estándar (MATH-09): cuando se descarta un modelo con mejor R²/MAPE que el modelo finalmente recomendado (p. ej. la Modelo Logístico de Convergencia... frente al modelo elegido), el informe debe declarar explicitamente que la elección se hace 'por coherencia teórica con la dinámica del mercado, no por mejor ajuste empírico'. Por ejemplo: ", "")
                     clean_note = clean_note.strip(' "')
                     clean_note = f"Nota estándar (MATH-09): {clean_note}"
 
@@ -168,7 +168,7 @@ def apply_deterministic_corrections(report_md: str, result: ValidationResult) ->
             ("Tanny & Derzko", ["tanny & derzko", "tanny derzko"]),
             ("Steffens & Murthy", ["steffens & murthy", "steffens murthy"]),
             ("Ladrón-de-Guevara & Putsis", ["ladrón-de-guevara", "ladrón de guevara", "ladron putsis", "ladron"]),
-            ("Difusión Logística R&K", ["logístico", "logistic", "ryu & kim", "difusión logística", "logística", "logistica"]),
+            ("Modelo Logístico de Convergencia", ["logístico", "logistic", "ryu & kim", "difusión logística", "logística", "logistica"]),
             ("Bass Clásico", ["bass clásico", "bass clasico", "bass estándar"]),
         ]
         sentences = re.split(r'[.\n]', text)
@@ -286,7 +286,7 @@ def apply_deterministic_corrections(report_md: str, result: ValidationResult) ->
     if _ldg_bullet_neg in fixed_md:
         fixed_md = fixed_md.replace(_ldg_bullet_neg, _ldg_bullet_pos)
 
-    # General regex replacement to soften grouping of Bass/R&K with LdG&P in Section 5
+    # General regex replacement to soften grouping of Bass/ with LdG&P in Section 5
     _group_pattern = re.compile(
         r"Modelos\s+como\s+el\s+de\s+Bass\s+Cl[aá]sico\s+o\s+Ladr[oó]n-de-Guevara\s+&\s+Putsis\s+presentan\s+excelentes\s+m[eé]tricas\s+estad[ií]sticas\s*\(\s*R[²2]\s*>\s*0\.990\s*\)\s*,\s+pero",
         re.IGNORECASE
