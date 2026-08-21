@@ -199,7 +199,11 @@ class ReportValidator:
         if not per_year:
             return
         vals = list(per_year.values())
-        tol = max(1.0, 0.02 * max(vals))
+        # [FIX ronda-3] Tolerancia escalada a la DISPERSIÓN de los valores,
+        # no al 2% del máximo: con totales ~5000M y saltos interanuales ~60M,
+        # tol=100M hace colisionar incrementos legítimos con totales.
+        vals_span = (max(vals) - min(vals)) if len(vals) > 1 else max(vals)
+        tol = max(1.0, 0.01 * abs(vals_span))
         years = sorted(per_year)
         valid_incs = []
         for i, y in enumerate(years):

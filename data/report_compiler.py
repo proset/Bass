@@ -584,8 +584,13 @@ def compilar_informe_global(tech):
         canonical_block = (
             "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
             f"- Último dato REAL: {_last_val:.1f}M en {_last_yr}.\n"
-            f"- Proyección del modelo recomendado ({recommended_model_name}): "
-            f"2031 = {_v2031:.1f}M; 2036 = {_v2036:.1f}M.\n"
+            f"- Proyecciones del modelo recomendado ({recommended_model_name}) "
+            f"por año — CITA EXACTAMENTE el valor del año que menciones; NUNCA "
+            f"uses el valor de otro modelo de la tabla:\n"
+            + "".join(
+                f"  - {int(_r['Año'])}: {float(_r[_rec_col]):.1f}M\n"
+                for _, _r in df_proj.iterrows() if _rec_col in df_proj.columns
+            ) +
             f"- Incremento {_last_yr}->2031: {_v2031 - _last_val:.1f}M.\n"
             f"- Incremento 2031->2036: {_v2036 - _v2031:.1f}M.\n"
             f"- Techo de mercado a 2036 ({recommended_model_name}): {_v2036:.1f}M.\n"
@@ -627,6 +632,34 @@ def compilar_informe_global(tech):
         return m.group(0)
 
 
+
+    # ==================================================================
+    # [R2.5] Consenso auto-regenerado (parche C): si el consenso heredado
+    # proviene de otra generación de datos (metadata con last_hist_year
+    # distinto al último año real de la serie actual), sus cifras están
+    # huérfanas — se regenera de cero con las proyecciones actuales vía
+    # el generador original de agosto (ai/analysis.py).
+    # ==================================================================
+    try:
+        from ai.analysis import generar_consenso_pronostico_ia
+        _meta_cons = extract_consensus_metadata(consenso_forecast)
+        _serie_last_yr = int(anios_reales[-1])
+        _stale = (
+            _meta_cons
+            and _meta_cons.get("last_hist_year") is not None
+            and int(_meta_cons.get("last_hist_year")) != _serie_last_yr
+        )
+        if _stale or not consenso_forecast or consenso_forecast.strip() in ("", "No disponible."):
+            _df_hist = pd.DataFrame(rows_hist)
+            consenso_forecast = generar_consenso_pronostico_ia(
+                tech, _df_hist, params, analisis_cualitativo
+            )
+            print(f"[R2.5] Consenso obsoleto detectado (metadata last_hist_year="
+                  f"{_meta_cons.get('last_hist_year') if _meta_cons else 'N/A'}): regenerado "
+                  f"contra serie actual (último año {_serie_last_yr}).")
+    except Exception as _e_cons:
+        print(f"[WARN] R2.5: regeneración de consenso falló ({_e_cons}); "
+              f"se continúa con el consenso heredado y su corrección LLM.")
 
     # ==================================================================
     # [R2.2] Correcciones LLM de primera pasada (agosto): las narrativas
