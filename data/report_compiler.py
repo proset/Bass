@@ -370,12 +370,14 @@ def compilar_informe_global(tech):
     model_labels = {
         "Bass_Clasico": "Bass Clásico",
         "Dual_Market": "Dual Market",
-        "Tanny_Derzko": "Tanny & Derzko",
-        "Steffens_Murthy": "Steffens & Murthy",
+        "Fourt_Woodlock": "Fourt & Woodlock",
+        "Gompertz": "Gompertz",
+        "Generalized_Bass": "Bass Generalizado (GBM)",
+        "Horsky_Simon": "Horsky & Simon",
         "Muller_Yogev": "Muller & Yogev",
         "VdB_Joshi": "Van den Bulte & Joshi",
         "Logistic_Diffusion_Convergence": "Difusión Logística R&K",
-        "Ladron_Putsis": "Ladrón-de-Guevara & Putsis"
+        "Ladron_Putsis": "Ladrón-de-Guevara & Putsis",
     }
     
     summary_rows = []
