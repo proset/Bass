@@ -652,7 +652,9 @@ def compilar_informe_global(tech):
             and int(_meta_cons.get("last_hist_year")) != _serie_last_yr
         )
         if _stale or not consenso_forecast or consenso_forecast.strip() in ("", "No disponible."):
-            _df_hist = pd.DataFrame(rows_hist)
+            _df_hist = pd.DataFrame(
+                [{"anio": r["anio"], "adopcion_acumulada": float(r["adopcion_acumulada"])} for r in rows_hist]
+            )
             consenso_forecast = generar_consenso_pronostico_ia(
                 tech, _df_hist, params, analisis_cualitativo
             )
