@@ -655,8 +655,11 @@ def compilar_informe_global(tech):
             _df_hist = pd.DataFrame(
                 [{"anio": r["anio"], "adopcion_acumulada": float(r["adopcion_acumulada"])} for r in rows_hist]
             )
+            _label_to_key = {v: k for k, v in model_labels.items()}
+            _rec_key = _label_to_key.get(recommended_model_name, None)
             consenso_forecast = generar_consenso_pronostico_ia(
-                tech, _df_hist, params, analisis_cualitativo
+                tech, _df_hist, params, analisis_cualitativo,
+                recommended_model_key=_rec_key,
             )
             print(f"[R2.5] Consenso obsoleto detectado (metadata last_hist_year="
                   f"{_meta_cons.get('last_hist_year') if _meta_cons else 'N/A'}): regenerado "

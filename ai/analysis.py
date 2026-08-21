@@ -275,7 +275,7 @@ def _select_recommended_model(params, df_hist):
     return best_key, name_map.get(best_key, best_key)
 
 
-def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo):
+def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo, recommended_model_key=None):
     """
     Integra las proyecciones cuantitativas de los modelos matemáticos
     con el informe cualitativo para generar un Pronóstico de Consenso unificado.
@@ -299,7 +299,27 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo):
     model_vals = {}
 
     # Selección determinista del modelo recomendado (aplica reglas del árbol de decisión)
-    preselected_key, preselected_name = _select_recommended_model(params, df_hist)
+    # [PARCHE F] El modelo recomendado lo decide el MOTOR (score compuesto GLM),
+    # no el árbol interno: una sola fuente de verdad para todo el sistema.
+    # El árbol queda como fallback para callers sin recomendación explícita.
+    if recommended_model_key and recommended_model_key in params:
+        preselected_key = recommended_model_key
+        _label_map = {
+            "Bass_Clasico": "Bass Clásico",
+            "Dual_Market": "Dual Market (Roset & Canals)",
+            "Fourt_Woodlock": "Fourt & Woodlock",
+            "Gompertz": "Gompertz",
+            "Generalized_Bass": "Bass Generalizado (GBM)",
+            "Horsky_Simon": "Horsky & Simon",
+            "Steffens_Murthy": "Steffens & Murthy",
+            "Muller_Yogev": "Muller & Yogev",
+            "VdB_Joshi": "Van den Bulte & Joshi",
+            "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
+            "Ladron_Putsis": "Ladrón-de-Guevara & Putsis",
+        }
+        preselected_name = _label_map.get(preselected_key, preselected_key)
+    else:
+        preselected_key, preselected_name = _select_recommended_model(params, df_hist)
     
     for m_key, p in params.items():
         r2 = p.get('r_cuadrado', 0)
