@@ -634,15 +634,17 @@ def compilar_informe_global(tech):
 
 
     # ==================================================================
-    # [R2.5] Consenso auto-regenerado (parche C): si el consenso heredado
-    # proviene de otra generación de datos (metadata con last_hist_year
-    # distinto al último año real de la serie actual), sus cifras están
-    # huérfanas — se regenera de cero con las proyecciones actuales vía
-    # el generador original de agosto (ai/analysis.py).
+    # [R2.5] Consenso auto-regenerado (parche C, rev D): el selector por
+    # score (Tanda 1) ya eliminó el header de metadata del texto cargado,
+    # por lo que el metadata debe leerse de la fuente original (BD).
     # ==================================================================
     try:
         from ai.analysis import generar_consenso_pronostico_ia
-        _meta_cons = extract_consensus_metadata(consenso_forecast)
+        _cur_cons = conn.cursor(cursor_factory=DictCursor)
+        _cur_cons.execute("SELECT consenso FROM consensus_forecast WHERE tecnologia = %s", (tech,))
+        _row_cons_raw = _cur_cons.fetchone()
+        _cons_raw = _row_cons_raw["consenso"] if _row_cons_raw else None
+        _meta_cons = extract_consensus_metadata(_cons_raw) if _cons_raw else None
         _serie_last_yr = int(anios_reales[-1])
         _stale = (
             _meta_cons
