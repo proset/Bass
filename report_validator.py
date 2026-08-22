@@ -57,6 +57,7 @@ class ModelFit:
     r2: float
     mape: float
     projections: Dict[int, float] = field(default_factory=dict)  # {year: value_millones}
+    score: Optional[float] = None
  
  
 # Referencias academicas reales conocidas para el dominio de modelos de difusion.
