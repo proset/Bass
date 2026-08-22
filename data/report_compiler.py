@@ -236,6 +236,8 @@ def fix_historical_increments(text, anios_reales, y_true):
 
 def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
     """[GLM-PATCH] Wrapper LLM: corrige el análisis cualitativo contra la serie real."""
+    _hist_years = sorted(int(_y) for _y in real_series.keys())
+    _hist_range = f"{_hist_years[0]} a {_hist_years[-1]}" if len(_hist_years) > 1 else f"{_hist_years[0]}"
     try:
         series_str = "\n".join(f"- {yr}: {val}M" for yr, val in sorted(real_series.items()))
         prompt = (
@@ -244,7 +246,7 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             f"{series_str}\n"
             f"{canonical_block}"
             "--- REGLAS DE CORRECCIÓN ---\n"
-            "1. Si el texto menciona cifras de adopción/usuarios acumulados anuales para un año (de 2015 a 2026), ajusta el valor en el texto para que coincida exactamente con el de la serie real de referencia.\n"
+            f"1. Si el texto menciona cifras de adopción/usuarios acumulados anuales para un año (años históricos: {_hist_range}), ajusta el valor en el texto para que coincida exactamente con el de la serie real de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o hitos específicos de lanzamiento en meses individuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción anual acumulada total al cierre del año.\n"
             "2. Si el texto menciona años o hitos que contradicen la serie (por ejemplo, decir que en 2020 no había usuarios cuando la serie registra 345M), reescribe la frase para mantener la coherencia.\n"
             "3. No inventes datos ni menciones cifras de años que no están en la serie.\n"
@@ -312,7 +314,7 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- ERRORES/BLOCKERS DETECTADOS (DEBES CORREGIR CADA UNO DE ELLOS) ---\n"
             f"{blockers_text}\n"
             "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
-            "1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
+            f"1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
             "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años posteriores a {_hist_years[-1]}: desde {_hist_years[-1] + 1} en adelante) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
             "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
@@ -542,11 +544,15 @@ def compilar_informe_global(tech, force_consenso=False):
         except (TypeError, ValueError):
             mape_fit = 999.0
 
+        _sv = _score_val({'Score': p.get('score')}) if p.get('score') is not None else -1e9
+        score_val = _sv if _sv > -1e8 else None
+
         model_fits_obj.append(ModelFit(
             name=model_labels[m_key],
             r2=r2,
             mape=mape_fit,
             projections=projections,
+            score=score_val
         ))
 
     # Identificar modelo recomendado para alinear Sección 6
