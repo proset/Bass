@@ -334,7 +334,7 @@ def _score_val(r):
     except Exception:
         return -1e9
 
-def compilar_informe_global(tech):
+def compilar_informe_global(tech, force_consenso=False):
     conn = get_conn()
     cursor = conn.cursor(cursor_factory=DictCursor)
     
@@ -488,7 +488,7 @@ def compilar_informe_global(tech):
         _pairs = "; ".join(" ≈ ".join(names) for names in collapsed_groups)
         methodology_note = (
             "\n> **Nota Metodológica:** los modelos "
-            f"{_pairs} presentan métricas de ajuste idénticas. Con series "
+            f"{_pairs} presentan métricas de ajuste prácticamente idénticas. Con series "
             "históricas cortas, los modelos estructuralmente más complejos pueden "
             "converger a soluciones paramétricamente degeneradas, reduciéndose "
             "matemáticamente a formulaciones más simples. Esta coincidencia no "
@@ -679,7 +679,7 @@ def compilar_informe_global(tech):
             and _meta_cons.get("last_hist_year") is not None
             and int(_meta_cons.get("last_hist_year")) != _serie_last_yr
         )
-        if _stale or not consenso_forecast or consenso_forecast.strip() in ("", "No disponible."):
+        if force_consenso or _stale or not consenso_forecast or consenso_forecast.strip() in ("", "No disponible."):
             _df_hist = pd.DataFrame(
                 [{"anio": r["anio"], "adopcion_acumulada": float(r["adopcion_acumulada"])} for r in rows_hist]
             )
