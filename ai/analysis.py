@@ -404,6 +404,22 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo, 
         _best_pair = max(model_vals.values(), key=lambda v: v[0])
         _proj_5, _proj_10 = _best_pair[0], _best_pair[1]
 
+    # --- [FIX 2] Canonical block: serie histórica + regla total-vs-incremento ---
+    serie_hist_canonica = (
+        "Serie histórica completa (adopción ACUMULADA, en millones):\n"
+        + "\n".join(
+            f"- {int(row['anio'])}: {float(row['adopcion_acumulada']):.2f} M"
+            for _, row in df_hist.iterrows()
+        )
+    )
+    regla_total_vs_incremento = (
+        "REGLA CRÍTICA (total vs incremento): NUNCA cites un incremento "
+        "anual como valor acumulado: el valor de un año histórico es el "
+        "acumulado de la serie, no la diferencia con el año anterior. "
+        "Ejemplo: si la serie dice 2025: 700M, la adopción acumulada de "
+        "2025 ES 700M, no 400M."
+    )
+
     prompt = f"""
     Actúa como un Director de Inteligencia de Mercado y Planificación Estratégica de Alteroids. 
     Tu tarea es redactar un **Pronóstico de Consenso y Perspectiva Futura Integrada** para la tecnología: "{tech}".
@@ -432,6 +448,10 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo, 
     
     #### 2. Proyección de Consenso Razonada (Escenario Base)
     Establece un pronóstico definitivo de consenso para los próximos 5 años ({anio_5}) y 10 años ({anio_10}). CRÍTICO: Las proyecciones de crecimiento futuro y sus narrativas comienzan estrictamente a partir del año {ultimo_anio + 1}. El año {ultimo_anio} es un dato consolidado y no debe tratarse jamás como "crecimiento proyectado". Este pronóstico DEBE usar obligatoriamente el modelo **{preselected_name}** con las cifras exactas: {anio_5} = {_proj_5:.2f} M, {anio_10} = {_proj_10:.2f} M. No uses otras cifras ni rangos inventados.
+    
+    {serie_hist_canonica}
+    
+    {regla_total_vs_incremento}
     
     #### 3. Drivers de Mercado y Disparadores Tecnológicos
     Identifica qué factores específicos acelerarán la difusión o la frenarán.
