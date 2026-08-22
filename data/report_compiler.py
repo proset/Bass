@@ -300,6 +300,8 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
         tables_summary = (historical_table_to_summary(real_series)
                           + "\n" + model_fits_to_summary(model_fits_obj))
         blockers_text = "\n".join(f"- {b}" for b in blockers)
+        _hist_years = sorted(int(_y) for _y in real_series.keys())
+        _hist_range = f"{_hist_years[0]} a {_hist_years[-1]}" if len(_hist_years) > 1 else f"{_hist_years[0]}"
         prompt = (
             "Eres un auditor y editor experto en consistencia de informes de mercado. \n"
             "Tu tarea es corregir la narrativa de este reporte de adopción tecnológica para eliminar CUALQUIER incoherencia numérica o contradicción.\n\n"
@@ -310,9 +312,9 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- ERRORES/BLOCKERS DETECTADOS (DEBES CORREGIR CADA UNO DE ELLOS) ---\n"
             f"{blockers_text}\n"
             "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
-            "1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años pasados/presentes como 2015 a 2026) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
+            "1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
-            "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años 2027 a 2038) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
+            "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años posteriores a {_hist_years[-1]}: desde {_hist_years[-1] + 1} en adelante) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
             "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
             "3. No inventes unidades (como porcentajes '%'). Si los datos de referencia están en millones (M), mantén todos los números de adopción y proyecciones en millones (M) en todo el texto.\n"
             "4. NO modifiques las tablas markdown oficiales ni las ecuaciones de LaTeX ni las cabeceras de sección.\n"
@@ -603,35 +605,63 @@ def compilar_informe_global(tech, force_consenso=False):
     # (Fase R2 los garantiza tras las proyecciones). Hasta entonces, cadena
     # vacía: los prompts no cambian y el flujo de julio no se rompe.
     try:
-        _anchor31 = df_proj[df_proj['Año'] == 2031]
-        _anchor36 = df_proj[df_proj['Año'] == 2036]
-        _rec_col = f"{recommended_model_name} (M)"
-        _v2031 = float(_anchor31[_rec_col].values[0]) if (not _anchor31.empty and _rec_col in df_proj.columns) else None
-        _v2036 = float(_anchor36[_rec_col].values[0]) if (not _anchor36.empty and _rec_col in df_proj.columns) else None
         _last_yr, _last_val = int(anios_reales[-1]), float(y_true[-1])
+        _prev_val = float(y_true[-2]) if len(y_true) > 1 else 0.0
+        _yr5, _yr10 = _last_yr + 5, _last_yr + 10
+        _rec_col = f"{recommended_model_name} (M)"
+        _row5 = df_proj[df_proj['Año'] == _yr5]
+        _row10 = df_proj[df_proj['Año'] == _yr10]
+        _v5 = float(_row5[_rec_col].values[0]) if (not _row5.empty and _rec_col in df_proj.columns) else None
+        _v10 = float(_row10[_rec_col].values[0]) if (not _row10.empty and _rec_col in df_proj.columns) else None
+        _serie_hist_txt = "".join(
+            f"  - {int(_y)}: {float(_v):.1f}M\n"
+            for _y, _v in zip(anios_reales, y_true)
+        )
+        _proj_txt = "".join(
+            f"  - {int(_r['Año'])}: {float(_r[_rec_col]):.1f}M\n"
+            for _, _r in df_proj.iterrows() if _rec_col in df_proj.columns
+        )
+        _extras = ""
+        if _v5 is not None:
+            _extras += f"- Incremento {_last_yr}->{_yr5}: {_v5 - _last_val:.1f}M.\n"
+        if (_v5 is not None) and (_v10 is not None):
+            _extras += f"- Incremento {_yr5}->{_yr10}: {_v10 - _v5:.1f}M.\n"
+        if _v10 is not None:
+            _extras += f"- Techo de mercado a {_yr10} ({recommended_model_name}): {_v10:.1f}M.\n"
         canonical_block = (
             "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
+            "- Serie histórica REAL completa (adopción ACUMULADA, en M):\n"
+            f"{_serie_hist_txt}"
+            f"- REGLA total-vs-incremento: NUNCA cites un incremento anual como valor "
+            f"acumulado: el valor de un año histórico es el acumulado de la serie, no la "
+            f"diferencia con el año anterior. Ejemplo: si la serie dice {_last_yr}: "
+            f"{_last_val:.1f}M, la adopción acumulada de {_last_yr} ES {_last_val:.1f}M, "
+            f"no {(_last_val - _prev_val):.1f}M.\n"
             f"- Último dato REAL: {_last_val:.1f}M en {_last_yr}.\n"
             f"- Proyecciones del modelo recomendado ({recommended_model_name}) "
             f"por año — CITA EXACTAMENTE el valor del año que menciones; NUNCA "
             f"uses el valor de otro modelo de la tabla:\n"
-            + "".join(
-                f"  - {int(_r['Año'])}: {float(_r[_rec_col]):.1f}M\n"
-                for _, _r in df_proj.iterrows() if _rec_col in df_proj.columns
-            ) +
-            f"- Incremento {_last_yr}->2031: {_v2031 - _last_val:.1f}M.\n"
-            f"- Incremento 2031->2036: {_v2036 - _v2031:.1f}M.\n"
-            f"- Techo de mercado a 2036 ({recommended_model_name}): {_v2036:.1f}M.\n"
+            f"{_proj_txt}"
+            f"{_extras}"
             "- REGLA: nunca cites un total proyectado como si fuera un incremento; "
-            "nunca intercambies los valores de 2031 y 2036.\n"
+            "nunca intercambies los valores de dos años distintos.\n"
             "- JUSTIFICACIÓN DEL MODELO: fue seleccionado por score compuesto (R² 70% + "
             "MAPE ajuste 15% + MAPE backtest 15%, con penalización por exceso de parámetros "
             "sobre los grados de libertad). Si otros modelos muestran mejor MAPE o R² brutos, "
             "RECONÓCELO explícitamente y explica que la penalización de parsimonia los "
             "descalifica con tan pocas observaciones. La tabla incluye la columna Score."
         )
-    except Exception:
-        canonical_block = ""
+    except Exception as _e_cb:
+        print(f"[WARN] Canonical block completo falló ({_e_cb}): usando bloque mínimo (solo serie histórica).")
+        try:
+            canonical_block = (
+                "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
+                "- Serie histórica REAL completa (adopción ACUMULADA, en M):\n"
+                + "".join(f"  - {int(_y)}: {float(_v):.1f}M\n" for _y, _v in zip(anios_reales, y_true))
+                + "- REGLA total-vs-incremento: NUNCA cites un incremento anual como valor acumulado de un año histórico.\n"
+            )
+        except Exception:
+            canonical_block = ""
 
     def repl_ceiling(m):
         word, val_str, unit = m.group(1), m.group(2), m.group(3)
