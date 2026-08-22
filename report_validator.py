@@ -237,17 +237,17 @@ class ReportValidator:
                     "no con un incremento válido.",
                     evidence=m.group(0)))
 
-    def check_year_value_swap(self, v2031, v2036):
+    def check_year_value_swap(self, v_a, v_b, y_a, y_b):
         """[GLM-PATCH] BLOCKER: cifra asociada (por cercanía de caracteres)
         a un año clave que coincide con el valor del OTRO año clave.
         Detecta 'Proyección para 2031: 4978.27M'."""
-        if v2031 is None or v2036 is None:
+        if v_a is None or v_b is None:
             return
-        gap = abs(v2036 - v2031)
+        gap = abs(v_b - v_a)
         if gap < 1e-6:
             return
-        tol = min(max(1.0, 0.02 * max(v2031, v2036)), gap / 3.0)
-        for year, own, other in ((2031, v2031, v2036), (2036, v2036, v2031)):
+        tol = min(max(1.0, 0.02 * max(v_a, v_b)), gap / 3.0)
+        for year, own, other in ((y_a, v_a, v_b), (y_b, v_b, v_a)):
             for ym in re.finditer(r'\b' + str(year) + r'\b', self.text):
                 ws = max(0, ym.start() - 80)
                 window = self.text[ws: min(len(self.text), ym.end() + 80)]
@@ -565,9 +565,25 @@ class ReportValidator:
  
         findings: Dict[int, List[Tuple[float, str, Tuple[int, int]]]] = {y: [] for y in target_years}
  
+        all_year_positions = [
+            (int(m.group(1)), m.start(), m.end())
+            for m in YEAR_MENTION_PATTERN.finditer(clean_text)
+        ]
         for rep, evidence, n_start, n_end in numeric_mentions:
             # Excluir valores históricos conocidos para evitar falsos positivos en proyecciones futuras
             if self.historical_table and any(abs(rep - hv) / max(hv, 0.01) < 0.02 for hv in self.historical_table.values()):
+                continue
+            # [FIX 5a] Año PROPIO: si la cifra tiene un año (cualquiera) a <30 chars,
+            # pertenece a ese año; si no es un año objetivo, NO contamina al objetivo
+            # más cercano (evita atribuir el valor del bullet 2026/2032 al año 2030).
+            own_year, own_dist = None, None
+            for year, y_start, y_end in all_year_positions:
+                d = min(abs(n_start - y_end), abs(y_start - n_end))
+                if d > 30:
+                    continue
+                if own_dist is None or d < own_dist:
+                    own_year, own_dist = year, d
+            if own_year is not None and own_year not in target_years:
                 continue
             # año objetivo mas cercano a esta mencion numerica (por distancia de caracteres)
             best_year, best_dist = None, None
@@ -773,16 +789,25 @@ class ReportValidator:
             per_year = {int(k): float(v) for k, v in rec.projections.items()}
             last_hist = max(self.historical_table.values()) if self.historical_table else None
             self.check_totals_as_increments(per_year, last_hist)
-            v2031 = per_year.get("2031") or per_year.get(2031)
-            v2036 = per_year.get("2036") or per_year.get(2036)
-            self.check_year_value_swap(v2031, v2036)
+            # [FIX 5b] Años clave dinámicos: +5/+10 desde el último año histórico real
+            # (antes hardcode 2031/2036: check muerto si la serie no termina en 2026).
+            _lh_yr = max(self.historical_table) if self.historical_table else None
+            if _lh_yr is not None:
+                _ya, _yb = _lh_yr + 5, _lh_yr + 10
+                _va = per_year.get(_ya) or per_year.get(str(_ya))
+                _vb = per_year.get(_yb) or per_year.get(str(_yb))
+                self.check_year_value_swap(_va, _vb, _ya, _yb)
 
         self.check_narrative_vs_table()
         self.check_duplicate_models()
         self.check_latex_leakage()
         self.check_math_rendering_corruption()
         self.check_citations()
-        self.check_consensus_consistency()
+        _tgt_years = None
+        if self.historical_table:
+            _lh_c = max(self.historical_table)
+            _tgt_years = [_lh_c + 5, _lh_c + 10]
+        self.check_consensus_consistency(target_years=_tgt_years)
         self.check_qualitative_growth_labels()
         self.check_recommendation_vs_mape()
         return self.issues
