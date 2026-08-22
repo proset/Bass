@@ -234,6 +234,62 @@ def fix_historical_increments(text, anios_reales, y_true):
         text = re.sub(pattern, repl_hist, text, flags=re.IGNORECASE)
     return text
 
+def fix_historical_anchors(text, anios_reales, y_true):
+    """[FIX 4a] Tap determinista: anclas históricas 'X millones ... en/para YYYY'
+    cuyo valor NO coincide con la serie (ej. el incremento 400 citado como
+    acumulado de 2025, que es 700). No toca frases de incremento ni hitos
+    mensuales."""
+    _inc = re.compile(r'aumento|incremento|crecimiento|adici[oó]n|diferencia|salto', re.IGNORECASE)
+    _mes = re.compile(r'enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre', re.IGNORECASE)
+    for yr, val in zip(anios_reales, y_true):
+        pat = re.compile(
+            r'([\s\S]{0,40}?)'
+            r'(?<![\d.])(\d{1,5}(?:[\.,]\d+)?)\s*\**\s*'
+            r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)\s*\**'
+            r'([\s\S]{0,45}?\b(?:en|para|durante)\s+\**\s*' + str(int(yr)) + r'\b)',
+            re.IGNORECASE)
+        def repl(m, _val=float(val)):
+            try:
+                v = float(m.group(2).replace(',', '.'))
+            except ValueError:
+                return m.group(0)
+            if abs(v - _val) <= max(0.5, 0.01 * abs(_val)):
+                return m.group(0)
+            if (_inc.search(m.group(1) or '') and not re.search(r'desde|parte de', m.group(1) or '', re.IGNORECASE)) or _mes.search(m.group(4) or ''):
+                return m.group(0)
+            return f"{m.group(1)}**{_val:.2f} {m.group(3)}**{m.group(4)}"
+        text = pat.sub(repl, text)
+    return text
+
+def fix_projection_bullets(text, df_proj, recommended_model_name):
+    """[FIX 4b] Tap determinista: bloques de bullets 'YYYY: X millones' que
+    presentan 'proyecciones del modelo <recomendado>' pero arrastran valores de
+    OTRO modelo — reescribe cada valor con la proyección del recomendado."""
+    rec_col = f"{recommended_model_name} (M)"
+    if rec_col not in df_proj.columns:
+        return text
+    proj = {int(_r["Año"]): float(_r[rec_col]) for _, _r in df_proj.iterrows()}
+    lines = text.split("\n")
+    bullet_re = re.compile(r'^(\s*[-*]\s*)(20\d{2})\s*:\s*\**\s*([\d\.,]+)\s*\**\s*(millones(?:\s+de\s+\w+)?\s*|M\b.*)$')
+    i = 0
+    while i < len(lines):
+        if bullet_re.match(lines[i]):
+            j = i
+            while j < len(lines) and bullet_re.match(lines[j]):
+                j += 1
+            if j - i >= 3:
+                context = "\n".join(lines[max(0, i - 6):i])
+                if re.search(re.escape(recommended_model_name), context, re.IGNORECASE):
+                    for k in range(i, j):
+                        m = bullet_re.match(lines[k])
+                        yr = int(m.group(2))
+                        if yr in proj:
+                            lines[k] = f"{m.group(1)}{yr}: **{proj[yr]:.1f} {m.group(4).strip()}**"
+            i = j
+        else:
+            i += 1
+    return "\n".join(lines)
+
 def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
     """[GLM-PATCH] Wrapper LLM: corrige el análisis cualitativo contra la serie real."""
     _hist_years = sorted(int(_y) for _y in real_series.keys())
@@ -320,7 +376,8 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
             "3. No inventes unidades (como porcentajes '%'). Si los datos de referencia están en millones (M), mantén todos los números de adopción y proyecciones en millones (M) en todo el texto.\n"
             "4. NO modifiques las tablas markdown oficiales ni las ecuaciones de LaTeX ni las cabeceras de sección.\n"
-            "5. Devuelve EXCLUSIVAMENTE el markdown corregido completo (sin explicaciones adicionales, sin fences ```).\n\n"
+            "5. ALCANCE MÍNIMO OBLIGATORIO: modifica EXCLUSIVAMENTE las frases directamente relacionadas con los blockers listados arriba. NO reescribas ni alteres cifras, bullets o frases que no estén implicadas en un blocker. Cuando corrijas una cifra, copia el valor EXACTO de los DATOS DE REFERENCIA (mismo año, mismo modelo/columna) sin recalcularlo ni transformarlo.\n"
+            "6. Devuelve EXCLUSIVAMENTE el markdown corregido completo (sin explicaciones adicionales, sin fences ```).\n\n"
             "--- INFORME A CORREGIR ---\n"
             f"{report_md}"
         )
@@ -993,6 +1050,8 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
             anios_reales=anios_reales, y_true=y_true,
         )
         report_md = fix_historical_increments(report_md, anios_reales, y_true)
+        report_md = fix_historical_anchors(report_md, anios_reales, y_true)
+        report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
     if not gate_passed:
         print(f"CRITICAL: El informe para '{tech}' no pudo converger a GATE: True tras 5 "
@@ -1014,6 +1073,8 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         anios_reales=anios_reales, y_true=y_true,
     )
     report_md = fix_historical_increments(report_md, anios_reales, y_true)
+    report_md = fix_historical_anchors(report_md, anios_reales, y_true)
+    report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
     output_file = f"informe_global_{tech}.md"
     with open(output_file, "w", encoding="utf-8") as f:
