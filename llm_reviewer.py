@@ -129,10 +129,12 @@ def historical_table_to_summary(historical_table: dict) -> str:
  
  
 def model_fits_to_summary(model_fits: List[ModelFit]) -> str:
-    lines = ["Tabla de ajuste y proyecciones por modelo:"]
+    lines = ["Tabla de ajuste y proyecciones por modelo (la recomendación oficial se basa en el Score compuesto, que equilibra R², MAPE y parsimonia):"]
     for m in model_fits:
         proj = ", ".join(f"{y}={v}M" for y, v in sorted(m.projections.items()))
-        lines.append(f"  {m.name}: R2={m.r2}, MAPE={m.mape}%, proyecciones: {proj}")
+        _score = getattr(m, "score", None)
+        _score_txt = f", Score={_score}" if _score is not None else ""
+        lines.append(f"  {m.name}: R2={m.r2}, MAPE={m.mape}%{_score_txt}, proyecciones: {proj}")
     return "\n".join(lines)
  
  
