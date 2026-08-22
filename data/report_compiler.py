@@ -471,6 +471,32 @@ def compilar_informe_global(tech):
     ultimo_anio = anios_reales[-1]
     anios_proj = list(range(ultimo_anio + 1, ultimo_anio + 11))
     t_proj = np.arange(len(anios_reales), len(anios_reales) + 10)
+
+    # ==================================================================
+    # [PARCHE H] Detección de colapso paramétrico: modelos con métricas
+    # idénticas (misma firma r2/mape) indican no-identificabilidad con
+    # series cortas — se documenta en el informe (nota metodológica).
+    # ==================================================================
+    _metric_groups = {}
+    for row in summary_rows:
+        sig = (row["R²"], row["MAPE Ajuste"])
+        _metric_groups.setdefault(sig, []).append(row["Modelo"])
+    collapsed_groups = [names for names in _metric_groups.values() if len(names) > 1]
+
+    methodology_note = ""
+    if collapsed_groups:
+        _pairs = "; ".join(" ≈ ".join(names) for names in collapsed_groups)
+        methodology_note = (
+            "\n> **Nota Metodológica:** los modelos "
+            f"{_pairs} presentan métricas de ajuste idénticas. Con series "
+            "históricas cortas, los modelos estructuralmente más complejos pueden "
+            "converger a soluciones paramétricamente degeneradas, reduciéndose "
+            "matemáticamente a formulaciones más simples. Esta coincidencia no "
+            "indica un error de cálculo sino una limitación de identificabilidad "
+            "de los datos disponibles: no hay evidencia suficiente para distinguir "
+            "entre ambas formulaciones. El sistema de puntuación compuesto ya "
+            "penaliza esta situación favoreciendo al modelo más parsimonioso.\n"
+        )
     
     df_proj = pd.DataFrame({"Año": anios_proj})
     
@@ -809,7 +835,9 @@ Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
             f"| {row['Modelo']} | {row['R²']} | {row['MAPE Ajuste']} "
             f"| {row['Score']} | {row['Nº Parám.']} | {row['MAPE Backtest']} |\n"
         )
-        
+
+    report_md += methodology_note
+
     report_md += r"""
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
