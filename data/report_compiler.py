@@ -259,6 +259,46 @@ def fix_historical_anchors(text, anios_reales, y_true):
                 return m.group(0)
             return f"{m.group(1)}**{_val:.2f} {m.group(3)}**{m.group(4)}"
         text = pat.sub(repl, text)
+        # [FIX 9] Patrón inverso: 'en/para/durante YYYY ... X millones' (año ANTES
+        # del valor) — ej. 'la adopción acumulada en 2025 fue de 400.00 M', que el
+        # patrón forward (valor→año) no alcanza y el corrector reintroduce.
+        pat_rev = re.compile(
+            r'(\b(?:en|para|durante)\s+\**\s*' + str(int(yr)) + r'\b\s*\**)'
+            r'([\s\S]{0,60}?)'
+            r'(?<![\d.])(\d{1,5}(?:[\.,]\d+)?)\s*\**\s*'
+            r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M\b)\s*\**',
+            re.IGNORECASE)
+        def repl_rev(m, _val=float(val)):
+            try:
+                v = float(m.group(3).replace(',', '.'))
+            except ValueError:
+                return m.group(0)
+            if abs(v - _val) <= max(0.5, 0.01 * abs(_val)):
+                return m.group(0)
+            _mid = m.group(2) or ''
+            if re.search(r'[.;!?](?:\s|$)|\n', _mid):
+                return m.group(0)
+            if (_inc.search(_mid) and not re.search(r'desde|parte de', _mid, re.IGNORECASE)) or _mes.search(_mid):
+                return m.group(0)
+            return f"{m.group(1)}{_mid.rstrip('*')}**{_val:.2f} {m.group(4)}**"
+        text = pat_rev.sub(repl_rev, text)
+        # [FIX 9] Patrón "AÑO (VALOR)": 'Desde 2025 (400.00 M)' — año antes del
+        # valor, separados por paréntesis. El forward (valor→'en AÑO') no cubre
+        # esta construcción y el corrector la reintroduce cada corrida.
+        pat_paren = re.compile(
+            r'\b(' + str(int(yr)) + r')\s*\**\s*\('
+            r'\s*\**\s*(\d{1,5}(?:[\.,]\d+)?)\s*\**\s*'
+            r'(millones(?:\s+de\s+(?:usuarios|suscriptores|clientes))?|M)\s*\**\s*\)',
+            re.IGNORECASE)
+        def repl_paren(m, _val=float(val)):
+            try:
+                v = float(m.group(2).replace(',', '.'))
+            except ValueError:
+                return m.group(0)
+            if abs(v - _val) <= max(0.5, 0.01 * abs(_val)):
+                return m.group(0)
+            return f"{m.group(1)} (**{_val:.2f} {m.group(3)}**)"
+        text = pat_paren.sub(repl_paren, text)
     return text
 
 def fix_projection_bullets(text, df_proj, recommended_model_name):
