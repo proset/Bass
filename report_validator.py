@@ -527,7 +527,7 @@ class ReportValidator:
         clean_text = self._filter_out_table_rows(self.text)
         # Eximir líneas de bullets canónicos deterministas (formato 'YYYY: X M')
         pat = re.compile(
-            r'^\s*[-*]?\s*\**\s*20\d{2}\s*:\s*\**\s*\d', re.MULTILINE)
+            r'^\s*[-*]?\s*\**\s*(?:A[ñn]o\s*)?20\d{2}\s*:\s*\**\s*\d', re.MULTILINE)
         exempt = set()
         for m in pat.finditer(clean_text):
             ls = clean_text.rfind("\n", 0, m.start()) + 1
@@ -537,7 +537,12 @@ class ReportValidator:
             exempt.add((ls, le))
         num_pat = re.compile(
             r'\b\d{1,3}(?:[\.,]\d+)?\s*(?:\*\*)?\s*(?:M\b|millones)', re.IGNORECASE)
+        # [FIX 12] Eximir la sección 1 (análisis cualitativo auditado, texto de BD)
+        _s1 = clean_text.find("1. Resumen Ejecutivo")
+        _s2 = clean_text.find("2. Datos Históricos")
         for m in num_pat.finditer(clean_text):
+            if _s1 != -1 and _s2 != -1 and _s1 <= m.start() < _s2:
+                continue
             if any(s <= m.start() < e for s, e in exempt):
                 continue
             ls = clean_text.rfind("\n", 0, m.start()) + 1

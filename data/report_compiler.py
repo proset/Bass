@@ -235,17 +235,26 @@ def fix_historical_increments(text, anios_reales, y_true):
     return text
 
 def strip_numeric_prose(text):
-    """[REFORMA SIN CIFRAS v2] Elimina cifras de adopción fugadas a la PROSA.
-    Exime contenido determinista: líneas de tabla (|), bullets 'AÑO: valor',
-    blockquotes (>) y notas metodológicas (N/D). No consume saltos de línea."""
+    """[REFORMA SIN CIFRAS v3] Elimina cifras de adopción fugadas a la PROSA.
+    Exime: sección 1 (análisis cualitativo auditado, texto de BD), tablas (|),
+    bullets 'AÑO: valor' (con o sin prefijo 'Año'), blockquotes (>) y notas
+    metodológicas (N/D). No consume saltos de línea."""
     out_lines = []
-    bullet_year = re.compile(r'^\s*[-*]?\s*\**\s*20\d{2}\s*:')
+    in_sec1 = False
+    bullet_year = re.compile(r'^\s*[-*]?\s*\**\s*(?:A[ñn]o\s*)?20\d{2}\s*:')
     num_pat = re.compile(
         r'(?<![\d.])(\d{1,5}(?:[\.,]\d+)?)\s*(?:\*\*)?\s*'
         r'(M\b|millones(?:\s+de\s+\w+)?)',
         re.IGNORECASE,
     )
     for line in text.split("\n"):
+        if line.startswith("## "):
+            in_sec1 = ("1. Resumen Ejecutivo" in line)
+            out_lines.append(line)
+            continue
+        if in_sec1:
+            out_lines.append(line)
+            continue
         s = line.strip()
         if (s.startswith("|")
                 or bullet_year.match(line)
@@ -774,8 +783,8 @@ def compilar_informe_global(tech, force_consenso=False):
             f"{_extras}"
             "- REGLA: nunca cites un total proyectado como si fuera un incremento; "
             "nunca intercambies los valores de dos años distintos.\n"
-            "- JUSTIFICACIÓN DEL MODELO: fue seleccionado por score compuesto (R² 70% + "
-            "MAPE ajuste 15% + MAPE backtest 15%, con penalización por exceso de parámetros "
+            "- JUSTIFICACIÓN DEL MODELO: fue seleccionado por score compuesto (equilibrio entre "
+            "ajuste empírico, precisión y parsimonia, con penalización por exceso de parámetros "
             "sobre los grados de libertad). Si otros modelos muestran mejor MAPE o R² brutos, "
             "RECONÓCELO explícitamente y explica que la penalización de parsimonia los "
             "descalifica con tan pocas observaciones. La tabla incluye la columna Score."
