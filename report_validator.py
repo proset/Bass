@@ -521,6 +521,40 @@ class ReportValidator:
                 out_lines.append(line)
         return "\n".join(out_lines)
  
+    def check_numeric_prose(self):
+        """[REFORMA SIN CIFRAS] BLOCKER: cifra de adopción (número + M/millones)
+        en prosa narrativa. Las tablas están exentas (se filtran)."""
+        clean_text = self._filter_out_table_rows(self.text)
+        # Eximir líneas de bullets canónicos deterministas (formato 'YYYY: X M')
+        pat = re.compile(
+            r'^\s*[-*]?\s*\**\s*20\d{2}\s*:\s*\**\s*\d', re.MULTILINE)
+        exempt = set()
+        for m in pat.finditer(clean_text):
+            ls = clean_text.rfind("\n", 0, m.start()) + 1
+            le = clean_text.find("\n", m.end())
+            if le == -1:
+                le = len(clean_text)
+            exempt.add((ls, le))
+        num_pat = re.compile(
+            r'\b\d{1,3}(?:[\.,]\d+)?\s*(?:\*\*)?\s*(?:M\b|millones)', re.IGNORECASE)
+        for m in num_pat.finditer(clean_text):
+            if any(s <= m.start() < e for s, e in exempt):
+                continue
+            ls = clean_text.rfind("\n", 0, m.start()) + 1
+            le = clean_text.find("\n", m.end())
+            if le == -1:
+                le = len(clean_text)
+            line = clean_text[ls:le].strip()
+            if re.match(r'^\|', line):   # por si quedan filas de tabla
+                continue
+            self.issues.append(Issue(
+                "BLOCKER",
+                "cifra_en_prosa",
+                f"La prosa narrativa contiene una cifra de adopción ('{m.group(0).strip()}'), "
+                f"prohibida por diseño (las cifras viven en tablas): \"{line[:120]}\"",
+                evidence=m.group(0),
+            ))
+
     def check_consensus_consistency(
         self, target_years: Optional[List[int]] = None, window: int = 220
     ) -> None:
@@ -815,6 +849,7 @@ class ReportValidator:
             _lh_c = max(self.historical_table)
             _tgt_years = [_lh_c + 5, _lh_c + 10]
         self.check_consensus_consistency(target_years=_tgt_years)
+        self.check_numeric_prose()
         self.check_qualitative_growth_labels()
         self.check_recommendation_vs_mape()
         return self.issues
