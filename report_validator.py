@@ -545,6 +545,8 @@ class ReportValidator:
             if le == -1:
                 le = len(clean_text)
             line = clean_text[ls:le].strip()
+            if ("Nota Metodológica" in line) or ("N/D" in line) or line.startswith(">"):
+                continue
             if re.match(r'^\|', line):   # por si quedan filas de tabla
                 continue
             self.issues.append(Issue(

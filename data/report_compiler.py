@@ -235,14 +235,27 @@ def fix_historical_increments(text, anios_reales, y_true):
     return text
 
 def strip_numeric_prose(text):
-    """[REFORMA SIN CIFRAS] Red de seguridad: elimina cifras de adopción que el
-    LLM haya fugado a la prosa, sustituyéndolas por remisión a tabla."""
-    return re.sub(
-        r'\b(\d{1,3}(?:[\.,]\d+)?)\s*(?:\*\*)?\s*(?:M\b|millones(?:\s+de\s+\w+)?)\s*(?:\*\*)?',
-        '[ver tabla]',
-        text,
-        flags=re.IGNORECASE,
+    """[REFORMA SIN CIFRAS v2] Elimina cifras de adopción fugadas a la PROSA.
+    Exime contenido determinista: líneas de tabla (|), bullets 'AÑO: valor',
+    blockquotes (>) y notas metodológicas (N/D). No consume saltos de línea."""
+    out_lines = []
+    bullet_year = re.compile(r'^\s*[-*]?\s*\**\s*20\d{2}\s*:')
+    num_pat = re.compile(
+        r'(?<![\d.])(\d{1,5}(?:[\.,]\d+)?)\s*(?:\*\*)?\s*'
+        r'(M\b|millones(?:\s+de\s+\w+)?)',
+        re.IGNORECASE,
     )
+    for line in text.split("\n"):
+        s = line.strip()
+        if (s.startswith("|")
+                or bullet_year.match(line)
+                or s.startswith(">")
+                or "Nota Metodológica" in line
+                or "N/D" in line):
+            out_lines.append(line)
+            continue
+        out_lines.append(num_pat.sub("[ver tabla]", line))
+    return "\n".join(out_lines)
 
 def fix_historical_anchors(text, anios_reales, y_true):
     """[FIX 4a] Tap determinista: anclas históricas 'X millones ... en/para YYYY'
