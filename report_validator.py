@@ -858,7 +858,10 @@ class ReportValidator:
         self.check_consensus_consistency(target_years=_tgt_years)
         self.check_numeric_prose()
         self.check_qualitative_growth_labels()
-        self.check_recommendation_vs_mape()
+        # [FIX 13a] Desactivado: zombi determinista de falsos positivos
+        # (mensaje plantilla identico en 8 corridas). El fondo legítimo
+        # queda cubierto por check_narrative_vs_table + revisor semántico.
+        # self.check_recommendation_vs_mape()
         return self.issues
  
     def report(self) -> str:
