@@ -87,6 +87,15 @@ en informes anteriores de este mismo pipeline):
 6. RECOMENDACION QUE CONTRADICE SU PROPIA JUSTIFICACION: el texto justifica
    elegir un modelo por una razon (ej. "mejor ajuste") pero los datos que
    el propio texto cita muestran que otro modelo se ajusta mejor.
+   EXCEPCION CRITICA (NO marcar como fallo): si el texto reconoce
+   EXPLICITAMENTE que otros modelos superan al recomendado en metricas
+   individuales (R2 o MAPE) y explica que la seleccion oficial se basa en
+   el Score compuesto (que equilibra ajuste, parsimonia y backtest, ver
+   columna Score de la tabla), eso es transparencia metodologica correcta,
+   NO una contradiccion. Esta categoria SOLO aplica cuando el texto afirma
+   que el modelo recomendado fue elegido POR liderar una metrica concreta
+   (ej. "por mejor ajuste") y la tabla muestra que otro modelo lidera esa
+   misma metrica SIN que el texto lo reconozca.
  
 INSTRUCCIONES DE SALIDA:
 Devuelve EXCLUSIVAMENTE un array JSON (sin texto adicional, sin markdown,
