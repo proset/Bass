@@ -234,6 +234,31 @@ def fix_historical_increments(text, anios_reales, y_true):
         text = re.sub(pattern, repl_hist, text, flags=re.IGNORECASE)
     return text
 
+def fix_bullet_values(text, anios_reales, y_true):
+    """[FIX 13b] Canoniza bullets 'AÑO: valor' contra la serie real:
+    valor discrepante -> se reescribe con el valor real, sin bold anidado."""
+    real = {int(y): float(v) for y, v in zip(anios_reales, y_true)}
+    bullet_re = re.compile(
+        r'^(\s*[-*]?\s*\**\s*(?:A[ñn]o\s*)?(20\d{2})\s*:\s*)'
+        r'\**\s*(\d{1,5}(?:[\.,]\d+)?)\s*\**\s*'
+        r'(M\b|millones(?:\s+de\s+\w+)?)(.*)$',
+        re.IGNORECASE)
+    out = []
+    for line in text.split("\n"):
+        m = bullet_re.match(line)
+        if m and int(m.group(2)) in real:
+            val = real[int(m.group(2))]
+            try:
+                cur = float(m.group(3).replace(",", "."))
+            except ValueError:
+                cur = None
+            if cur is not None and abs(cur - val) > max(0.5, 0.01 * abs(val)):
+                line = f"{m.group(1)}**{val:.2f} {m.group(4)}**{m.group(5)}"
+            elif cur is None:
+                line = f"{m.group(1)}**{val:.2f} {m.group(4)}**{m.group(5)}"
+        out.append(line)
+    return "\n".join(out)
+
 def strip_numeric_prose(text):
     """[REFORMA SIN CIFRAS v3] Elimina cifras de adopción fugadas a la PROSA.
     Exime: sección 1 (análisis cualitativo auditado, texto de BD), tablas (|),
@@ -1130,6 +1155,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
             anios_reales=anios_reales, y_true=y_true,
         )
         report_md = fix_historical_increments(report_md, anios_reales, y_true)
+        report_md = fix_bullet_values(report_md, anios_reales, y_true)
         report_md = strip_numeric_prose(report_md)
         report_md = fix_historical_anchors(report_md, anios_reales, y_true)
         report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
@@ -1154,6 +1180,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         anios_reales=anios_reales, y_true=y_true,
     )
     report_md = fix_historical_increments(report_md, anios_reales, y_true)
+    report_md = fix_bullet_values(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
     report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
