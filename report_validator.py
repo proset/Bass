@@ -563,6 +563,9 @@ class ReportValidator:
                 continue
             numeric_mentions.append((float(sm.group(1)), sm.group(0).strip(), sm.start(), sm.end()))
  
+        # [FIX 10a] Incrementos no son proyecciones: cifra precedida por palabra
+        # de incremento dentro de 60 chars no es valor de consenso de ningún año.
+        _INC_PHRASE = re.compile(r'\b(?:aumento|incremento|crecimiento|adici[oó]n|diferencia|salto)\b', re.IGNORECASE)
         findings: Dict[int, List[Tuple[float, str, Tuple[int, int]]]] = {y: [] for y in target_years}
  
         all_year_positions = [
@@ -572,6 +575,10 @@ class ReportValidator:
         for rep, evidence, n_start, n_end in numeric_mentions:
             # Excluir valores históricos conocidos para evitar falsos positivos en proyecciones futuras
             if self.historical_table and any(abs(rep - hv) / max(hv, 0.01) < 0.02 for hv in self.historical_table.values()):
+                continue
+            # [FIX 10a]
+            _pre_ctx = clean_text[max(0, n_start - 60):n_start]
+            if _INC_PHRASE.search(_pre_ctx):
                 continue
             # [FIX 5a] Año PROPIO: si la cifra tiene un año (cualquiera) a <30 chars,
             # pertenece a ese año; si no es un año objetivo, NO contamina al objetivo
