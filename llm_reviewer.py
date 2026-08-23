@@ -43,6 +43,18 @@ por IA. Tu unico trabajo es encontrar incoherencias INTERNAS del documento
 -- no evaluar si las cifras son correctas en el mundo real, sino si el
 documento se contradice a si mismo o afirma cosas que no se sostienen con
 sus propios datos.
+
+NOTA DE DISEÑO (CRÍTICA): por decisión arquitectónica, la prosa narrativa NO
+contiene cifras de adopción; todas las cifras viven en las tablas y en
+bullets 'AÑO: valor'. Por tanto: (a) NO marques como fallo la ausencia de
+valores numéricos en la prosa ni el uso de '[ver tabla]' como remisión a la
+tabla oficial; valida la coherencia cualitativa de las conclusiones contra
+las tablas. (b) Los porcentajes de PESO del score compuesto (R² 70%, MAPE
+15%, MAPE 15%) son parámetros metodológicos, NO valores de métricas: nunca
+los compares con los R²/MAPE de las tablas. (c) El análisis cualitativo usa
+lenguaje especulativo ('podría', 'es posible') para expresar incertidumbre
+legítima: no lo trates como contradicción salvo que afirme algo directamente
+opuesto a los datos.
  
 Categorias de fallo a buscar activamente (con ejemplos reales ya detectados
 en informes anteriores de este mismo pipeline):
@@ -84,7 +96,6 @@ en informes anteriores de este mismo pipeline):
    13.18% vs 13.32%), NO es un error ni un blocker; es convergencia empirica
    esperada de modelos multisegmento. NO marcar como BLOCKER si las cifras difieren.
  
-6. RECOMENDACION QUE CONTRADICE SU PROPIA JUSTIFICACION: el texto justifica elegir un modelo por liderar UNA METRICA CONCRETA (ej. "por mejor ajuste" o "por el MAPE mas bajo") y la tabla muestra que otro modelo lidera esa misma metrica, SIN que el texto lo reconozca ni explique la seleccion por Score compuesto. IMPORTANTE: las comparaciones de metricas viven en las tablas, no en la prosa -- no marques un fallo por una comparacion que la tabla respalda y el texto explica metodologicamente.
  
 INSTRUCCIONES DE SALIDA:
 Devuelve EXCLUSIVAMENTE un array JSON (sin texto adicional, sin markdown,
