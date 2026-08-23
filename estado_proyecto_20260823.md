@@ -1,4 +1,4 @@
-ESTADO DEL PROYECTO BASS/GLM — 23/08/2026 (post-sesión de cierre)
+# ESTADO DEL PROYECTO BASS/GLM — 23/08/2026 (post-sesión de cierre)
 COMPLETADO (commiteado y pusheado salvo excepción marcada)
 Cierre chatgpt al 95% — texto del informe LIMPIO por primera vez en 3 corridas (tercera corrida 23/08 01:14: 6→1 blockers; el único superviviente es falso positivo del revisor, ver PENDIENTE).
 
