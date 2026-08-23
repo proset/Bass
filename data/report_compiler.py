@@ -234,6 +234,16 @@ def fix_historical_increments(text, anios_reales, y_true):
         text = re.sub(pattern, repl_hist, text, flags=re.IGNORECASE)
     return text
 
+def strip_numeric_prose(text):
+    """[REFORMA SIN CIFRAS] Red de seguridad: elimina cifras de adopción que el
+    LLM haya fugado a la prosa, sustituyéndolas por remisión a tabla."""
+    return re.sub(
+        r'\b(\d{1,3}(?:[\.,]\d+)?)\s*(?:\*\*)?\s*(?:M\b|millones(?:\s+de\s+\w+)?)\s*(?:\*\*)?',
+        '[ver tabla]',
+        text,
+        flags=re.IGNORECASE,
+    )
+
 def fix_historical_anchors(text, anios_reales, y_true):
     """[FIX 4a] Tap determinista: anclas históricas 'X millones ... en/para YYYY'
     cuyo valor NO coincide con la serie (ej. el incremento 400 citado como
@@ -281,7 +291,7 @@ def fix_historical_anchors(text, anios_reales, y_true):
             if (_inc.search(_mid) and not re.search(r'desde|parte de', _mid, re.IGNORECASE)) or _mes.search(_mid):
                 return m.group(0)
             return f"{m.group(1)}{_mid.rstrip('*')}**{_val:.2f} {m.group(4)}**"
-        text = pat_rev.sub(repl_rev, text)
+        # text = pat_rev.sub(repl_rev, text)
         # [FIX 9] Patrón "AÑO (VALOR)": 'Desde 2025 (400.00 M)' — año antes del
         # valor, separados por paréntesis. El forward (valor→'en AÑO') no cubre
         # esta construcción y el corrector la reintroduce cada corrida.
@@ -298,7 +308,7 @@ def fix_historical_anchors(text, anios_reales, y_true):
             if abs(v - _val) <= max(0.5, 0.01 * abs(_val)):
                 return m.group(0)
             return f"{m.group(1)} (**{_val:.2f} {m.group(3)}**)"
-        text = pat_paren.sub(repl_paren, text)
+        # text = pat_paren.sub(repl_paren, text)
     return text
 
 def fix_projection_bullets(text, df_proj, recommended_model_name):
@@ -342,6 +352,7 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             f"{series_str}\n"
             f"{canonical_block}"
             "--- REGLAS DE CORRECCIÓN ---\n"
+            "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones en el texto. Si corriges una frase, mantén el estilo sin cifras o remite a la tabla ('según la tabla histórica').\n"
             f"1. Si el texto menciona cifras de adopción/usuarios acumulados anuales para un año (años históricos: {_hist_range}), ajusta el valor en el texto para que coincida exactamente con el de la serie real de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o hitos específicos de lanzamiento en meses individuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción anual acumulada total al cierre del año.\n"
             "2. Si el texto menciona años o hitos que contradicen la serie (por ejemplo, decir que en 2020 no había usuarios cuando la serie registra 345M), reescribe la frase para mantener la coherencia.\n"
@@ -375,6 +386,7 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
             f"{tables_summary}\n"
             f"{canonical_block}"
             "--- REGLAS DE CORRECCIÓN ---\n"
+            "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones en el texto. Si corriges una frase, mantén el estilo sin cifras o remite a la tabla ('según la tabla histórica').\n"
             "1. Si el texto menciona métricas de ajuste (R² o MAPE) para cualquier modelo, cámbialas para que coincidan exactamente con la tabla de ajuste.\n"
             "2. Si el texto menciona proyecciones futuras (ej. usuarios para 2030 o 2035), ajusta el valor en el texto para que coincida exactamente con la cifra de proyección de ese año para el modelo recomendado en la tabla de proyecciones.\n"
             "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
@@ -410,6 +422,7 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- ERRORES/BLOCKERS DETECTADOS (DEBES CORREGIR CADA UNO DE ELLOS) ---\n"
             f"{blockers_text}\n"
             "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
+            "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones al corregir. Al corregir un blocker, elimina la cifra problemática y sustitúyela por referencia a la tabla ('según la proyección oficial del modelo recomendado').\n"
             f"1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
             "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años posteriores a {_hist_years[-1]}: desde {_hist_years[-1] + 1} en adelante) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
@@ -902,6 +915,11 @@ def compilar_informe_global(tech, force_consenso=False):
         
         prompt = prompt + canonical_block
         
+        # [REFORMA SIN CIFRAS] Bloque de cifras clave determinista: alimenta al
+        # informe científico con las cifras exactas SIN que el LLM las copie.
+        # (Ya viene en canonical_block; el informe científico las usa como contexto
+        # de razonamiento. La prohibición de escribirlas está en su prompt.)
+        
         response = genai_client.generate_content(prompt)
         informe_cientifico = response.text.strip()
     except Exception as ex_api:
@@ -1090,6 +1108,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
             anios_reales=anios_reales, y_true=y_true,
         )
         report_md = fix_historical_increments(report_md, anios_reales, y_true)
+        report_md = strip_numeric_prose(report_md)
         report_md = fix_historical_anchors(report_md, anios_reales, y_true)
         report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
@@ -1113,6 +1132,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         anios_reales=anios_reales, y_true=y_true,
     )
     report_md = fix_historical_increments(report_md, anios_reales, y_true)
+    report_md = strip_numeric_prose(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
     report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
