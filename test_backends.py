@@ -1,10 +1,18 @@
-"""Test de la capa semantica multi-backend (Gemini/Claude) sobre el informe final de chatgpt."""
+"""Test de la capa semantica multi-backend (Gemini/Claude) sobre el informe
+final de una tecnologia. Uso: python test_backends.py <backend> [tech]
+Ejemplos:
+  python test_backends.py gemini netflix
+  python test_backends.py claude chatgpt
+Sin tech: default chatgpt (compatibilidad)."""
 import sys
 sys.path.insert(0, r"C:\Users\roset\Bass")
 
 from llm_reviewer import full_review, gate
 from data.loaders import load_historical_data, load_model_parameters
 from report_validator import ModelFit
+
+TECH = sys.argv[2] if len(sys.argv) > 2 else "chatgpt"
+print(f"[test_backends] Tecnologia: {TECH} | Backend: {sys.argv[1] if len(sys.argv) > 1 else 'gemini'}")
 
 # model_labels es local al orquestador — copia literal del parche G
 MODEL_LABELS = {
@@ -22,8 +30,8 @@ MODEL_LABELS = {
 
 
 def run_test(backend):
-    df = load_historical_data("chatgpt")
-    params = load_model_parameters("chatgpt")
+    df = load_historical_data(TECH)
+    params = load_model_parameters(TECH)
     anios = df["anio"].tolist()
     y_true = df["adopcion_acumulada"].tolist()
     real_series = {int(a): float(v) for a, v in zip(anios, y_true)}
@@ -40,7 +48,7 @@ def run_test(backend):
             projections={},
         ))
 
-    with open("informe_global_chatgpt.md", encoding="utf-8") as f:
+    with open(f"informe_global_{TECH}.md", encoding="utf-8") as f:
         informe = f.read()
 
     print(f"=== TEST {backend.upper()} ===")
