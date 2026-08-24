@@ -46,7 +46,7 @@ sus propios datos.
 
 NOTA DE DISEÑO (CRÍTICA): por decisión arquitectónica, la prosa narrativa NO
 contiene cifras de adopción; todas las cifras viven en las tablas y en
-bullets 'AÑO: valor'. Por tanto: (a) NO marques como fallo la ausencia de
+bullets 'AÑO: valor'. (ad) La prosa narrativa NO contiene valores de métricas ni años de citación: si una sección menciona modelos solo por nombre y remite a los "Datos oficiales (del motor)", eso es el diseño correcto, no una omisión. NUNCA marques como fallo la ausencia de un valor numérico en la prosa. Por tanto: (a) NO marques como fallo la ausencia de
 valores numéricos en la prosa ni el uso de '[ver tabla]' como remisión a la
 tabla oficial; valida la coherencia cualitativa de las conclusiones contra
 las tablas. (b) Los porcentajes de PESO del score compuesto (R² 70%, MAPE

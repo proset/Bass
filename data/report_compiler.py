@@ -330,35 +330,39 @@ def fix_paper_ids(text):
     )
 
 def strip_numeric_prose(text):
-    """[REFORMA SIN CIFRAS v3] Elimina cifras de adopción fugadas a la PROSA.
-    Exime: sección 1 (análisis cualitativo auditado, texto de BD), tablas (|),
-    bullets 'AÑO: valor' (con o sin prefijo 'Año'), blockquotes (>) y notas
-    metodológicas (N/D). No consume saltos de línea."""
+    """[REFORMA v4 — BURBUJAS] El stripper solo aplica a territorio LLM
+    (secciones 5 y 6). Secciones 1-4 (deterministas/BD) quedan intactas.
+    En burbujas: elimina TODA cifra — adopción, métricas (decimales/%),
+    y años de citación entre paréntesis. Exime tablas, bullets 'AÑO: valor',
+    blockquotes y notas metodológicas."""
     out_lines = []
-    in_sec1 = False
+    in_bubble = False
     bullet_year = re.compile(r'^\s*[-*]?\s*\**\s*(?:A[ñn]o\s*)?20\d{2}\s*:')
-    num_pat = re.compile(
+    adopt_pat = re.compile(
         r'(?<![\d.])(\d{1,5}(?:[\.,]\d+)?)\s*(?:\*\*)?\s*'
-        r'(M\b|millones(?:\s+de\s+\w+)?)',
-        re.IGNORECASE,
-    )
+        r'(M\b|millones(?:\s+de\s+\w+)?)', re.IGNORECASE)
+    metric_pat = re.compile(r'(?<![\d.])(\d{1,3}[\.,]\d{1,4})\s*%?')
+    cite_year_pat = re.compile(r'\s*\(\s*(?:19|20)\d{2}\s*\)')
     for line in text.split("\n"):
         if line.startswith("## "):
-            in_sec1 = ("1. Resumen Ejecutivo" in line)
+            _h = line.lower()
+            in_bubble = ("5. pronóstico de consenso" in _h
+                         or "6. informe analítico" in _h)
             out_lines.append(line)
             continue
-        if in_sec1:
+        if not in_bubble:
             out_lines.append(line)
             continue
         s = line.strip()
-        if (s.startswith("|")
-                or bullet_year.match(line)
-                or s.startswith(">")
-                or "Nota Metodológica" in line
+        if (s.startswith("|") or bullet_year.match(line)
+                or s.startswith(">") or "Nota Metodológica" in line
                 or "N/D" in line):
             out_lines.append(line)
             continue
-        out_lines.append(num_pat.sub("[ver tabla]", line))
+        line = adopt_pat.sub("[ver tabla]", line)
+        line = metric_pat.sub("[ver tabla]", line)
+        line = cite_year_pat.sub("", line)
+        out_lines.append(line)
     return "\n".join(out_lines)
 
 def fix_historical_anchors(text, anios_reales, y_true):
@@ -838,6 +842,25 @@ def compilar_informe_global(tech, force_consenso=False):
     # GUARD: se construye cuando df_proj/anios_reales/y_true están en scope
     # (Fase R2 los garantiza tras las proyecciones). Hasta entonces, cadena
     # vacía: los prompts no cambian y el flujo de julio no se rompe.
+    # [FIX 20 / PLAN B] Bloques deterministas: cifras exactas para las
+    # burbujas §5-§6, escritas por código (el LLM jamás las teclea).
+    try:
+        _mfit_rec = next((m for m in model_fits_obj
+                          if m.name == recommended_model_name), None)
+        _mfit_r2 = max(model_fits_obj, key=lambda m: m.r2) if model_fits_obj else None
+        _mfit_mape = min(model_fits_obj, key=lambda m: m.mape) if model_fits_obj else None
+        _bloques_fact = (
+            f"\n- MÉTRICAS OFICIALES del modelo recomendado ({recommended_model_name}): "
+            + (f"R²={_mfit_rec.r2:.4f}, MAPE de ajuste={_mfit_rec.mape:.2f}%" if _mfit_rec else "")
+            + (f", Score={_mfit_rec.score:.2f}" if _mfit_rec and getattr(_mfit_rec, "score", None) is not None else "")
+            + ". Líderes individuales: "
+            + (f"R² más alto: {_mfit_r2.name} ({_mfit_r2.r2:.4f}); " if _mfit_r2 else "")
+            + (f"MAPE más bajo: {_mfit_mape.name} ({_mfit_mape.mape:.2f}%)." if _mfit_mape else "")
+            + "\n" if model_fits_obj else ""
+        )
+    except Exception:
+        _bloques_fact = ""
+
     try:
         _last_yr, _last_val = int(anios_reales[-1]), float(y_true[-1])
         _prev_val = float(y_true[-2]) if len(y_true) > 1 else 0.0
@@ -895,8 +918,10 @@ def compilar_informe_global(tech, force_consenso=False):
                 f"R2={max(model_fits_obj, key=lambda m: m.r2).name}, "
                 f"MAPE={min(model_fits_obj, key=lambda m: m.mape).name}. "
                 "No afirms que un modelo lidera una metrica sin verificar contra esta lista.\n"
+                "No afirms que un modelo lidera una metrica sin verificar contra esta lista.\n"
                 if model_fits_obj else ""
             )
+            + _bloques_fact
         )
     except Exception as _e_cb:
         print(f"[WARN] Canonical block completo falló ({_e_cb}): usando bloque mínimo (solo serie histórica).")
@@ -1281,6 +1306,24 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     report_md = fix_bullet_values(report_md, anios_reales, y_true)
     report_md = fix_delta_as_accumulated(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
+    # [FIX 20] Insertar bloques de cifras oficiales tras los headers de las burbujas
+    _anchor51 = "#### 1. Evaluación de Modelos y Ajuste Real"
+    _anchor52 = "#### 2. Proyección de Consenso Razonada (Escenario Base)"
+    _anchor6 = "## 🤖 6. Informe Analítico Científico RAG"
+    if _bloques_fact and report_md.count(_anchor51) == 1:
+        report_md = report_md.replace(
+            _anchor51, _anchor51 + "\n\n**Datos oficiales (del motor):** "
+            + _bloques_fact.strip() + "\n", 1)
+    if _bloques_fact and report_md.count(_anchor6) == 1:
+        report_md = report_md.replace(
+            _anchor6, _anchor6 + "\n\n**Datos oficiales (del motor):** "
+            + _bloques_fact.strip() + "\n", 1)
+    if _v5 is not None and _v10 is not None and report_md.count(_anchor52) == 1:
+        report_md = report_md.replace(
+            _anchor52,
+            _anchor52 + f"\n\n**Proyecciones oficiales del modelo recomendado "
+            f"({recommended_model_name}):** {_yr5} = {_v5:.2f} M; {_yr10} = "
+            f"{_v10:.2f} M; techo de mercado a {_yr10}: {_v10:.2f} M.\n", 1)
     report_md = fix_citation_years(report_md)
     report_md = fix_paper_ids(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)

@@ -522,10 +522,15 @@ class ReportValidator:
         return "\n".join(out_lines)
  
     def check_numeric_prose(self):
-        """[REFORMA SIN CIFRAS] BLOCKER: cifra de adopción (número + M/millones)
-        en prosa narrativa. Las tablas están exentas (se filtran)."""
+        """[REFORMA SIN CIFRAS] BLOCKER: cifras en la prosa LLM."""
         clean_text = self._filter_out_table_rows(self.text)
-        # Eximir líneas de bullets canónicos deterministas (formato 'YYYY: X M')
+        
+        # (a) solo escanea burbujas LLM: desde 5. Pronóstico hasta el final
+        start_idx = clean_text.lower().find("5. pronóstico de consenso")
+        if start_idx == -1:
+            return
+            
+        # Exenciones canónicas
         pat = re.compile(
             r'^\s*[-*]?\s*\**\s*(?:A[ñn]o\s*)?20\d{2}\s*:\s*\**\s*\d', re.MULTILINE)
         exempt = set()
@@ -535,32 +540,40 @@ class ReportValidator:
             if le == -1:
                 le = len(clean_text)
             exempt.add((ls, le))
+            
         num_pat = re.compile(
             r'\b\d{1,3}(?:[\.,]\d+)?\s*(?:\*\*)?\s*(?:M\b|millones)', re.IGNORECASE)
-        # [FIX 12] Eximir la sección 1 (análisis cualitativo auditado, texto de BD)
-        _s1 = clean_text.find("1. Resumen Ejecutivo")
-        _s2 = clean_text.find("2. Datos Históricos")
-        for m in num_pat.finditer(clean_text):
-            if _s1 != -1 and _s2 != -1 and _s1 <= m.start() < _s2:
-                continue
-            if any(s <= m.start() < e for s, e in exempt):
-                continue
-            ls = clean_text.rfind("\n", 0, m.start()) + 1
-            le = clean_text.find("\n", m.end())
-            if le == -1:
-                le = len(clean_text)
-            line = clean_text[ls:le].strip()
-            if ("Nota Metodológica" in line) or ("N/D" in line) or line.startswith(">"):
-                continue
-            if re.match(r'^\|', line):   # por si quedan filas de tabla
-                continue
-            self.issues.append(Issue(
-                "BLOCKER",
-                "cifra_en_prosa",
-                f"La prosa narrativa contiene una cifra de adopción ('{m.group(0).strip()}'), "
-                f"prohibida por diseño (las cifras viven en tablas): \"{line[:120]}\"",
-                evidence=m.group(0),
-            ))
+        metric_pat = re.compile(r'(?<![\d.])\d{1,3}[\.,]\d{1,4}\s*%?')
+        cite_year_pat = re.compile(r'\(\s*(?:19|20)\d{2}\s*\)')
+        
+        def _check(pat_regex, cat_name, msg_func):
+            for m in pat_regex.finditer(clean_text):
+                if m.start() < start_idx:
+                    continue
+                if any(s <= m.start() < e for s, e in exempt):
+                    continue
+                ls = clean_text.rfind("\n", 0, m.start()) + 1
+                le = clean_text.find("\n", m.end())
+                if le == -1:
+                    le = len(clean_text)
+                line = clean_text[ls:le].strip()
+                if ("Nota Metodológica" in line) or ("N/D" in line) or line.startswith(">"):
+                    continue
+                if re.match(r'^\|', line):
+                    continue
+                self.issues.append(Issue(
+                    "BLOCKER",
+                    cat_name,
+                    msg_func(m, line),
+                    evidence=m.group(0),
+                ))
+
+        _check(num_pat, "cifra_en_prosa", 
+               lambda m, l: f"La prosa narrativa contiene una cifra de adopción ('{m.group(0).strip()}'), prohibida por diseño (las cifras viven en tablas): \"{l[:120]}\"")
+        _check(metric_pat, "cifra_en_prosa",
+               lambda m, l: f"La prosa narrativa contiene una cifra de métrica ('{m.group(0).strip()}'), prohibida por diseño (las cifras viven en tablas): \"{l[:120]}\"")
+        _check(cite_year_pat, "anio_de_citacion_en_prosa",
+               lambda m, l: f"La prosa LLM contiene un año de citación entre paréntesis ('{m.group(0)}'), prohibido por diseño: los modelos se citan solo por nombre.")
 
     def check_consensus_consistency(
         self, target_years: Optional[List[int]] = None, window: int = 220
