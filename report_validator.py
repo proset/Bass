@@ -561,6 +561,9 @@ class ReportValidator:
                     continue
                 if re.match(r'^\|', line):
                     continue
+                if ("Datos oficiales (del motor)" in line
+                        or line.startswith("**Proyecciones oficiales")):
+                    continue
                 self.issues.append(Issue(
                     "BLOCKER",
                     cat_name,

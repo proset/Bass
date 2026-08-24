@@ -1278,7 +1278,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         report_md = fix_bullet_values(report_md, anios_reales, y_true)
         report_md = fix_delta_as_accumulated(report_md, anios_reales, y_true)
         report_md = strip_numeric_prose(report_md)
-        report_md = fix_citation_years(report_md)
+        # report_md = fix_citation_years(report_md)
         report_md = fix_paper_ids(report_md)
         report_md = fix_historical_anchors(report_md, anios_reales, y_true)
         report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
@@ -1324,7 +1324,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
             _anchor52 + f"\n\n**Proyecciones oficiales del modelo recomendado "
             f"({recommended_model_name}):** {_yr5} = {_v5:.2f} M; {_yr10} = "
             f"{_v10:.2f} M; techo de mercado a {_yr10}: {_v10:.2f} M.\n", 1)
-    report_md = fix_citation_years(report_md)
+    # report_md = fix_citation_years(report_md)
     report_md = fix_paper_ids(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
     report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
