@@ -81,10 +81,15 @@ def obtener_datos_y_analisis_ia(tech_name):
         "chatgpi":       {2022: 57.0, 2023: 180.5, 2024: 300.0},
         "iphone":        {2007: 1.4, 2008: 11.6, 2009: 34.0, 2010: 73.0},
         "facebook":      {2008: 100.0, 2009: 300.0, 2010: 500.0, 2012: 1000.0},
-        "netflix":       {2010: 20.0, 2015: 70.0, 2020: 200.0, 2022: 220.0},
+        "netflix": {
+            2010: 20.0, 2011: 23.5, 2012: 33.3, 2013: 44.4, 2014: 57.4,
+            2015: 70.0, 2016: 93.8, 2017: 117.6, 2018: 139.3, 2019: 167.1,
+            2020: 200.0, 2021: 221.8, 2022: 230.7, 2023: 260.9,
+            # 2024-2025: verificar contra SEC 10-K más recientes antes de correr
+        },
         "openai":        {2022: 57.0, 2023: 180.5},
-        "claude":        {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0, 2026: 245.0},
-        "anthropic":     {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0, 2026: 245.0},
+        "claude":        {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0},
+        "anthropic":     {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0},
         "ar smartglasses": {
             2016: 0.10, 2017: 0.25, 2018: 0.45, 2019: 0.75,
             2020: 1.15, 2021: 1.75, 2022: 2.65, 2023: 4.25,
@@ -93,7 +98,11 @@ def obtener_datos_y_analisis_ia(tech_name):
     }
 
     def _aplicar_anclas(datos, tech_key):
-        """Sobrescribe valores con anclas verificadas y garantiza monotonía."""
+        """Sobrescribe valores con anclas verificadas y filtra años incompletos."""
+        # [Fix 15b] Guard: solo años completos son verídicos (anio <= año actual - 1)
+        _cy = _dt.datetime.now().year
+        if datos:
+            datos = [d for d in datos if int(d.get("anio", 0)) <= _cy - 1]
         anclas = ANCLAS_HISTORICAS.get(tech_key.lower().strip(), {})
         if not anclas or not datos:
             return datos
