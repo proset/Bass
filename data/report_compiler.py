@@ -259,6 +259,37 @@ def fix_bullet_values(text, anios_reales, y_true):
         out.append(line)
     return "\n".join(out)
 
+def fix_delta_as_accumulated(text, anios_reales, y_true):
+    """[FIX 19] 'adopción acumulada de X M' donde X es el DELTA anual
+    (serie[Y]-serie[Y-1]) citado como acumulado — reescribe con el
+    acumulado real de ese año. General para cualquier tecnología."""
+    real = {int(y): float(v) for y, v in zip(anios_reales, y_true)}
+    years_sorted = sorted(real)
+    for i in range(1, len(years_sorted)):
+        yr, prev = years_sorted[i], years_sorted[i - 1]
+        acum = real[yr]
+        delta = acum - real[prev]
+        if delta <= 0:
+            continue
+        lines = text.split("\n")
+        for j, line in enumerate(lines):
+            if str(yr) not in line or "acumulad" not in line.lower():
+                continue
+            def repl(m, _acum=acum, _delta=delta):
+                try:
+                    v = float(m.group(2).replace(",", "."))
+                except ValueError:
+                    return m.group(0)
+                if (abs(v - _delta) <= max(0.5, 0.02 * _delta)
+                        and abs(v - _acum) > max(0.5, 0.01 * _acum)):
+                    return f"{m.group(1)}**{_acum:.2f} M**"
+                return m.group(0)
+            lines[j] = re.sub(
+                r'(acumulad[ao][^\n]{0,40}?)\**\s*(\d{1,5}(?:[\.,]\d+)?)\s*\**\s*M\**',
+                repl, lines[j], flags=re.IGNORECASE)
+        text = "\n".join(lines)
+    return text
+
 MODEL_YEARS = {
     "Bass Clásico": 1969,
     "Dual Market": 2011,
@@ -509,6 +540,7 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             f"{blockers_text}\n"
             "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
             "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones al corregir. Al corregir un blocker, elimina la cifra problemática y sustitúyela por referencia a la tabla ('según la proyección oficial del modelo recomendado').\n"
+            "0b. SECCIÓN INTOCABLE: NO modifiques NADA del texto bajo '## 📄 1. Resumen Ejecutivo y Contexto de Mercado' hasta '## 🔬 2.' — ese texto proviene de la base de datos auditada. Si un blocker apunta a esa sección, NO lo corrijas tú: devuelve ese texto sin cambios.\n"
             f"1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
             "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años posteriores a {_hist_years[-1]}: desde {_hist_years[-1] + 1} en adelante) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
@@ -1219,6 +1251,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         )
         report_md = fix_historical_increments(report_md, anios_reales, y_true)
         report_md = fix_bullet_values(report_md, anios_reales, y_true)
+        report_md = fix_delta_as_accumulated(report_md, anios_reales, y_true)
         report_md = strip_numeric_prose(report_md)
         report_md = fix_citation_years(report_md)
         report_md = fix_paper_ids(report_md)
@@ -1246,6 +1279,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     )
     report_md = fix_historical_increments(report_md, anios_reales, y_true)
     report_md = fix_bullet_values(report_md, anios_reales, y_true)
+    report_md = fix_delta_as_accumulated(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
     report_md = fix_citation_years(report_md)
     report_md = fix_paper_ids(report_md)
