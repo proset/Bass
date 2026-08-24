@@ -272,19 +272,31 @@ MODEL_YEARS = {
 }
 
 def fix_citation_years(text):
-    """[Fix 16] Corrige años de citación de modelos contra MODEL_YEARS.
-    Solo toca años dentro de paréntesis cercanos al nombre del modelo."""
+    """[Fix 16/17a] Corrige años de citación de modelos contra MODEL_YEARS.
+    Acepta '&' o 'y' como conector. Ignora paréntesis con Paper ID."""
     for model_name, canonical_year in MODEL_YEARS.items():
+        pattern_base = re.escape(model_name).replace(
+            re.escape(" & "), r'(?:\s*&\s*|\s+y\s+)'
+        )
         pat = re.compile(
-            re.escape(model_name) + r'[\s\S]{0,40}?\(\s*(?:[^)]*,\s*)?(\d{4})\s*\)',
+            pattern_base + r'[\s\S]{0,60}?\(\s*((?![^)]*[Pp]aper)[^)]{0,20}?,?\s*)?(\d{4})\s*\)',
             re.IGNORECASE)
         def repl(m, cy=canonical_year):
-            found = int(m.group(1))
+            found = int(m.group(2))
             if found != cy:
                 return m.group(0).replace(str(found), str(cy))
             return m.group(0)
         text = pat.sub(repl, text)
     return text
+
+def fix_paper_ids(text):
+    """[Fix 17b] Elimina Paper IDs UUID inventados por el LLM en citas
+    académicas, dejando solo el nombre del modelo."""
+    return re.sub(
+        r'\s*\((?:Paper ID|paper id|ID)\s*[:：]\s*[0-9a-fA-F-]{8,}\)',
+        '',
+        text,
+    )
 
 def strip_numeric_prose(text):
     """[REFORMA SIN CIFRAS v3] Elimina cifras de adopción fugadas a la PROSA.
@@ -1209,6 +1221,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         report_md = fix_bullet_values(report_md, anios_reales, y_true)
         report_md = strip_numeric_prose(report_md)
         report_md = fix_citation_years(report_md)
+        report_md = fix_paper_ids(report_md)
         report_md = fix_historical_anchors(report_md, anios_reales, y_true)
         report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
@@ -1235,6 +1248,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     report_md = fix_bullet_values(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
     report_md = fix_citation_years(report_md)
+    report_md = fix_paper_ids(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
     report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
