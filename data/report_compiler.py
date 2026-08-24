@@ -885,6 +885,17 @@ def compilar_informe_global(tech, force_consenso=False):
             print(f"[R2.5] Consenso obsoleto detectado (metadata last_hist_year="
                   f"{_meta_cons.get('last_hist_year') if _meta_cons else 'N/A'}): regenerado "
                   f"contra serie actual (último año {_serie_last_yr}).")
+            # [FIX 14] Persistir consenso regenerado en BD para que el
+            # metadata quede actualizado y R2.5 no dispare en la próxima corrida
+            try:
+                _cur_cons.execute(
+                    "UPDATE consensus_forecast SET consenso = %s WHERE tecnologia = %s",
+                    (consenso_forecast, tech)
+                )
+                conn.commit()
+                print("[R2.5] Consenso persistido en BD (metadata actualizado).")
+            except Exception as _e_save:
+                print(f"[WARN] R2.5: persistencia de consenso falló ({_e_save})")
     except Exception as _e_cons:
         print(f"[WARN] R2.5: regeneración de consenso falló ({_e_cons}); "
               f"se continúa con el consenso heredado y su corrección LLM.")
