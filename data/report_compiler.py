@@ -259,6 +259,33 @@ def fix_bullet_values(text, anios_reales, y_true):
         out.append(line)
     return "\n".join(out)
 
+MODEL_YEARS = {
+    "Bass Clásico": 1969,
+    "Dual Market": 2011,
+    "Fourt & Woodlock": 1960,
+    "Gompertz": 1825,
+    "Bass Generalizado (GBM)": 1994,
+    "Horsky & Simon": 1983,
+    "Muller & Yogev": 2006,
+    "Van den Bulte & Joshi": 2007,
+    "Ladrón-de-Guevara & Putsis": 2011,
+}
+
+def fix_citation_years(text):
+    """[Fix 16] Corrige años de citación de modelos contra MODEL_YEARS.
+    Solo toca años dentro de paréntesis cercanos al nombre del modelo."""
+    for model_name, canonical_year in MODEL_YEARS.items():
+        pat = re.compile(
+            re.escape(model_name) + r'[\s\S]{0,40}?\(\s*(?:[^)]*,\s*)?(\d{4})\s*\)',
+            re.IGNORECASE)
+        def repl(m, cy=canonical_year):
+            found = int(m.group(1))
+            if found != cy:
+                return m.group(0).replace(str(found), str(cy))
+            return m.group(0)
+        text = pat.sub(repl, text)
+    return text
+
 def strip_numeric_prose(text):
     """[REFORMA SIN CIFRAS v3] Elimina cifras de adopción fugadas a la PROSA.
     Exime: sección 1 (análisis cualitativo auditado, texto de BD), tablas (|),
@@ -812,7 +839,20 @@ def compilar_informe_global(tech, force_consenso=False):
             "ajuste empírico, precisión y parsimonia, con penalización por exceso de parámetros "
             "sobre los grados de libertad). Si otros modelos muestran mejor MAPE o R² brutos, "
             "RECONÓCELO explícitamente y explica que la penalización de parsimonia los "
-            "descalifica con tan pocas observaciones. La tabla incluye la columna Score."
+            "descalifica con tan pocas observaciones. La tabla incluye la columna Score.\n"
+            + "".join(
+                f"  - {_mf.name}: R2={_mf.r2:.4f}, MAPE={_mf.mape:.2f}%"
+                + (f", Score={getattr(_mf, 'score', 0):.2f}" if getattr(_mf, 'score', None) is not None else "")
+                + "\n"
+                for _mf in model_fits_obj
+            )
+            + (
+                f"- LIDERES VERIFICADOS (usa EXACTAMENTE estos al mencionar lideres): "
+                f"R2={max(model_fits_obj, key=lambda m: m.r2).name}, "
+                f"MAPE={min(model_fits_obj, key=lambda m: m.mape).name}. "
+                "No afirms que un modelo lidera una metrica sin verificar contra esta lista.\n"
+                if model_fits_obj else ""
+            )
         )
     except Exception as _e_cb:
         print(f"[WARN] Canonical block completo falló ({_e_cb}): usando bloque mínimo (solo serie histórica).")
@@ -1168,6 +1208,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         report_md = fix_historical_increments(report_md, anios_reales, y_true)
         report_md = fix_bullet_values(report_md, anios_reales, y_true)
         report_md = strip_numeric_prose(report_md)
+        report_md = fix_citation_years(report_md)
         report_md = fix_historical_anchors(report_md, anios_reales, y_true)
         report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
@@ -1193,6 +1234,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     report_md = fix_historical_increments(report_md, anios_reales, y_true)
     report_md = fix_bullet_values(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
+    report_md = fix_citation_years(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
     report_md = fix_projection_bullets(report_md, df_proj, recommended_model_name)
 
