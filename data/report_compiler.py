@@ -476,6 +476,7 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             "--- REGLAS DE CORRECCIÓN ---\n"
             "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones en el texto. Si corriges una frase, mantén el estilo sin cifras o remite a la tabla ('según la tabla histórica').\n"
             f"1. Si el texto menciona cifras de adopción/usuarios acumulados anuales para un año (años históricos: {_hist_range}), ajusta el valor en el texto para que coincida exactamente con el de la serie real de referencia.\n"
+            f"1b. [BOUNDARY HISTÓRICOS/PROYECTADOS] El año {_hist_years[-1]} es un dato HISTÓRICO consolidado, mientras que {_hist_years[-1] + 1} es una PROYECCIÓN futura. Si el texto agrupa {_hist_years[-1]} con {_hist_years[-1] + 1} (ej. '{_hist_years[-1]}-{_hist_years[-1] + 1}'), DEBES separarlos. Agrupa {_hist_years[-1]} exclusivamente con los años históricos, y nunca lo menciones como proyección.\n"
             "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o hitos específicos de lanzamiento en meses individuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción anual acumulada total al cierre del año.\n"
             "2. Si el texto menciona años o hitos que contradicen la serie (por ejemplo, decir que en 2020 no había usuarios cuando la serie registra 345M), reescribe la frase para mantener la coherencia.\n"
             "3. No inventes datos ni menciones cifras de años que no están en la serie.\n"
@@ -1073,9 +1074,13 @@ def compilar_informe_global(tech, force_consenso=False):
         else:
             context_text = "No se encontraron artículos específicos. Se utilizará la literatura de difusión general."
 
+        import datetime
+        _current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        
         prompt = f"""
         Actúa como un Senior Research Fellow en Innovación Tecnológica y Modelado de Difusión.
         Genera un informe analítico científico detallado en español para la tecnología/marca "{tech}".
+        Fecha del Informe: {_current_date}
         Utiliza el siguiente contexto de literatura científica indexada:
         {context_text}
         
