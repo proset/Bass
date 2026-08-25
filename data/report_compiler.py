@@ -291,16 +291,16 @@ def fix_delta_as_accumulated(text, anios_reales, y_true):
     return text
 
 MODEL_YEARS = {
-    "Bass Clásico": 1969,
-    "Dual Market": 2011,
-    "Fourt & Woodlock": 1960,
+    "Bass_Clasico": 1969,
+    "Dual_Market": 2011,
+    "Fourt_Woodlock": 1960,
     "Gompertz": 1825,
-    "Bass Generalizado (GBM)": 1994,
-    "Horsky & Simon": 1983,
-    "Muller & Yogev": 2006,
-    "Van den Bulte & Joshi": 2007,
-    "Ladrón-de-Guevara & Putsis": 2011,
-    "Difusión Logística R&K": 2025,
+    "Generalized_Bass": 1994,
+    "Horsky_Simon": 1983,
+    "Muller_Yogev": 2006,
+    "VdB_Joshi": 2007,
+    "Ladron_Putsis": 2011,
+    "Logistic_Diffusion_Convergence": 2025,
 }
 
 def fix_citation_years(text):
@@ -1183,7 +1183,7 @@ Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
     for k, label in model_labels.items():
         if k not in MODEL_EQUATIONS: continue
         desc, autores, eq_text = MODEL_EQUATIONS[k]
-        yr = MODEL_YEARS.get(label, "")
+        yr = MODEL_YEARS.get(k, "")
         if yr:
             inner = (autores + ", " + str(yr)) if autores else str(yr)
             header_content = label + " (" + inner + ")"
