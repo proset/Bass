@@ -80,7 +80,7 @@ en informes anteriores de este mismo pipeline):
    Derzko, Steffens & Murthy, Muller & Yogev, Van den Bulte & Joshi,
    Ladron-de-Guevara & Putsis, Fourt & Woodlock, Horsky & Simon, el
    Generalized Bass Model de Bass/Krishnan/Jain). Presta especial atencion
-   a citas con año 2024 o posterior, que son las mas probables de ser
+   a citas con año {CURRENT_YEAR} o posterior, que son las mas probables de ser
    inventadas.
  
 4. RAZONAMIENTO CUALITATIVO INCONSISTENTE CON LOS DATOS: el texto describe
@@ -120,7 +120,10 @@ patron-matchear.
  
  
 def build_review_prompt(narrative_text: str, tables_summary: str) -> str:
-    return f"""{REVIEW_RUBRIC}
+    import datetime as _dt
+    _cy = _dt.datetime.now().year
+    rubric_filled = REVIEW_RUBRIC.replace("{CURRENT_YEAR}", str(_cy))
+    return f"""{rubric_filled}
  
 --- TEXTO DEL INFORME ---
 {narrative_text}
