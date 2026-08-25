@@ -31,3 +31,5 @@ __pycache__/
 *.pyc
 Bass_recovered/
 *.patch
+scratch_*.py
+scratch_r8_out.txt
