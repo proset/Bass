@@ -429,8 +429,12 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo, 
         "2025 ES 700M, no 400M."
     )
 
+    import datetime as _dt
+    _current_date = _dt.datetime.now().strftime("%Y-%m-%d")
+
     prompt = f"""
     Actúa como un Director de Inteligencia de Mercado y Planificación Estratégica de Alteroids. 
+    La fecha de hoy es {_current_date}. Usa esta fecha en cualquier carta o documento formal que generes.
     Tu tarea es redactar un **Pronóstico de Consenso y Perspectiva Futura Integrada** para la tecnología: "{tech}".
     
     ⚠️ MODELO IDEAL PRE-SELECCIONADO (OBLIGATORIO): El análisis determinista de las reglas del árbol de decisión ha determinado que el modelo recomendado es **{preselected_name}**. DEBES recomendar ÚNICAMENTE este modelo en las secciones 2 y 4. NO puedes recomendar ningún otro modelo. Las cifras exactas a usar en el consenso son: {anio_5} = {_proj_5:.2f} M, {anio_10} = {_proj_10:.2f} M.
