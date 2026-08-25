@@ -43,6 +43,7 @@ por IA. Tu unico trabajo es encontrar incoherencias INTERNAS del documento
 -- no evaluar si las cifras son correctas en el mundo real, sino si el
 documento se contradice a si mismo o afirma cosas que no se sostienen con
 sus propios datos.
+La fecha de hoy es {CURRENT_DATE}. Cualquier fecha del informe igual o anterior a esta es legítima — no la marques como 'futura' o 'inventada'.
 
 NOTA DE DISEÑO (CRÍTICA): por decisión arquitectónica, la prosa narrativa NO
 contiene cifras de adopción; todas las cifras viven en las tablas y en
@@ -123,6 +124,7 @@ def build_review_prompt(narrative_text: str, tables_summary: str) -> str:
     import datetime as _dt
     _cy = _dt.datetime.now().year
     rubric_filled = REVIEW_RUBRIC.replace("{CURRENT_YEAR}", str(_cy))
+    rubric_filled = rubric_filled.replace("{CURRENT_DATE}", _dt.datetime.now().strftime("%Y-%m-%d"))
     return f"""{rubric_filled}
  
 --- TEXTO DEL INFORME ---
