@@ -26,7 +26,7 @@ def generate_content_with_fallback(prompt, contents=None, response_mime_type=Non
     for i, model_name in enumerate(models_to_try):
         try:
             # Configurar formato de respuesta si es JSON
-            generation_config = {"temperature": 0}
+            generation_config = {"temperature": 0, "seed": 42}
             if response_mime_type:
                 generation_config["response_mime_type"] = response_mime_type
                 

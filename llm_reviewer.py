@@ -250,6 +250,7 @@ def _call_gemini(prompt: str, model: str, max_tokens: int) -> str:
         config=types.GenerateContentConfig(
             max_output_tokens=max_tokens,
             temperature=0,
+            seed=42,
             response_mime_type="application/json",  # Gemini fuerza JSON valido nativamente
         ),
     )
