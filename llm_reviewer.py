@@ -225,6 +225,7 @@ def _call_claude(prompt: str, model: str, max_tokens: int) -> str:
     client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     response = client.messages.create(
         model=model,
+        temperature=0,
         max_tokens=max_tokens,
         messages=[{"role": "user", "content": prompt}],
     )

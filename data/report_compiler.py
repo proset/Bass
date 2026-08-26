@@ -485,7 +485,7 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        genai_client = genai.GenerativeModel(model_name)
+        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0})
         response = genai_client.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
@@ -519,7 +519,7 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        genai_client = genai.GenerativeModel(model_name)
+        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0})
         response = genai_client.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
@@ -558,7 +558,7 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- INFORME A CORREGIR ---\n"
             f"{report_md}"
         )
-        genai_client = genai.GenerativeModel(model_name)
+        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0})
         response = genai_client.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
@@ -1046,7 +1046,7 @@ def compilar_informe_global(tech, force_consenso=False):
 
     # 6. RAG
     try:
-        genai_client = genai.GenerativeModel(model_name)
+        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0})
         embedding_model = "models/gemini-embedding-001"
         
         query = f"Análisis de adopción de {tech} modelos de difusión Moore"

@@ -257,7 +257,7 @@ def generate_report(
 
     # 6. RAG
     try:
-        genai_client = genai.GenerativeModel(model_name)
+        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0})
         embedding_model = "models/gemini-embedding-001"
         
         query = f"Análisis de adopción de {tech} modelos de difusión Moore"
