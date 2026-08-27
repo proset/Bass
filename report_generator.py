@@ -2,7 +2,8 @@ import os
 import toml
 import numpy as np
 import pandas as pd
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from psycopg2 import connect
 from psycopg2.extras import DictCursor
 import re
@@ -34,6 +35,11 @@ except Exception:
         "port": int(os.environ.get("PG_PORT", 6543))
     }
     api_key = os.environ.get("GEMINI_API_KEY")
+
+if api_key:
+    client = genai.Client(api_key=api_key)
+else:
+    client = None
 
 from config import GEMINI_PRIMARY
 model_name = GEMINI_PRIMARY
@@ -257,17 +263,18 @@ def generate_report(
 
     # 6. RAG
     try:
-        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0, "seed": 42})
         embedding_model = "models/gemini-embedding-001"
         
         query = f"Análisis de adopción de {tech} modelos de difusión Moore"
-        embedding_result = genai.embed_content(
+        embedding_result = client.models.embed_content(
             model=embedding_model,
-            content=query,
-            task_type="retrieval_query",
-            output_dimensionality=768
+            contents=query,
+            config=types.EmbedContentConfig(
+                task_type="RETRIEVAL_QUERY",
+                output_dimensionality=768
+            )
         )
-        query_embedding = embedding_result['embedding']
+        query_embedding = embedding_result.embeddings[0].values
         vec_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
         
         cursor.execute("""
@@ -306,7 +313,11 @@ def generate_report(
         CRITICAL INSTRUCTION: DO NOT use LaTeX syntax for mathematical formulas (do NOT use $$, \, \theta, \gamma, \frac, \exp, etc.). Write all mathematical variables and formulas in PLAIN TEXT format (e.g. use "gamma", "theta", "e^").
         """
         
-        response = genai_client.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0, seed=42)
+        )
         informe_cientifico = response.text.strip()
     except Exception as ex_api:
         print(f"Nota: Usando reporte analitico estructurado de respaldo por cuota API / 429 ({ex_api})")

@@ -3,7 +3,9 @@ import toml
 import re
 import numpy as np
 import pandas as pd
-import google.generativeai as genai
+import google.genai as genai_module
+from google import genai
+from google.genai import types
 from psycopg2 import connect
 from psycopg2.extras import DictCursor
 
@@ -32,7 +34,9 @@ except Exception:
     api_key = os.environ.get("GEMINI_API_KEY")
 
 if api_key:
-    genai.configure(api_key=api_key)
+    client = genai.Client(api_key=api_key)
+else:
+    client = None
 
 model_name = GEMINI_PRIMARY
 
@@ -485,8 +489,11 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0, "seed": 42})
-        response = genai_client.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0, seed=42)
+        )
         return response.text.strip()
     except Exception as e:
         print(f"[WARN] corregir_analisis_cualitativo_llm falló: {e}")
@@ -519,8 +526,11 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0, "seed": 42})
-        response = genai_client.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0, seed=42)
+        )
         return response.text.strip()
     except Exception as e:
         print(f"[WARN] corregir_consenso_forecast_llm falló: {e}")
@@ -558,8 +568,11 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- INFORME A CORREGIR ---\n"
             f"{report_md}"
         )
-        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0, "seed": 42})
-        response = genai_client.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0, seed=42)
+        )
         return response.text.strip()
     except Exception as e:
         print(f"[WARN] correct_report_narrative_with_llm falló: {e}")
@@ -1046,17 +1059,18 @@ def compilar_informe_global(tech, force_consenso=False):
 
     # 6. RAG
     try:
-        genai_client = genai.GenerativeModel(model_name, generation_config={"temperature": 0, "seed": 42})
         embedding_model = "models/gemini-embedding-001"
         
         query = f"Análisis de adopción de {tech} modelos de difusión Moore"
-        embedding_result = genai.embed_content(
+        embedding_result = client.models.embed_content(
             model=embedding_model,
-            content=query,
-            task_type="retrieval_query",
-            output_dimensionality=768
+            contents=query,
+            config=types.EmbedContentConfig(
+                task_type="RETRIEVAL_QUERY",
+                output_dimensionality=768
+            )
         )
-        query_embedding = embedding_result['embedding']
+        query_embedding = embedding_result.embeddings[0].values
         vec_str = "[" + ",".join(str(x) for x in query_embedding) + "]"
         
         cursor.execute("""
@@ -1106,7 +1120,11 @@ def compilar_informe_global(tech, force_consenso=False):
         # (Ya viene en canonical_block; el informe científico las usa como contexto
         # de razonamiento. La prohibición de escribirlas está en su prompt.)
         
-        response = genai_client.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config=types.GenerateContentConfig(temperature=0, seed=42)
+        )
         informe_cientifico = response.text.strip()
     except Exception as ex_api:
         print(f"Nota: Usando reporte analitico estructurado de respaldo por cuota API / 429 ({ex_api})")
