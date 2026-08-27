@@ -24,7 +24,7 @@ else:
     elif not Groq:
         logger.warning("Paquete 'groq' no instalado. Ejecuta: pip install groq")
 
-def generate_content_groq(prompt, temperature=0, max_tokens=4000, response_mime_type=None):
+def generate_content_groq(prompt, temperature=0, max_tokens=8000, response_mime_type=None):
     """
     Genera contenido usando Groq (Llama 3.1 70B).
     Determinista con temperature=0 (transformer estándar, no MoE).
