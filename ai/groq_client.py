@@ -13,7 +13,7 @@ except ImportError:
 logger = logging.getLogger("GroqClient")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_MODEL = "llama-3.1-70b-versatile"  # verificar nombre actual
+GROQ_MODEL = "openai/gpt-oss-120b"  # verificar nombre actual
 
 if GROQ_API_KEY and Groq:
     client = Groq(api_key=GROQ_API_KEY)
@@ -24,7 +24,7 @@ else:
     elif not Groq:
         logger.warning("Paquete 'groq' no instalado. Ejecuta: pip install groq")
 
-def generate_content_groq(prompt, temperature=0, max_tokens=8000, response_mime_type=None):
+def generate_content_groq(prompt, temperature=0, max_tokens=4000, response_mime_type=None):
     """
     Genera contenido usando Groq (Llama 3.1 70B).
     Determinista con temperature=0 (transformer estándar, no MoE).
