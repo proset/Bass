@@ -13,7 +13,7 @@ except ImportError:
 logger = logging.getLogger("GroqClient")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_MODEL = "qwen/qwen3.8-27b"  # transformer estandar para determinismo
+GROQ_MODEL = "openai/gpt-oss-120b"  # transformer estandar para determinismo
 
 if GROQ_API_KEY and Groq:
     client = Groq(api_key=GROQ_API_KEY)
