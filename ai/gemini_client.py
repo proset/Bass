@@ -1,4 +1,5 @@
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import logging
 from config import GEMINI_API_KEY, GEMINI_PRIMARY, GEMINI_FALLBACKS
 
@@ -6,13 +7,14 @@ logger = logging.getLogger("BassGeminiClient")
 
 # Configurar API
 if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+    client = genai.Client(api_key=GEMINI_API_KEY)
 else:
+    client = None
     logger.error("No se detectó la clave de API de Gemini. La IA no estará disponible.")
 
 def get_genai_client():
-    """Devuelve el módulo configurado de google-generativeai."""
-    return genai
+    """Devuelve el cliente configurado de google-genai."""
+    return client
 
 def generate_content_with_fallback(prompt, contents=None, response_mime_type=None, tools=None):
     """
@@ -26,17 +28,27 @@ def generate_content_with_fallback(prompt, contents=None, response_mime_type=Non
     for i, model_name in enumerate(models_to_try):
         try:
             # Configurar formato de respuesta si es JSON
-            generation_config = {"temperature": 0, "seed": 42}
+            config = types.GenerateContentConfig(temperature=0, seed=42)
             if response_mime_type:
-                generation_config["response_mime_type"] = response_mime_type
-                
-            model = genai.GenerativeModel(model_name, generation_config=generation_config, tools=tools)
+                config.response_mime_type = response_mime_type
             
+            # Grounding: the old codebase passes gapic Tool, we override it with the new SDK's format
+            if tools:
+                config.tools = [types.Tool(google_search=types.GoogleSearch())]
+                
             logger.info(f"Intentando generación de contenido con modelo: {model_name}")
             if contents:
-                response = model.generate_content(contents)
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=contents,
+                    config=config
+                )
             else:
-                response = model.generate_content(prompt)
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=config
+                )
             
             # Avisar informativamente al usuario si se usó un fallback
             if i > 0:
