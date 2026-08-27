@@ -488,12 +488,8 @@ def corregir_analisis_cualitativo_llm(text, real_series, canonical_block=""):
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0, seed=42)
-        )
-        return response.text.strip()
+        from ai.groq_client import generate_content_groq
+        return generate_content_groq(prompt=prompt, temperature=0).strip()
     except Exception as e:
         print(f"[WARN] corregir_analisis_cualitativo_llm falló: {e}")
         return text
@@ -525,12 +521,8 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
             "--- TEXTO A CORREGIR ---\n"
             f"{text}"
         )
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0, seed=42)
-        )
-        return response.text.strip()
+        from ai.groq_client import generate_content_groq
+        return generate_content_groq(prompt=prompt, temperature=0).strip()
     except Exception as e:
         print(f"[WARN] corregir_consenso_forecast_llm falló: {e}")
         return text
@@ -567,12 +559,8 @@ def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fi
             "--- INFORME A CORREGIR ---\n"
             f"{report_md}"
         )
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0, seed=42)
-        )
-        return response.text.strip()
+        from ai.groq_client import generate_content_groq
+        return generate_content_groq(prompt=prompt, temperature=0).strip()
     except Exception as e:
         print(f"[WARN] correct_report_narrative_with_llm falló: {e}")
         return report_md
