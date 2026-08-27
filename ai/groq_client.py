@@ -13,7 +13,7 @@ except ImportError:
 logger = logging.getLogger("GroqClient")
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GROQ_MODEL = "openai/gpt-oss-120b"  # verificar nombre actual
+GROQ_MODEL = "qwen/qwen3.8-27b"  # transformer estandar para determinismo
 
 if GROQ_API_KEY and Groq:
     client = Groq(api_key=GROQ_API_KEY)
@@ -26,7 +26,7 @@ else:
 
 def generate_content_groq(prompt, temperature=0, max_tokens=8000, response_mime_type=None):
     """
-    Genera contenido usando Groq (Llama 3.1 70B).
+    Genera contenido usando Groq.
     Determinista con temperature=0 (transformer estándar, no MoE).
     Interfaz compatible con generate_content_with_fallback.
     """
@@ -38,6 +38,7 @@ def generate_content_groq(prompt, temperature=0, max_tokens=8000, response_mime_
         "messages": [{"role": "user", "content": prompt}],
         "temperature": temperature,
         "max_tokens": max_tokens,
+        "seed": 42,
     }
     
     # Si se pide JSON, forzar formato
