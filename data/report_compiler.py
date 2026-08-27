@@ -1107,12 +1107,9 @@ def compilar_informe_global(tech, force_consenso=False):
         # (Ya viene en canonical_block; el informe científico las usa como contexto
         # de razonamiento. La prohibición de escribirlas está en su prompt.)
         
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0, seed=42)
-        )
-        informe_cientifico = response.text.strip()
+        from ai.groq_client import generate_content_groq
+        
+        informe_cientifico = generate_content_groq(prompt=prompt, temperature=0, max_tokens=8000).strip()
     except Exception as ex_api:
         print(f"Nota: Usando reporte analitico estructurado de respaldo por cuota API / 429 ({ex_api})")
         informe_cientifico = f"""### 1. Diagnóstico del Estado del Arte y Literatura Científica Relacionada
