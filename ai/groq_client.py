@@ -47,17 +47,22 @@ def generate_content_groq(prompt, temperature=0, max_tokens=4000, response_mime_
     response = client.chat.completions.create(**kwargs)
     return response.choices[0].message.content
 
+class MockResponse:
+    def __init__(self, text):
+        self.text = text
+
 def generate_content_with_fallback_groq(prompt, response_mime_type=None, **kwargs):
     """
     Helper con fallback para Groq. Intenta el modelo principal.
     Interfaz compatible con generate_content_with_fallback (ai/gemini_client.py).
     """
     try:
-        return generate_content_groq(
+        text = generate_content_groq(
             prompt=prompt,
             temperature=0,
             response_mime_type=response_mime_type,
         )
+        return MockResponse(text)
     except Exception as e:
         logger.error(f"Error en Groq ({GROQ_MODEL}): {e}")
         raise

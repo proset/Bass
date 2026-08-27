@@ -6,6 +6,7 @@ import pandas as pd
 import google.ai.generativelanguage_v1beta as gapic
 from data.sources import buscar_web_ddg
 from ai.gemini_client import generate_content_with_fallback
+from ai.groq_client import generate_content_with_fallback_groq
 from models.rk4_solver import (
     bass_classic,
     dual_market_bass,
@@ -501,7 +502,7 @@ def generar_consenso_pronostico_ia(tech, df_hist, params, analisis_cualitativo, 
     _metadata_header = f"<!-- CONSENSUS_METADATA:{_json.dumps(_metadata, ensure_ascii=False)} -->\n"
 
     try:
-        respuesta = generate_content_with_fallback(prompt=prompt)
+        respuesta = generate_content_with_fallback_groq(prompt=prompt)
         return (_metadata_header + respuesta.text.strip())
     except Exception as e:
         logger.error(f"Error generando pronóstico de consenso con IA: {e}")
@@ -570,7 +571,7 @@ def auditar_informe_semantico(report_md: str, tech: str) -> dict:
     {report_md}
     """
     try:
-        respuesta = generate_content_with_fallback(prompt=prompt)
+        respuesta = generate_content_with_fallback_groq(prompt=prompt)
         text = respuesta.text.strip()
         if text.startswith("```"):
             text = re.sub(r'^```(?:json)?\s*', '', text)
@@ -608,7 +609,7 @@ def corregir_informe_semantico_ia(report_md: str, tech: str, hallazgos: list) ->
     {report_md}
     """
     try:
-        respuesta = generate_content_with_fallback(prompt=prompt)
+        respuesta = generate_content_with_fallback_groq(prompt=prompt)
         return respuesta.text.strip()
     except Exception as e:
         logger.error(f"Error en corrección semántica por IA: {e}")
