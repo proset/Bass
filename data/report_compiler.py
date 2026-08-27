@@ -3,7 +3,6 @@ import toml
 import re
 import numpy as np
 import pandas as pd
-import google.genai as genai_module
 from google import genai
 from google.genai import types
 from psycopg2 import connect
@@ -1352,3 +1351,16 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 
     cursor.close()
     release_conn(conn)
+    return gate_passed
+
+def compilar_informe_global_con_retry(tech, max_retries=3, **kwargs):
+    """Wrapper con auto-retry para determinismo práctico."""
+    for attempt in range(max_retries):
+        print(f"[compile] Intento {attempt + 1}/{max_retries} para '{tech}'...")
+        result = compilar_informe_global(tech, **kwargs)
+        if result is True:
+            print(f"[compile] GATE:True en intento {attempt + 1}.")
+            return result
+        print(f"[compile] GATE:False. Reintentando...")
+    print(f"[compile] Falló después de {max_retries} intentos.")
+    return result
