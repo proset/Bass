@@ -256,11 +256,22 @@ def _call_gemini(prompt: str, model: str, max_tokens: int) -> str:
     )
     return response.text
  
+def review_with_groq(prompt: str, model: str, max_tokens: int) -> str:
+    from ai.groq_client import generate_content_groq
+    raw_text = generate_content_groq(
+        prompt=prompt,
+        temperature=0,
+        max_tokens=max_tokens,
+        response_mime_type="application/json",
+    )
+    return raw_text
+ 
  
 # nombre de backend -> (funcion de llamada, modelo por defecto)
 _BACKENDS = {
     "claude": (_call_claude, "claude-sonnet-5"),
     "gemini": (_call_gemini, "gemini-2.5-flash"),
+    "groq": (review_with_groq, "llama-3.1-70b-versatile"),
 }
  
  
@@ -278,7 +289,7 @@ def review_with_llm(
              REVIEWER_BACKEND, o "claude" si tampoco esta definida.
     model:   nombre de modelo especifico; si se omite, usa el default de ese backend.
     """
-    backend = (backend or os.environ.get("REVIEWER_BACKEND") or "gemini").lower()
+    backend = (backend or os.environ.get("REVIEWER_BACKEND") or "groq").lower()
     if backend not in _BACKENDS:
         raise ValueError(
             f"Backend '{backend}' no soportado. Opciones: {list(_BACKENDS)}"
