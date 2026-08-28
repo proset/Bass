@@ -34,7 +34,6 @@ if hasattr(sys.stdout, 'buffer'):
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
-os.environ["GROQ_API_KEY"] = os.environ.get("GROQ_API_KEY", "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")
 
 BASS_DIR = r"C:\Users\roset\Bass"
 GLM_DIR = r"C:\Users\roset\GLM"
