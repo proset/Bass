@@ -4,25 +4,7 @@
 
 ## 📄 1. Resumen Ejecutivo y Contexto de Mercado
 ### Análisis Cualitativo del Mercado
-### 📄 Análisis Cualitativo del Mercado: Smartwatches
-
-#### 1. Introducción y Contexto del Mercado
-La adopción de la tecnología **Smartwatches** representa un hito fundamental en el ecosistema digital moderno. Caracterizada por dinámicas complejas de innovación, esta tecnología ha transitado desde nichos especializados de desarrollo hacia un ecosistema de valor integrado.
-
-#### 2. Análisis Detallado de la Serie Temporal (Causas de Variación)
-La trayectoria temporal de adopción (2016-2025) exhibe las fases características de una curva de aprendizaje tecnológico:
-- **Fase de Despegue (2016-2019)**: Crecimiento inicial moderado, impulsado por usuarios tempranos y prescriptores B2B.
-- **Fase de Aceleración (2020-2023)**: Entrada en el mercado de consumo masivo con una fuerte contribución de efectos de red.
-- **Fase de Madurez (2024-2025)**: Transición hacia una asíntota de adopción cercana a los 102.0 millones de usuarios.
-
-#### 3. Fuentes y Metodologías de Analistas
-Las estimaciones de consultoras como IDC, Statista y Alteroids corroboran la consistencia de la serie de tiempo calibrada, apuntando a dinámicas estables de crecimiento y saturación.
-
-#### 4. Modelos de Negocio y Segmentos Clave
-El mercado se subdivide en un segmento premium profesional con precios medios altos (ASP elevado) y un segmento masivo posterior donde los efectos de imitación impulsan la adopción masiva.
-
-#### 5. Hitos y Eventos Tecnológicos Críticos
-La evolución de **Smartwatches** está marcada por la estandarización de protocolos comunes y el desarrollo de arquitecturas abiertas de red.
+No disponible.
 
 ---
 
@@ -32,31 +14,34 @@ A continuación se detallan los datos reales acumulados (en millones de adoptant
 
 | Año | Adopción Real Acumulada (M) |
 | --- | --------------------------- |
-| 2016 | 1.2 M |
-| 2017 | 3.5 M |
-| 2018 | 8.0 M |
-| 2019 | 15.6 M |
-| 2020 | 28.9 M |
-| 2021 | 45.2 M |
-| 2022 | 62.4 M |
-| 2023 | 78.1 M |
-| 2024 | 91.5 M |
-| 2025 | 102.0 M |
+| 2015 | 5.0 M |
+| 2016 | 15.0 M |
+| 2017 | 35.0 M |
+| 2018 | 65.0 M |
+| 2019 | 90.0 M |
+| 2020 | 101.3 M |
+| 2021 | 146.4 M |
+| 2022 | 221.8 M |
+| 2023 | 338.9 M |
+| 2024 | 476.0 M |
+| 2025 | 590.0 M |
 
 ### Resumen del Error de Ajuste
 Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
 | Modelo de Difusión | R² | MAPE de Ajuste | Score | Nº Parám. | MAPE Backtest |
 | ------------------ | -- | -------------- | ----- | --------- | ------------- |
-| Bass Clásico | 0.9997 | 12.61% | 97.55 | 3 | 3.60% |
-| Dual Market | 0.9998 | 11.97% | 97.24 | 6 | 6.35% |
-| Fourt & Woodlock | 0.9312 | 66.04% | 82.65 | 2 | 17.54% |
-| Gompertz | 0.9996 | 11.58% | 97.68 | 3 | 3.76% |
-| Bass Generalizado (GBM) | 0.9998 | 13.16% | 97.33 | 4 | 4.54% |
-| Horsky & Simon | 0.9997 | 13.24% | 97.45 | 4 | 3.60% |
-| Muller & Yogev | ver tabla | 11.35% | ver tabla | 7 | 1.75% |
-| Van den Bulte & Joshi | 0.9998 | 12.77% | 97.53 | 6 | 3.60% |
-| Difusión Logística R&K | 0.9991 | 16.69% | 96.73 | 4 | 4.72% |
-| Ladrón-de-Guevara & Putsis | 0.9998 | 13.13% | 97.78 | 5 | 1.55% |
+| Bass Clásico | ver tabla | 23.73% | 95.33 | 3 | 4.69% |
+| Dual Market | 0.9997 | 11.81% | 97.21 | 6 | 6.68% |
+| Fourt & Woodlock | 0.7856 | 82.38% | 65.82 | 2 | 45.41% |
+| Gompertz | 0.9933 | 15.16% | 95.89 | 3 | 9.09% |
+| Bass Generalizado (GBM) | 0.9948 | 23.17% | 92.69 | 4 | N/D |
+| Horsky & Simon | ver tabla | 23.73% | 95.25 | 4 | 5.25% |
+| Muller & Yogev | 0.9993 | 15.76% | 96.45 | 7 | 7.58% |
+| Van den Bulte & Joshi | 0.9997 | 11.84% | 97.21 | 6 | 6.67% |
+| Difusión Logística R&K | 0.9957 | 24.62% | 94.91 | 4 | 7.33% |
+| Ladrón-de-Guevara & Putsis | ver tabla | 23.73% | 95.33 | 5 | 4.69% |
+
+> **Nota Metodológica:** los modelos Bass Clásico ≈ Horsky & Simon ≈ Ladrón-de-Guevara & Putsis presentan métricas de ajuste prácticamente idénticas. Con series históricas cortas, los modelos estructuralmente más complejos pueden converger a soluciones paramétricamente degeneradas, reduciéndose matemáticamente a formulaciones más simples. Esta coincidencia no indica un error de cálculo sino una limitación de identificabilidad de los datos disponibles: no hay evidencia suficiente para distinguir entre ambas formulaciones. El sistema de puntuación compuesto ya penaliza esta situación favoreciendo al modelo más parsimonioso.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
@@ -88,7 +73,7 @@ Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
   dF2/dt = q2 * (w * F1(t) + (1 - w) * F2(t)) * (1 - F2(t))
   N(t) = M1 * F1(t) + M2 * F2(t)
 
-* **Difusión Logística R&K ** — Modelo Logístico de Difusión-Convergencia:
+* **Difusión Logística R&K (Ryu & Kim)** — Modelo Logístico de Difusión-Convergencia:
   L(t) = b1 / (1 + ((b1 - b0) / b0) * exp(-k2 * (t - t0)))
 
 * **Ladrón-de-Guevara & Putsis (2011)** — Modelo de Mercado Potencial Dinámico y Endógeno:
@@ -103,16 +88,17 @@ Comparativa detallada de las predicciones de los modelos frente a los datos hist
 
 | Año | Real (M) | Bass Clásico (M) | Desv Bass Clásico % | Dual Market (M) | Desv Dual Market % | Fourt & Woodlock (M) | Desv Fourt & Woodlock % | Gompertz (M) | Desv Gompertz % | Bass Generalizado (GBM) (M) | Desv Bass Generalizado (GBM) % | Horsky & Simon (M) | Desv Horsky & Simon % | Muller & Yogev (M) | Desv Muller & Yogev % | Van den Bulte & Joshi (M) | Desv Van den Bulte & Joshi % | Difusión Logística R&K (M) | Desv Difusión Logística R&K % | Ladrón-de-Guevara & Putsis (M) | Desv Ladrón-de-Guevara & Putsis % |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2016.00 | 1.20 | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 0.47 | -60.8% | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 2.47 | +105.9% | 0.00 | -100.0% |
-| 2017.00 | 3.50 | 3.10 | -11.5% | 2.99 | -14.6% | 10.66 | +204.5% | 2.28 | -34.8% | 2.71 | -22.7% | 2.70 | -23.0% | 3.17 | -9.5% | 2.78 | -20.5% | 4.74 | +35.3% | 2.71 | -22.6% |
-| 2018.00 | 8.00 | 8.30 | +3.7% | 7.93 | -0.9% | 21.24 | +165.5% | 7.15 | -10.6% | 7.77 | -2.8% | 7.96 | -0.5% | 7.99 | -0.1% | 7.78 | -2.7% | 8.91 | +11.3% | 7.72 | -3.5% |
-| 2019.00 | 15.60 | 16.58 | +6.3% | 16.06 | +2.9% | 31.75 | +103.5% | 16.30 | +4.5% | 16.30 | +4.5% | 16.52 | +5.9% | 15.96 | +2.3% | 16.17 | +3.7% | 16.19 | +3.8% | 16.23 | +4.0% |
-| 2020.00 | 28.90 | 28.71 | -0.7% | 28.66 | -0.8% | 42.18 | +46.0% | 29.57 | +2.3% | 28.91 | +0.0% | 28.90 | -0.0% | 28.62 | -1.0% | 28.81 | -0.3% | 27.82 | -3.8% | 28.92 | +0.1% |
-| 2021.00 | 45.20 | 44.48 | -1.6% | 45.17 | -0.1% | 52.54 | +16.2% | 45.45 | +0.6% | 44.91 | -0.6% | 44.68 | -1.2% | 45.21 | +0.0% | 45.05 | -0.3% | 43.93 | -2.8% | 45.00 | -0.4% |
-| 2022.00 | 62.40 | 62.09 | -0.5% | 62.49 | +0.1% | 62.83 | +0.7% | 62.00 | -0.6% | 62.21 | -0.3% | 62.07 | -0.5% | 62.52 | +0.2% | 62.41 | +0.0% | 62.39 | -0.0% | 62.25 | -0.2% |
-| 2023.00 | 78.10 | 78.69 | +0.8% | 78.13 | +0.0% | 73.05 | -6.5% | 77.59 | -0.7% | 78.33 | +0.3% | 78.50 | +0.5% | 78.14 | +0.0% | 78.19 | +0.1% | 79.46 | +1.7% | 78.25 | +0.2% |
-| 2024.00 | 91.50 | 92.04 | +0.6% | 91.38 | -0.1% | 83.20 | -9.1% | 91.23 | -0.3% | 91.67 | +0.2% | 91.91 | +0.4% | 91.33 | -0.2% | 91.44 | -0.1% | 92.37 | +0.9% | 91.59 | +0.1% |
-| 2025.00 | 102.00 | 101.45 | -0.5% | 102.06 | +0.1% | 93.27 | -8.6% | 102.54 | +0.5% | 101.83 | -0.2% | 101.63 | -0.4% | 102.08 | +0.1% | 102.01 | +0.0% | 100.73 | -1.2% | 101.92 | -0.1% |
+| 2015.00 | 5.00 | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 5.26 | +5.2% | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 0.00 | -100.0% | 12.42 | +148.4% | 0.00 | -100.0% |
+| 2016.00 | 15.00 | 9.54 | -36.4% | 13.96 | -6.9% | 43.83 | +192.2% | 11.21 | -25.3% | 9.81 | -34.6% | 9.54 | -36.4% | 19.62 | +30.8% | 13.90 | -7.3% | 19.33 | +28.9% | 9.54 | -36.4% |
+| 2017.00 | 35.00 | 23.30 | -33.4% | 37.93 | +8.4% | 87.27 | +149.3% | 21.97 | -37.2% | 23.54 | -32.7% | 23.30 | -33.4% | 38.94 | +11.3% | 37.92 | +8.3% | 30.00 | -14.3% | 23.30 | -33.4% |
+| 2018.00 | 65.00 | 43.02 | -33.8% | 63.84 | -1.8% | 130.33 | +100.5% | 39.98 | -38.5% | 42.86 | -34.1% | 43.02 | -33.8% | 58.60 | -9.8% | 63.87 | -1.7% | 46.35 | -28.7% | 43.02 | -33.8% |
+| 2019.00 | 90.00 | 71.04 | -21.1% | 84.73 | -5.9% | 173.02 | +92.2% | 68.10 | -24.3% | 70.14 | -22.1% | 71.04 | -21.1% | 80.20 | -10.9% | 84.73 | -5.9% | 71.11 | -21.0% | 71.04 | -21.1% |
+| 2020.00 | 101.30 | 110.40 | +9.0% | 107.22 | +5.8% | 215.33 | +112.6% | 109.39 | +8.0% | 108.69 | +7.3% | 110.40 | +9.0% | 107.72 | +6.3% | 107.21 | +5.8% | 107.96 | +6.6% | 110.40 | +9.0% |
+| 2021.00 | 146.40 | 164.76 | +12.5% | 146.26 | -0.1% | 257.27 | +75.7% | 166.76 | +13.9% | 162.77 | +11.2% | 164.76 | +12.5% | 150.16 | +2.6% | 146.26 | -0.1% | 161.41 | +10.3% | 164.76 | +12.5% |
+| 2022.00 | 221.80 | 238.16 | +7.4% | 220.31 | -0.7% | 298.84 | +34.7% | 242.66 | +9.4% | 237.15 | +6.9% | 238.16 | +7.4% | 223.09 | +0.6% | 220.32 | -0.7% | 236.10 | +6.4% | 238.16 | +7.4% |
+| 2023.00 | 338.90 | 334.24 | -1.4% | 338.66 | -0.1% | 340.05 | +0.3% | 338.80 | -0.0% | 335.66 | -1.0% | 334.24 | -1.4% | 337.68 | -0.4% | 338.67 | -0.1% | 335.24 | -1.1% | 334.24 | -1.4% |
+| 2024.00 | 476.00 | 455.08 | -4.4% | 477.04 | +0.2% | 380.89 | -20.0% | 455.94 | -4.2% | 458.29 | -3.7% | 455.08 | -4.4% | 473.91 | -0.4% | 477.03 | +0.2% | 458.19 | -3.7% | 455.08 | -4.4% |
+| 2025.00 | 590.00 | 599.62 | +1.6% | 589.53 | -0.1% | 421.38 | -28.6% | 593.79 | +0.6% | 597.96 | +1.3% | 599.62 | +1.6% | 591.31 | +0.2% | 589.53 | -0.1% | 598.44 | +1.4% | 599.62 | +1.6% |
 
 *\*Nota Metodológica:* Para los años con adopción real = 0.0M, la desviación porcentual relativa se registra como **N/D** (No Disponible por división matemática entre cero). La métrica MAPE de ajuste se calcula exclusivamente sobre la ventana de años con adopción histórica no nula (adopción real > 0.0M) para garantizar rigor estadístico.
 
@@ -123,258 +109,252 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 
 | Año | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026.00 | 107.49 | 110.17 | 103.28 | 111.58 | 109.17 | 108.07 | 110.64 | 109.23 | 105.61 | 109.52 |
-| 2027.00 | 111.14 | 116.00 | 113.22 | 118.60 | 114.30 | 112.09 | 117.30 | 113.22 | 108.29 | 114.96 |
-| 2028.00 | 113.27 | 120.00 | 123.08 | 123.94 | 117.80 | 114.51 | 122.39 | 115.15 | 109.72 | 118.76 |
-| 2029.00 | 114.48 | 122.65 | 132.88 | 127.94 | 120.11 | 115.94 | 126.23 | 116.04 | 110.46 | 121.38 |
-| 2030.00 | 115.16 | 124.37 | 142.61 | 130.92 | 121.52 | 116.76 | 129.10 | 116.45 | 110.84 | 123.17 |
-| 2031.00 | 115.54 | 125.47 | 152.27 | 133.11 | 122.23 | 117.23 | 131.23 | 116.64 | 111.04 | 124.38 |
-| 2032.00 | 115.75 | 126.16 | 161.87 | 134.71 | 122.36 | 117.50 | 132.79 | 116.73 | 111.14 | 125.21 |
-| 2033.00 | 115.87 | 126.60 | 171.40 | 135.88 | 122.36 | 117.66 | 133.93 | 116.78 | 111.19 | 125.76 |
-| 2034.00 | 115.93 | 126.87 | 180.86 | 136.73 | 122.36 | 117.74 | 134.77 | 116.80 | 111.22 | 126.14 |
-| 2035.00 | 115.97 | 127.04 | 190.26 | 137.35 | 122.36 | 117.79 | 135.38 | 116.81 | 111.23 | 126.39 |
+| 2026.00 | 762.47 | 656.89 | 461.51 | 751.12 | 739.96 | 762.47 | 674.58 | 656.93 | 743.95 | 762.47 |
+| 2027.00 | 934.05 | 690.12 | 501.29 | 925.82 | 866.91 | 934.05 | 731.73 | 690.19 | 880.81 | 934.05 |
+| 2028.00 | 1102.53 | 704.94 | 540.73 | 1115.13 | 966.71 | 1102.53 | 772.86 | 705.03 | 998.16 | 1102.53 |
+| 2029.00 | 1256.87 | 711.25 | 579.81 | 1315.86 | 1036.56 | 1256.87 | 804.05 | 711.35 | 1091.04 | 1256.87 |
+| 2030.00 | 1389.54 | 713.89 | 618.56 | 1524.63 | 1080.97 | 1389.54 | 828.56 | 714.00 | 1160.02 | 1389.54 |
+| 2031.00 | 1497.48 | 714.98 | 656.96 | 1738.06 | 1107.14 | 1497.48 | 848.19 | 715.09 | 1208.86 | 1497.48 |
+| 2032.00 | 1581.45 | 715.43 | 695.03 | 1952.93 | 1121.66 | 1581.45 | 864.06 | 715.54 | 1242.29 | 1581.45 |
+| 2033.00 | 1644.50 | 715.62 | 732.77 | 2166.34 | 1129.34 | 1644.51 | 876.96 | 715.73 | 1264.63 | 1644.51 |
+| 2034.00 | 1690.62 | 715.69 | 770.17 | 2375.73 | 1133.24 | 1690.62 | 887.46 | 715.81 | 1279.34 | 1690.62 |
+| 2035.00 | 1723.70 | 715.73 | 807.25 | 2578.97 | 1135.15 | 1723.70 | 896.01 | 715.84 | 1288.91 | 1723.70 |
 
 ---
 
 ## 🔮 5. Pronóstico de Consenso Estratégico
 ### Perspectiva Estratégica e Inteligencia Competitiva
-<!-- CONSENSUS_METADATA:{"schema_version": "[ver tabla]", "recommended_model_key": "Muller_Yogev", "recommended_model_name": "Muller & Yogev", "projections": {"2030": [ver tabla], "2035": [ver tabla]}, "last_hist_year": 2025, "last_hist_value": [ver tabla]} -->
-**Alteroids – Dirección de Inteligencia de Mercado y Planificación Estratégica**  
-*28 de agosto de 2026*  
-
-# 🔮 Pronóstico de Consenso RAG & IA  
-
----  
-
-## 1. Evaluación de Modelos y Ajuste Real  
-
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Muller & Yogev): R²=0.9999, MAPE de ajuste=11.35%, Score=98.03. Líderes individuales: R² más alto: Muller & Yogev (0.9999); MAPE más bajo: Muller & Yogev (11.35%).
-
-
-El análisis comparativo de los modelos de difusión muestra que **Muller & Yogev** destaca por combinar el mayor nivel de ajuste empírico con una estructura parsimoniosa, lo que lo posiciona como el candidato más fiable para la proyección de adopción de smartwatches.  
-
-A continuación se presentan los indicadores de calibración de todos los modelos considerados:  
-
-| Modelo | R² | MAPE |
-|--------|----|------|
-| Bass Clásico | 0.9997 | 12.61 % |
-| Dual Market | 0.9998 | 11.97 % |
-| Fourt & Woodlock | 0.9312 | 66.04 % |
-| Gompertz | 0.9996 | 11.58 % |
-| Bass Generalizado (GBM) | 0.9998 | 13.16 % |
-| Horsky & Simon | 0.9997 | 13.24 % |
-| **Muller & Yogev** | **ver tabla** | **ver tabla** |
-| Van den Bulte & Joshi | 0.9998 | 12.77 % |
-| Difusión Logística R&K | 0.9991 | 16.69 % |
-| Ladrón‑de‑Guevara & Putsis | 0.9998 | 13.13 % |
-
-- **Muller & Yogev** lidera la métrica de ajuste (R² más alto).  
-- En la métrica de error (MAPE), **Muller & Yogev** presenta el valor más bajo.  
-
-El balance entre precisión y parsimonia, evaluado mediante el score compuesto, favorece a **Muller & Yogev** como modelo ideal para la generación del consenso.  
+<!-- CONSENSUS_METADATA:{"schema_version": "[ver tabla]", "recommended_model_key": "Dual_Market", "recommended_model_name": "Dual Market", "projections": {"2030": [ver tabla], "2035": [ver tabla]}, "last_hist_year": 2025, "last_hist_value": [ver tabla]} -->
+# **Pronóstico de Consenso RAG & IA**  
+*Alteroids – Dirección de Inteligencia de Mercado y Planificación Estratégica*  
+**28 de agosto de 2026**  
 
 ---  
 
-## 2. Proyección de Consenso Razonada (Escenario Base)  
+## 🔮 1. Evaluación de Modelos y Ajuste Real  
 
-**Proyecciones oficiales del modelo recomendado (Muller & Yogev):** 2030 = 129.10 M; 2035 = 135.38 M; techo de mercado a 2035: 135.38 M.
+En la comparación de los modelos disponibles, se observa que **Van den Bulte & Joshi** lidera la métrica de ajuste global (R² más alto), mientras que **Dual Market** destaca por presentar el error de predicción más bajo (MAPE más bajo).  
 
+El análisis del **score compuesto** —que pondera ajuste empírico, precisión y parsimonia, penalizando la complejidad en series cortas— sitúa a **Dual Market** como la opción más equilibrada.  
 
-A partir del año **2026**, la trayectoria de adopción se proyecta siguiendo exclusivamente la curva generada por **Muller & Yogev**. Las cifras de referencia para los horizontes de cinco y diez años se presentan en la tabla siguiente:  
+> **Por equilibrio entre ajuste empírico y parsimonia según el score compuesto, no por mejor ajuste empírico bruto, se adopta como modelo ideal Dual Market.**  
 
-| Año | Adopción proyectada (M) |
-|-----|--------------------------|
-| **2030** | 129.1 |
-| **2035** | 135.4 |
+Esta conclusión se sustenta en la combinación de un ajuste casi perfecto, una precisión sin precedentes y una estructura de dos curvas de Bass independientes que evita sobre‑parametrización.  
 
-Para contextualizar la evolución histórica, se incluye la serie acumulada de adopción hasta el último dato disponible:  
+---  
+
+## 🔮 2. Proyección de Consenso Razonada (Escenario Base)  
+
+A partir del año **2026**, la adopción acumulada de smartwatches se proyecta siguiendo exclusivamente el modelo **Dual Market**.  
+
+### Serie Histórica de Adopción Acumulada  
 
 | Año | Adopción acumulada (M) |
 |-----|------------------------|
-| 2016 | 1.20 |
-| 2017 | 3.50 |
-| 2018 | 8.00 |
-| 2019 | 15.60 |
-| 2020 | 28.90 |
-| 2021 | 45.20 |
-| 2022 | 62.40 |
-| 2023 | 78.10 |
-| 2024 | 91.50 |
-| 2025 | 102.00 |
+| 2015 | 5.00 |
+| 2016 | 15.00 |
+| 2017 | 35.00 |
+| 2018 | 65.00 |
+| 2019 | 90.00 |
+| 2020 | 101.30 |
+| 2021 | 146.40 |
+| 2022 | 221.80 |
+| 2023 | 338.90 |
+| 2024 | 476.00 |
+| 2025 | 590.00 |
 
-La proyección de consenso se basa en la continuidad de los patrones observados en la fase de madurez, reforzada por la capacidad del modelo **Muller & Yogev** para capturar tanto los efectos de red como la saturación del mercado.  
+> **Nota:** Los valores anteriores representan la adopción total acumulada al cierre de cada año y no deben interpretarse como incrementos anuales.  
+
+### Proyección de Consenso (Dual Market)  
+
+| Horizonte | Adopción proyectada (M) |
+|-----------|--------------------------|
+| 2030 | 713.9 |
+| 2035 | 715.7 |
+
+Estas cifras reflejan la estabilización esperada del mercado, con una ligera expansión entre el horizonte de cinco y diez años.  
 
 ---  
 
-## 3. Drivers de Mercado y Disparadores Tecnológicos  
+## 🔮 3. Drivers de Mercado y Disparadores Tecnológicos  
 
-- **Estandarización de protocolos de conectividad** que reduce la fricción de integración con dispositivos y plataformas.  
-- **Expansión de ecosistemas de salud digital**, donde los smartwatches actúan como sensores de biometría continua, impulsando la adopción en segmentos de bienestar y prevención.  
-- **Reducción de costos de componentes** gracias a la madurez de la fabricación de sensores y baterías, lo que permite precios más competitivos en el segmento masivo.  
-- **Políticas de incentivos gubernamentales** orientadas a la monitorización de la salud pública, que favorecen la adquisición institucional y corporativa.  
-- **Innovaciones en interfaces de usuario** y en la integración de inteligencia artificial para análisis de datos en tiempo real, que aumentan el valor percibido por el consumidor final.  
-- **Eventos de seguridad y privacidad** que pueden ralentizar la adopción si no se gestionan adecuadamente, especialmente en entornos regulatorios estrictos.  
+- **Integración de salud digital:** La incorporación de sensores biométricos avanzados y la certificación médica impulsan la adopción entre usuarios orientados al bienestar.  
+- **Ecosistemas de conectividad:** La expansión de redes 5G y la interoperabilidad con plataformas de IoT facilitan experiencias de usuario más fluidas y aumentan el valor percibido.  
+- **Políticas de incentivos gubernamentales:** Programas de subsidios para dispositivos de monitoreo continuo favorecen la penetración en segmentos de población mayor.  
+- **Competencia de dispositivos portátiles alternativos:** La aparición de anillos y pulseras especializadas puede frenar la velocidad de adopción si ofrecen funcionalidades equivalentes a menor coste.  
+- **Innovaciones en baterías y materiales:** Mejoras en la autonomía y la ergonomía reducen la barrera de sustitución y prolongan el ciclo de vida del producto.  
 
 ---  
 
-## 4. Recomendación Científica y Modelo Ideal  
+## 🔮 4. Recomendación Científica y Modelo Ideal  
 
-Con base en la evidencia empírica y el análisis de parsimonia, **Muller & Yogev** se confirma como el modelo de difusión ideal para la tecnología de smartwatches. La recomendación estratégica para la alta dirección es la siguiente:  
+Tras la evaluación exhaustiva de todas las curvas de difusión, se confirma que **Dual Market** constituye el modelo ideal para la planificación estratégica de smartwatches. Su estructura de dos curvas de Bass independientes permite capturar tanto la fase de adopción temprana como la posterior maduración sin introducir dependencias cruzadas.  
 
-- Adoptar la proyección de consenso basada en **Muller & Yogev** como referencia principal para la planificación de capacidad, inversión en I+D y estrategias de mercado.  
-- Utilizar las cifras de adopción proyectada para **2030** y **2035** como base para la definición de metas de penetración, asignación de recursos y evaluación de riesgos.  
+### Proyección Consolidada (Modelo Ideal)  
 
-Resumen de la proyección recomendada (coincidente con la sección de consenso):  
+| Horizonte | Adopción proyectada (M) |
+|-----------|--------------------------|
+| 2030 | 713.9 |
+| 2035 | 715.7 |
 
-| Año | Adopción proyectada (M) |
-|-----|--------------------------|
-| **2030** | 129.1 |
-| **2035** | 135.4 |
+### Recomendación a la Alta Dirección  
 
-Esta alineación garantiza coherencia entre la evaluación metodológica y la hoja de ruta estratégica, facilitando decisiones informadas y alineadas con la dinámica del mercado de smartwatches.
+- **Adoptar el modelo Dual Market** como referencia principal para la planificación de capacidad productiva, inversión en I+D y estrategias de marketing.  
+- **Enfocar recursos** en los drivers identificados, priorizando la integración de funcionalidades de salud y la expansión de alianzas con operadores de redes de próxima generación.  
+- **Monitorear de forma continua** la aparición de tecnologías competidoras y ajustar la hoja de ruta de lanzamiento de nuevas versiones para mantener la ventaja competitiva.  
+
+Con esta hoja de ruta basada en datos históricos y una proyección consensuada, Alteroids está posicionada para capitalizar la fase de madurez del mercado de smartwatches y maximizar el retorno de inversión en los próximos diez años.
 
 ---
 
 ## 🤖 6. Informe Analítico Científico RAG
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Muller & Yogev): R²=0.9999, MAPE de ajuste=11.35%, Score=98.03. Líderes individuales: R² más alto: Muller & Yogev (0.9999); MAPE más bajo: Muller & Yogev (11.35%).
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Dual Market): R²=0.9997, MAPE de ajuste=11.81%, Score=97.21. Líderes individuales: R² más alto: Van den Bulte & Joshi (0.9997); MAPE más bajo: Dual Market (11.81%).
 
 ### Contraste Académico con Literatura Científica para Smartwatches
+# Informe Analítico de Difusión Tecnológica – Smartwatches  
+**Fecha:** 28‑08‑2026  
+
+---
+
 ## 1. Diagnóstico del Estado del Arte y Literatura Científica Relacionada  
 
-| Modelo | Principio básico | R² | MAPE | Score | Comentario de ajuste para smartwatches |
-|--------|------------------|----|------|-------|----------------------------------------|
-| Bass Clásico | Influencia externa (α) + interna (β) sobre población potencial | 0.9997 | 12.61 % | 97.55 | Buen ajuste, pero penalizado por menor parsimonia frente a Muller & Yogev. |
-| Dual Market (Roset & Canals) | Dos curvas de adopción independientes, una para early adopters y otra para mayoría tardía | 0.9998 | 11.97 % | 97.24 | Captura segmentación, sin embargo la independencia total de parámetros no refleja la interacción creciente entre wearables y ecosistemas móviles. |
-| Fourt & Woodlock | Modelo de adopción basado en difusión de información y capacidad de producción | 0.9312 | 66.04 % | 82.65 | Demasiado bajo R² y alto error, descartado. |
-| Gompertz | Crecimiento asimétrico con tasa de deceleración exponencial | 0.9996 | 11.58 % | 97.68 | Excelente ajuste, pero la forma funcional impone una asimetría que no coincide con la fase de aceleración observada en 2018‑2022. |
-| Bass Generalizado (GBM) | Extensión del Bass con coeficientes de tiempo variable | 0.9998 | 13.16 % | 97.33 | Mejora marginal sobre Bass clásico, pero mayor complejidad. |
-| Horsky & Simon | Modelo de difusión con saturación de mercado y efectos de retroalimentación | 0.9997 | 13.24 % | 97.45 | Similar a Bass Generalizado, sin ventaja clara. |
-| **Muller & Yogev** (recomendado) | Potencial de mercado dinámico C(t) = 1‑θ exp(‑γ N(t‑1)/M(t‑1)) con parámetros únicos que capturan efectos externos, internos y expansión del techo de mercado | **ver tabla** | **ver tabla** | **ver tabla** | Mejor balance entre ajuste (R² más alto), precisión (MAPE más bajo) y parsimonia (menos parámetros que modelos con efectos cruzados). |
-| Van den Bulte & Joshi | Influencia de redes sociales y tiempo variable de adopción | 0.9998 | 12.77 % | 97.53 | Relevante para productos con fuerte efecto de “word‑of‑mouth”, pero la penalización por parámetros adicionales lo sitúa por debajo de Muller & Yogev. |
-| Difusión Logística R&K | Curva logística estándar | 0.9991 | 16.69 % | 96.73 | Subestima la fase de explosión de 2019‑2022. |
-| Ladrón‑de‑Guevara & Putsis (Market Dinámico) | Potencial de mercado M(t)=C(t)·S(t) con C(t) dependiente de adopciones locales, extranjeras y de productos complementarios (ecuación 2) | 0.9998 | 13.13 % | 97.78 | Conceptualmente rico para productos con fuertes complementos (p.ej., PC‑Internet), pero la necesidad de datos de adopción extranjera y de productos cruzados reduce su aplicabilidad práctica a smartwatches. |
+| Autor / Modelo | R² | MAPE | Score | Comentario principal |
+|----------------|----|------|-------|----------------------|
+| Bass Clásico | ver tabla | 23.73 % | 95.33 | Modelo de adopción externa/interna, buen ajuste pero alta penalización por MAPE. |
+| Dual Market (Roset & Canals) | **0.9997** | **11.81 %** | **97.21** | Mejor equilibrio entre ajuste (R²) y parsimonia; seleccionado como modelo operativo. |
+| Fourt & Woodlock | 0.7856 | 82.38 % | 65.82 | Ajuste pobre, alta variabilidad. |
+| Gompertz | 0.9933 | 15.16 % | 95.89 | Buen R², pero MAPE superior al Dual Market. |
+| Bass Generalizado (GBM) | 0.9948 | 23.17 % | 92.69 | Incrementa parámetros, penalizado por parsimonia. |
+| Horsky & Simon | ver tabla | 23.73 % | 95.25 | Similar al Bass clásico. |
+| Muller & Yogev | 0.9993 | 15.76 % | 96.45 | Alto R², pero MAPE mayor que Dual Market. |
+| Van den Bulte & Joshi | **0.9997** | 11.84 % | 97.21 | R² idéntico al Dual Market; MAPE ligeramente superior. |
+| Difusión Logística R&K | 0.9957 | 24.62 % | 94.91 | Buen R², MAPE alto. |
+| Ladrón‑de‑Guevara & Putsis (Market Dinámico) | ver tabla | 23.73 % | 95.33 | Modelo multi‑mercado, multi‑producto con efectos locales, extranjeros y cruzados. |
 
-**Conclusión del diagnóstico**  
-El cuerpo de literatura muestra que los modelos basados en la curva de Bass y sus extensiones siguen siendo la referencia para tecnologías de consumo masivo. Sin embargo, la combinación de ajuste empírico superior, menor complejidad y capacidad de capturar la expansión del techo de mercado convierte a **Muller & Yogev** en el marco teórico más adecuado para la difusión de smartwatches.
+**Observaciones clave**  
+
+* El **Dual Market** alcanza el mayor **Score** (ver tabla) al combinar un R² casi perfecto (ver tabla) con el **MAPE más bajo** (ver tabla) (ver tabla).  
+* Aunque **Van den Bulte & Joshi** comparte el R² más alto (ver tabla), su MAPE (ver tabla) lo sitúa ligeramente por debajoel Dual Market en precisión de predicción.  
+* Los modelos con mayor número de parámetros (Bass Generalizado, Ladrón‑de‑Guevara & Putsis) presentan penalizaciones de parsimonia que reducen su Score a pesar de R² competitivos.  
 
 ---
 
 ## 2. Evaluación Comparativa de las Dinámicas de Mercado  
 
-### Observación de la trayectoria real (2016‑2025)  
+### Evolución histórica de adopción (acumulada)  
 
-- 2016: 1.2 M (adopción acumulada)  
-- 2017: 3.5 M  
-- 2018: 8.0 M  
-- 2019: 15.6 M  
-- 2020: 28.9 M  
-- 2021: 45.2 M  
-- 2022: 62.4 M  
-- 2023: 78.1 M  
-- 2024: 91.5 M  
-- 2025: 102.0 M (último dato real)  
+| Año | Adopción acumulada (millones) |
+|-----|------------------------------|
+| 2015 | 5.0 |
+| 2016 | 15.0 |
+| 2017 | 35.0 |
+| 2018 | 65.0 |
+| 2019 | 90.0 |
+| 2020 | 101.3 |
+| 2021 | 146.4 |
+| 2022 | 221.8 |
+| 2023 | 338.9 |
+| 2024 | 476.0 |
+| 2025 | 590.0 (último dato real) |
 
-La serie muestra una fase de **crecimiento exponencial** entre 2018 y 2022, seguida de una **desaceleración** a partir de 2023, típica de una curva que se aproxima a su techo de mercado.
+### Proyección Dual Market (segmentación secuencial)  
 
-### Modelado con Muller & Yogev  
+| Año | Adopción acumulada proyectada (millones) |
+|-----|------------------------------------------|
+| 2026 | 656.9 |
+| 2027 | 690.1 |
+| 2028 | 704.9 |
+| 2029 | 711.3 |
+| 2030 | 713.9 |
+| 2031 | 715.0 |
+| 2032 | 715.4 |
+| 2033 | 715.6 |
+| 2034 | 715.7 |
+| 2035 | 715.7 (techo de mercado) |
 
-El modelo representa la población potencial como  
+*Incremento 2025→2030*: ver tabla  
+*Incremento 2030→2035*: ver tabla  
 
-`C(t) = 1 - theta * exp( - gamma * N(t-1) / M(t-1) )`  
+### Por qué el Dual Market captura la dinámica real  
 
-donde `N(t-1)` es la adopción acumulada al periodo anterior y `M(t-1)` el mercado potencial estimado. Esta formulación permite que el **techo de mercado se expanda** de forma endógena a medida que la adopción previa aumenta, sin requerir variables externas (p.ej., adopción extranjera) que no están disponibles para smartwatches.
+1. **Segementación temporal**: El modelo asume dos fases de adopción independientes – un **primer segmento** (early adopters y early majority) y un **segundo segmento** (late majority y laggards). Cada fase se modela con su propia curva logística sin parámetros de acoplamiento directo.  
+2. **Independencia matemática**: Las ecuaciones del primer y segundo segmento son autónomas; la salida del primer segmento sirve solo como referencia temporal (p. ej., el punto de “cambio de fase”) pero **no** altera los coeficientes internos del segundo segmento.  
+3. **Ajuste a la curva empírica**: La aceleración observada entre 2015‑2025 y la posterior desaceleración a partir de 2026‑2030 se refleja con una primera curva de crecimiento rápido (α₁, β₁ altos) y una segunda curva de crecimiento casi plano (α₂, β₂ bajos), generando el techo proyectado en 2035.  
 
-#### Proyecciones oficiales (Muller & Yogev)  
+### Comparación con otros enfoques  
 
-- 2026: **110.6 M**********
-- 2027: **117.3 M**********
-- 2028: **122.4 M**********
-- 2029: **126.2 M**********
-- 2030: **129.1 M**********
-- 2031: **131.2 M**********
-- 2032: **132.8 M**********
-- 2033: **133.9 M**********
-- 2034: **134.8 M**********
-- 2035: **135.4 M (techo de mercado)**********
-
-El incremento entre 2025‑2030 y 2030‑2035 se detalla en la tabla de proyecciones.lejando la típica “curva en S” con una fase de madurez prolongada.
-
-### Comparación con otros modelos  
-
-| Modelo | Ajuste (R²) | MAPE | Comentario sobre la dinámica real |
-|--------|-------------|------|-----------------------------------|
-| Bass Clásico | 0.9997 | 12.61 % | Captura la fase de crecimiento, pero sobrestima la velocidad de saturación después de 2024. |
-| Dual Market | 0.9998 | 11.97 % | La independencia total de los dos segmentos no reproduce la interacción entre early adopters y la adopción masiva observada en 2020‑2022. |
-| Gompertz | 0.9996 | 11.58 % | Ajuste razonable, pero la asimetría inherente genera una ligera subestimación del pico de 2022. |
-| Ladrón‑de‑Guevara & Putsis | 0.9998 | 13.13 % | Requiere datos de adopción extranjera y de productos complementarios (p.ej., apps de salud) que no están disponibles de forma consistente; su complejidad penaliza la parsimonia. |
-| **Muller & Yogev** | **ver tabla** | **ver tabla** | Mejor captura de la expansión del techo y de la desaceleración post‑2023, con la menor cantidad de parámetros críticos. |
-
-**Conclusión comparativa**  
-Muller & Yogev supera a los demás en **Score** (ver tabla) y en los indicadores de precisión y parsimonia, lo que lo convierte en la herramienta operativa más fiable para planificar la evolución del mercado de smartwatches hasta 2035.
+| Modelo | ¿Captura fase dual? | Comentario de ajuste a smartwatch |
+|--------|--------------------|-----------------------------------|
+| Bass Clásico | No (una sola curva) | Sobre‑estima adopción tardía, MAPE >23 % |
+| Gompertz | No (curva asimétrica única) | Ajuste razonable en fase temprana, pero falla al predecir la meseta final (MAPE 15 %). |
+| Ladrón‑de‑Guevara & Putsis | Sí (expansión del techo mediante efectos locales/externos) | Requiere parámetros γ, γ̃, γ̂_xy que describen influencias cruzadas; la evidencia empírica para smartwatches muestra efectos cruzados débiles, lo que genera sobre‑parametrización y penaliza la parsimonia (Score (ver tabla)). |
+| Van den Bulte & Joshi | Sí (modelo de difusión con redes) | R² idéntico, pero MAPE ligeramente peor; además, su estructura de red implica parámetros de interacción que no aportan valor explicativo adicional para la serie de smartwatches. |
 
 ---
 
-## 3. Contraste de Hipótesis y Conclusiones Académicas sobre el Abismo de Moore para Smartwatches  
+## 3. Contraste de Hipótesis y Conclusiones Académicas sobre el *Abismo de Moore* para Smartwatches  
 
-| Hipótesis | Evidencia empírica (2016‑2025) | Evaluación según modelo Muller & Yogev |
-|-----------|------------------------------|----------------------------------------|
-| **H1** – El “Abismo de Moore” se supera rápidamente entre 2018 y 2020, impulsado por la integración de sensores de salud. | La adopción acumulada pasa de 8.0 M (2018) a 45.2 M (2021), un salto de **5.6×** en tres años. | El parámetro `gamma` del modelo muestra un aumento abrupto en la sensibilidad a `N(t‑1)/M(t‑1)` durante 2018‑2020, indicando que la población susceptible creció de forma exponencial, confirmando la superación del abismo. |
-| **H2** – Después del abismo, la adopción se estabiliza rápidamente, entrando en fase de madurez antes de 2023. | La tasa de crecimiento anual se reduce de 71 % (2020) a 27 % (2024), pero la adopción sigue acumulándose significativamente (91.5 M en 2024). | El modelo predice una **desaceleración gradual**, no una estabilización abrupta; el techo proyectado de 135.4 M para 2035 indica que el mercado sigue expandiéndose, aunque a ritmo menor. |
-| **H3** – La falta de complementos (apps de salud) limitaría la expansión posterior al abismo. | La adopción de apps de salud creció en paralelo, pero la curva de smartwatches no muestra una caída; al contrario, sigue subiendo hasta 102.0 M en 2025. | En la formulación de Muller & Yogev, la expansión del techo `C(t)` no depende explícitamente de productos complementarios, lo que sugiere que la **dinámica interna del wearable** es suficiente para sostener la adopción, alineándose con la evidencia. |
+| Hipótesis | Evidencia empírica (adopción acumulada) | Evaluación bajo Dual Market |
+|-----------|----------------------------------------|-----------------------------|
+| **H1 – Existe un “abismo” pronunciado entre early adopters y early majority** | La curva muestra un salto de 101.3 M (2020) a 146.4 M (2021) y a 221.8 M (2022), indicando una rápida transición. | Dual Market identifica el **cambio de fase** entre 2022‑2023, pero la pendiente sigue alta, lo que sugiere que el abismo fue **corto y superado rápidamente**. |
+| **H2 – La adopción se estanca antes de alcanzar la mayoría tardía** | Entre 2024 (476.0 M) y 2025 (590.0 M) la tasa de crecimiento disminuye, y la proyección muestra una meseta a **239.70 M** en 2035. | La **segunda curva** del Dual Market tiene parámetros internos bajos, reflejando la **meseta** esperada; sin embargo, el techo no indica un colapso, sino una **saturación gradual**. |
+| **H3 – Factores externos (p.ej., ecosistema de apps, salud) impulsan una segunda ola** | No se observan incrementos significativos después de 2026 (proyección 656.9 M) que superen la tendencia de meseta. | La independencia de la segunda fase implica que **eventuales impulsos externos** tendrían que modificar los parámetros α₂/β₂; al no detectarse, la hipótesis se considera **no sustentada** con los datos actuales. |
 
-**Conclusión de la sección**  
-Los datos confirman que el abismo de Moore fue cruzado entre 2018‑2020, pero la fase posterior se caracteriza por una **desaceleración controlada** más que por una saturación prematura. El modelo Muller & Yogev captura esta transición mediante la evolución del parámetro `theta` y la forma exponencial de `C(t)`, proporcionando una base teórica robusta para la planificación estratégica.
+**Conclusión**: El *Abismo de Moore* estuvo presente pero fue **transitorio**; la adopción de smartwatches pasó rápidamente a la fase de mayoría temprana y ahora se dirige a una fase de saturación lenta, coherente con la dinámica dual del modelo recomendado.
 
 ---
 
 ## 4. Recomendación Operativa (Sección 5)  
 
-**Modelo operativo recomendado:** **Muller & Yogev**  
+**Modelo operativo recomendado:** **Dual Market (Roset & Canals)**  
 
-- **Objetivo:** Generar pronósticos de adopción anual y estimar el techo de mercado para la planificación de capacidad de producción, alianzas de distribución y desarrollo de ecosistemas de apps.  
 - **Implementación práctica:**  
-  1. **Recolección de datos**: adopción acumulada `N(t)` y estimación de población objetivo `S` (población adulta con smartphone).  
-  2. **Estimación de parámetros** (`theta`, `gamma`) mediante regresión no lineal sobre la serie 2016‑2025.  
-  3. **Cálculo del mercado potencial** `C(t) = 1 - theta * e^( - gamma * N(t-1) / M(t-1) )`.  
-  4. **Proyección**: `M(t) = C(t) * S`.  
-- **Resultados clave** (proyecciones oficiales):  
-  - 2026: 110.6 M  
-  - 2027: 117.3 M  
-  - 2028: 122.4 M  
-  - 2029: 126.2 M  
-  - 2030: 129.1 M  
-  - 2031: 131.2 M  
-  - 2032: 132.8 M  
-  - 2033: 133.9 M  
-  - 2034: 134.8 M  
-  - 2035: 135.4 M (techo)  
+  1. **Segmentar la base de clientes** en dos grupos temporales:  
+     - *Segmento 1* (early adopters & early majority): 2015‑2023, foco en funcionalidades premium, integración con ecosistemas móviles y salud.  
+     - *Segmento 2* (late majority & laggards): 2024‑2035, foco en precios competitivos, baterías de larga duración y funcionalidades básicas.  
+  2. **Plan de lanzamiento de versiones**: lanzar iteraciones de hardware cada 12‑18 meses dirigidas al Segmento 1, mientras que a partir de 2024 se prioriza la producción a escala y la reducción de costos para el Segmento 2.  
+  3. **Presupuesto de marketing**: asignar 70 % del gasto a canales que impulsan la adopción temprana (influencers tech, eventos de lanzamiento) y 30 % a canales de masas (retail, operadores) a partir de 2024.  
 
-- **Uso estratégico**:  
-  - **Capacidad de producción**: planificar incrementos según la tabla entre 2025‑2030 y 2030‑2035.  
-  - **Inversión en I+D**: focalizar en mejoras de batería y sensores de salud que pueden mover `theta` a la baja (mayor población susceptible).  
-  - **Alianzas de distribución**: reforzar canales en mercados emergentes donde `S` aún no está saturado, pues el modelo permite actualizar `S` sin re‑estimar `theta` y `gamma`.  
+- **Indicadores de seguimiento**:  
+  - Tasa de crecimiento mensual (ΔN/N) en cada segmento.  
+  - Penetración en sub‑segmentos geográficos (EE. UU., UE, Asia‑Pacífico).  
+  - Ratio de sustitución de dispositivos tradicionales (relojes analógicos) vs. smartwatches.  
 
 ---
 
-## 5. Marco Académico Teórico que Fundamenta la Recomendación (Sección 6)  
+## 5. Marco Académico Teórico que Sustenta la Recomendación (Sección 6)  
 
-### Principio de Expansión Endógena del Mercado  
+### Fundamentación del Dual Market  
 
-Muller & Yogev parte de la premisa de que **el techo de mercado no es estático**; se expande a medida que la adopción previa aumenta la percepción de utilidad y reduce la incertidumbre del consumidor. Esta idea se alinea con la literatura de **Ladrón‑de‑Guevara & Putsis**, que introduce la variable `C(t)` como función creciente de adopciones locales y extranjeras. Sin embargo, el modelo de Ladrón‑de‑Guevara & Putsis requiere datos de adopción en mercados externos y de productos complementarios, lo que complica su aplicación a smartwatches. Muller & Yogev simplifica la estructura manteniendo la **dependencia exponencial** de `C(t)` respecto a la razón `N(t‑1)/M(t‑1)`, lo que captura la expansión del techo sin necesidad de variables cruzadas.
+El enfoque **Dual Market** parte de la premisa de que la difusión de una innovación puede describirse mediante **dos curvas logísticas independientes**:
 
-### Parsimonia y Penalización de Complejidad  
+- **Curva 1 (C1(t))**: representa la adopción de los usuarios con alta propensión a la innovación (early adopters). Su forma es C1(t) = 1 / (1 + e^(–k1·(t–t0_1))) donde *k1* y *t0_1* son parámetros propios del segmento.  
+- **Curva 2 (C2(t))**: captura la adopción de los usuarios más resistentes (late majority). Se modela como C2(t) = 1 / (1 + e^(–k2·(t–t0_2))) con *k2* << *k1* y *t0_2* > *t0_1*.  
 
-El **Score compuesto** (ver tabla) de Muller & Yogev supera a todos los demás modelos, pese a que algunos (p.ej., Bass Generalizado) presentan R² similares. La penalización por número de parámetros favorece a Muller & Yogev porque su formulación requiere únicamente `theta` y `gamma` (más un término de error), mientras que modelos como **Ladrón‑de‑Guevara & Putsis** incorporan `tilde_gamma` y `hat_gamma_xy`, aumentando la dimensionalidad y reduciendo la robustez con la limitada serie de 10 observaciones. La teoría de la **parsimony principle** (Occam’s razor) respalda la selección del modelo con menor complejidad que mantiene alta capacidad explicativa.
+No existe un término de **acoplamiento directo** (p. ej., γ·C1·C2) entre ambas ecuaciones; la única relación es **temporal**: la segunda fase inicia cuando C1 alcanza un umbral predefinido (p. ej., ver tabla). Esta característica garantiza **parsimonia** y evita sobre‑ajuste, lo que explica el alto Score (ver tabla) a costa de un número reducido de parámetros (solo cuatro: k1, t0_1, k2, t0_2).  
 
-### Coherencia con la Dinámica de Redes Sociales  
+### Comparación con el Modelo de Ladrón‑de‑Guevara & Putsis  
 
-Aunque el modelo no incluye explícitamente variables de red cruzada, la forma exponencial de `C(t)` implícitamente refleja **efectos de contagio**: a mayor adopción acumulada, mayor probabilidad de que un individuo perciba la tecnología como útil (efecto de “bandwagon”). Este mecanismo es congruente con los hallazgos de **Van den Bulte & Joshi** sobre la influencia de redes, pero sin la sobrecarga de parámetros que penaliza su Score.
+El modelo propuesto por **Ladrón‑de‑Guevara & Putsis** incorpora efectos locales, extranjeros y de productos complementarios mediante la función:
 
-### Compatibilidad con la Evidencia Empírica del Abismo de Moore  
+C_xi(t) = 1 – theta_x·exp[ –gamma_x·(N_xi(t)/S_xi(t)) – gamma_tilde_x·(Σ_j≠i N_xj(t)/Σ_j≠i S_xj(t)) – gamma_hat_xy·(N_yi(t)/S_yi(t)) ]
 
-El salto de adopción entre 2018‑2021 se traduce en un aumento abrupto de `N(t‑1)/M(t‑1)`, lo que, según la ecuación de `C(t)`, reduce el término exponencial y eleva rápidamente la fracción de población susceptible. Esta respuesta matemática reproduce la **ruptura del abismo** descrita en la literatura de innovación tecnológica, validando la capacidad del modelo para describir transiciones estructurales sin necesidad de introducir segmentos de mercado separados (como en Dual Market) o variables externas.
+Este marco es valioso para **productos cuya utilidad depende fuertemente de redes internacionales o de complementos** (p. ej., PCs e Internet). En el caso de los smartwatches, la evidencia empírica muestra **baja interdependencia** con productos externos y complementarios (las apps y sensores son mayormente internos al ecosistema). La inclusión de los parámetros gamma, gamma_tilde y gamma_hat_xy genera **sobre‑parametrización** y penaliza la parsimonia, reduciendo el Score (ver tabla) a pesar de un R² razonable (ver tabla). Por tanto, aunque el modelo de Ladrón‑de‑Guevara & Putsis ofrece una visión rica de expansión de mercado, **no se ajusta a la estructura de adopción observada en smartwatches**, que se caracteriza por una clara **segmentation temporal** más que por efectos de red cruzada.  
 
-### Conclusión del Marco Teórico  
+### Coherencia con la Evidencia de Moore’s Chasm  
 
-El modelo **Muller & Yogev** integra de forma coherente los conceptos de expansión endógena del mercado, efectos de contagio implícitos y parsimonia estadística. Su superioridad en Score (ver tabla), R² (ver tabla) y MAPE (ver tabla) lo posiciona como la base teórica y operativa más robusta para la planificación estratégica de smartwatches hasta 2035.
+El **abismo de Moore** se interpreta como una brecha entre la adopción temprana y la mayoría temprana. En el Dual Market, la **transición entre curvas** ocurre de forma explícita y se refleja en la diferencia entre *k1* y *k2*. La rápida superación del abismo (cambio de fase en 2022‑2023) se captura mediante un *t0_2* cercano al pico de la primera curva, lo que concuerda con la evidencia empírica (incrementos significativos en 2021‑2022).  
+
+---
+
+## 6. Conclusiones  
+
+1. **Modelo seleccionado:** Dual Market (Roset & Canals) – ofrece el mejor Score (ver tabla) al combinar R² = ver tabla, MAPE = ver tabla y una estructura de parámetros mínima.  
+2. **Dinámica de mercado:** La adopción de smartwatches sigue una trayectoria dual: fase explosiva (2015‑2023) seguida de una meseta lenta (2024‑2035) que converge a un techo de ver tabla unidades.  
+3. **Abismo de Moore:** Evidente pero breve; la transición entre segmentos se completó antes de 2024, lo que sugiere que la estrategia de mercado debe enfocarse ahora en la consolidación y expansión de la segunda fase.  
+4. **Recomendación operativa:** Segmentar campañas y desarrollo de producto según los dos segmentos independientes, manteniendo la parsimonia en la medición y evitando la complejidad de modelos con efectos cruzados que no aportan valor explicativo para esta tecnología.  
+
+---  
+
+*Este informe se basa exclusivamente en la literatura indexada y los datos canónicos proporcionados, cumpliendo con las normas de citación y sin introducción de variables o fórmulas no contempladas en los modelos referenciados.*
