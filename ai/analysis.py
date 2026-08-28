@@ -139,6 +139,19 @@ def obtener_datos_y_analisis_ia(tech_name):
        - **Modelos de Negocio y Segmentos Clave**: Comparación de precios (ASP), sector industrial/militar vs consumo masivo.
        - **Hitos y Eventos Tecnológicos Críticos**: Línea de tiempo de lanzamientos o discontinuaciones clave.
        
+    JERARQUÍA DE FUENTES DE DATOS:
+    1. Nivel 1 (preferida): Usuarios directos — MAU, subscribers, unidades vendidas.
+    2. Nivel 2 (fallback): Facturación anual ÷ ARPU — si no hay datos directos (empresa privada).
+    3. Nivel 3 (último recurso): Estimaciones de analistas.
+    
+    SI NO ENCUENTRAS DATOS DIRECTOS (Nivel 1):
+    1. Busca la facturación anual (revenue) de la empresa
+    2. Estima el ARPU (precio por usuario/año: B2C = mensual×12, B2B = asiento/mes×12)
+    3. Calcula: usuarios = facturación / ARPU
+    4. Usa estos valores como serie histórica
+    5. Incluye al INICIO del analisis_cualitativo:
+       "NOTA DE FUENTE DE DATOS: [empresa] no publica usuarios. Estimado desde facturación ÷ ARPU."
+       
     Debes estructurar el resultado estrictamente en formato JSON con la siguiente estructura:
     {{
         "datos": [
