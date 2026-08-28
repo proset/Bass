@@ -27,14 +27,14 @@ def generate_content_with_fallback(prompt, contents=None, response_mime_type=Non
     
     for i, model_name in enumerate(models_to_try):
         try:
-            # Configurar formato de respuesta si es JSON
             config = types.GenerateContentConfig(temperature=0, seed=42)
-            if response_mime_type:
-                config.response_mime_type = response_mime_type
-            
-            # Grounding: the old codebase passes gapic Tool, we override it with the new SDK's format
             if tools:
+                # Grounding + JSON mode son incompatibles en Gemini
                 config.tools = [types.Tool(google_search=types.GoogleSearch())]
+                if response_mime_type:
+                    print("[WARN] response_mime_type ignorado: incompatible con Google Search Grounding")
+            elif response_mime_type:
+                config.response_mime_type = response_mime_type
                 
             logger.info(f"Intentando generación de contenido con modelo: {model_name}")
             if contents:
