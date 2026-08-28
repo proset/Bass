@@ -151,6 +151,10 @@ def obtener_datos_y_analisis_ia(tech_name):
        - eMarketer, Statista: reportes de mercado
        - Estas estimaciones incluyen free + paid → son la mejor proxy de adopción total
        - Si encuentras un rango (ej: 60M-85M), usa el valor medio (ej: 72M)
+       - TAMBIÉN USA TU CONOCIMIENTO DE ENTRENAMIENTO: si durante tu entrenamiento
+         viste datos de tráfico web (SimilarWeb), MAU estimado, o descargas de app
+         para esta empresa, ÚSALOS. No necesitas encontrarlos en la búsqueda web.
+         PRIMERO busca via web; SI la web no encuentra, usa tu conocimiento.
     2. Si tampoco hay estimaciones de analistas, usa facturación ÷ ARPU:
        - Busca la facturación anual (revenue) de la empresa
        - Estima el ARPU promedio (B2C = mensual×12, B2B = asiento/mes×12)
