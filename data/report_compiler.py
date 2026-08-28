@@ -459,7 +459,7 @@ def fix_projection_bullets(text, df_proj, recommended_model_name):
                         m = bullet_re.match(lines[k])
                         yr = int(m.group(2))
                         if yr in proj:
-                            lines[k] = f"{m.group(1)}{yr}: **{proj[yr]:.1f} {m.group(4).strip()}**"
+                            lines[k] = f"{m.group(1)}{yr}: **{proj[yr]:.2f} {m.group(4).strip()}**"
             i = j
         else:
             i += 1
@@ -503,7 +503,7 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
         tables_summary = "\n".join(tables_lines)
         proj_cols = [c for c in df_proj.columns if c != 'Año']
         for c in proj_cols:
-            vals = ", ".join(f"{int(r['Año'])}: {r[c]:.1f}M" for _, r in df_proj.iterrows())
+            vals = ", ".join(f"{int(r['Año'])}: {r[c]:.2f}M" for _, r in df_proj.iterrows())
             tables_summary += f"\n{c}: {vals}"
         prompt = (
             "Eres un editor experto de informes de mercado. Tu tarea es corregir el siguiente informe de consenso y proyecciones en español para que todos los números, nombres de modelos y afirmaciones de ajuste coincidan EXACTAMENTE con las tablas de referencia.\n\n"
@@ -944,20 +944,20 @@ def compilar_informe_global(tech, force_consenso=False):
         _v5 = float(_row5[_rec_col].values[0]) if (not _row5.empty and _rec_col in df_proj.columns) else None
         _v10 = float(_row10[_rec_col].values[0]) if (not _row10.empty and _rec_col in df_proj.columns) else None
         _serie_hist_txt = "".join(
-            f"  - {int(_y)}: {float(_v):.1f}M\n"
+            f"  - {int(_y)}: {float(_v):.2f}M\n"
             for _y, _v in zip(anios_reales, y_true)
         )
         _proj_txt = "".join(
-            f"  - {int(_r['Año'])}: {float(_r[_rec_col]):.1f}M\n"
+            f"  - {int(_r['Año'])}: {float(_r[_rec_col]):.2f}M\n"
             for _, _r in df_proj.iterrows() if _rec_col in df_proj.columns
         )
         _extras = ""
         if _v5 is not None:
-            _extras += f"- Incremento {_last_yr}->{_yr5}: {_v5 - _last_val:.1f}M.\n"
+            _extras += f"- Incremento {_last_yr}->{_yr5}: {_v5 - _last_val:.2f}M.\n"
         if (_v5 is not None) and (_v10 is not None):
-            _extras += f"- Incremento {_yr5}->{_yr10}: {_v10 - _v5:.1f}M.\n"
+            _extras += f"- Incremento {_yr5}->{_yr10}: {_v10 - _v5:.2f}M.\n"
         if _v10 is not None:
-            _extras += f"- Techo de mercado a {_yr10} ({recommended_model_name}): {_v10:.1f}M.\n"
+            _extras += f"- Techo de mercado a {_yr10} ({recommended_model_name}): {_v10:.2f}M.\n"
         canonical_block = (
             "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
             "- Serie histórica REAL completa (adopción ACUMULADA, en M):\n"
@@ -965,9 +965,9 @@ def compilar_informe_global(tech, force_consenso=False):
             f"- REGLA total-vs-incremento: NUNCA cites un incremento anual como valor "
             f"acumulado: el valor de un año histórico es el acumulado de la serie, no la "
             f"diferencia con el año anterior. Ejemplo: si la serie dice {_last_yr}: "
-            f"{_last_val:.1f}M, la adopción acumulada de {_last_yr} ES {_last_val:.1f}M, "
-            f"no {(_last_val - _prev_val):.1f}M.\n"
-            f"- Último dato REAL: {_last_val:.1f}M en {_last_yr}.\n"
+            f"{_last_val:.2f}M, la adopción acumulada de {_last_yr} ES {_last_val:.2f}M, "
+            f"no {(_last_val - _prev_val):.2f}M.\n"
+            f"- Último dato REAL: {_last_val:.2f}M en {_last_yr}.\n"
             f"- Proyecciones del modelo recomendado ({recommended_model_name}) "
             f"por año — CITA EXACTAMENTE el valor del año que menciones; NUNCA "
             f"uses el valor de otro modelo de la tabla:\n"
@@ -1002,7 +1002,7 @@ def compilar_informe_global(tech, force_consenso=False):
             canonical_block = (
                 "\n\nDATOS CANÓNICOS (única fuente de verdad; cita EXACTAMENTE estas cifras):\n"
                 "- Serie histórica REAL completa (adopción ACUMULADA, en M):\n"
-                + "".join(f"  - {int(_y)}: {float(_v):.1f}M\n" for _y, _v in zip(anios_reales, y_true))
+                + "".join(f"  - {int(_y)}: {float(_v):.2f}M\n" for _y, _v in zip(anios_reales, y_true))
                 + "- REGLA total-vs-incremento: NUNCA cites un incremento anual como valor acumulado de un año histórico.\n"
             )
         except Exception:
@@ -1219,7 +1219,7 @@ A continuación se detallan los datos reales acumulados (en millones de adoptant
 | --- | --------------------------- |
 """
     for a, y in zip(anios_reales, y_true):
-        report_md += f"| {a} | {y:.1f} M |\n"
+        report_md += f"| {a} | {y:.2f} M |\n"
         
     report_md += """
 ### Resumen del Error de Ajuste

@@ -368,7 +368,7 @@ A continuación se detallan los datos reales acumulados (en millones de adoptant
 
 """
     for a, y in zip(anios_reales, y_true):
-        report_md += f"| {a} | {y:.1f} M |\n"
+        report_md += f"| {a} | {y:.2f} M |\n"
         
     report_md += """
 ### Resumen del Error de Ajuste
