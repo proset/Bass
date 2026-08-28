@@ -1308,23 +1308,29 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
     report_md = fix_delta_as_accumulated(report_md, anios_reales, y_true)
     report_md = strip_numeric_prose(report_md)
     # [FIX 20] Insertar bloques de cifras oficiales tras los headers de las burbujas
-    _anchor51 = "#### 1. Evaluación de Modelos y Ajuste Real"
-    _anchor52 = "#### 2. Proyección de Consenso Razonada (Escenario Base)"
-    _anchor6 = "## 🤖 6. Informe Analítico Científico RAG"
-    if _bloques_fact and report_md.count(_anchor51) == 1:
-        report_md = report_md.replace(
-            _anchor51, _anchor51 + "\n\n**Datos oficiales (del motor):** "
-            + _bloques_fact.strip() + "\n", 1)
-    if _bloques_fact and report_md.count(_anchor6) == 1:
-        report_md = report_md.replace(
-            _anchor6, _anchor6 + "\n\n**Datos oficiales (del motor):** "
-            + _bloques_fact.strip() + "\n", 1)
-    if _v5 is not None and _v10 is not None and report_md.count(_anchor52) == 1:
-        report_md = report_md.replace(
-            _anchor52,
-            _anchor52 + f"\n\n**Proyecciones oficiales del modelo recomendado "
+    if _bloques_fact:
+        report_md, _ = re.subn(
+            r"(#+\s*1\.\s*Evaluaci.n de Modelos y Ajuste Real[^\n]*\n)",
+            r"\1\n**Datos oficiales (del motor):** " + _bloques_fact.strip() + "\n\n",
+            report_md,
+            flags=re.IGNORECASE
+        )
+        report_md, _ = re.subn(
+            r"(#+\s*(?:[^a-zA-Z0-9\s]\s*)?6\.\s*Informe Anal.tico Cient.fico RAG[^\n]*\n)",
+            r"\1\n**Datos oficiales (del motor):** " + _bloques_fact.strip() + "\n\n",
+            report_md,
+            flags=re.IGNORECASE
+        )
+    if _v5 is not None and _v10 is not None:
+        report_md, _ = re.subn(
+            r"(#+\s*2\.\s*Proyecci.n de Consenso Razonada.*?)(?=\n)",
+            r"\1\n\n**Proyecciones oficiales del modelo recomendado "
             f"({recommended_model_name}):** {_yr5} = {_v5:.2f} M; {_yr10} = "
-            f"{_v10:.2f} M; techo de mercado a {_yr10}: {_v10:.2f} M.\n", 1)
+            f"{_v10:.2f} M; techo de mercado a {_yr10}: {_v10:.2f} M.\n",
+            report_md,
+            count=1,
+            flags=re.IGNORECASE
+        )
     # report_md = fix_citation_years(report_md)
     report_md = fix_paper_ids(report_md)
     report_md = fix_historical_anchors(report_md, anios_reales, y_true)
