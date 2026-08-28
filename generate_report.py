@@ -109,6 +109,11 @@ def extract_tech(tech):
     log("extract", f"Extracting data for '{tech}' via Gemini + Grounding...")
     datos, analisis_text = obtener_datos_y_analisis_ia(tech)
     
+    # Fix 37: None guard (Fix 35 side effect — parsing sin JSON mode)
+    if not analisis_text or (isinstance(analisis_text, str) and analisis_text.strip() == ""):
+        print("[WARN] Análisis cualitativo vacío — usando 'No disponible.'")
+        analisis_text = "No disponible."
+        
     # CRITICAL: save BOTH outputs (lesson from IA certification)
     insertar_historico_db(tech, datos)
     guardar_analisis_cualitativo(tech, analisis_text)

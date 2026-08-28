@@ -55,6 +55,9 @@ def insertar_historico_db(tech, datos_json):
 
 def guardar_analisis_cualitativo(tech, analisis_text):
     """Guarda o actualiza el informe cualitativo del mercado."""
+    # Fix 37: None guard — protege todos los callers (pipeline, Streamlit, manual)
+    if not analisis_text or (isinstance(analisis_text, str) and analisis_text.strip() == ""):
+        analisis_text = "No disponible."
     tech_norm = normalize_tech_name(tech)
     db_conn = get_conn()
     try:
