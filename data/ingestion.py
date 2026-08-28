@@ -16,7 +16,7 @@ def insertar_historico_db(tech, datos_json):
     try:
         cursor = db_conn.cursor()
         
-        # Primero eliminar registros anteriores para esta tecnología normalizada para evitar conflictos UNIQUE
+        # Fix 29: DELETE antes de INSERT — prevenir duplicados (mismo patrón que guardar_analisis_cualitativo)
         cursor.execute("DELETE FROM historical_adoption WHERE LOWER(TRIM(tecnologia)) = %s", (tech_norm,))
         
         # Filtrar ceros iniciales excesivos: mantener máximo 1 año cero previo al primer año con adopción > 0
