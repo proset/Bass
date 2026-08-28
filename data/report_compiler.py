@@ -527,40 +527,98 @@ def corregir_consenso_forecast_llm(text, summary_rows, df_proj, recommended_mode
         print(f"[WARN] corregir_consenso_forecast_llm falló: {e}")
         return text
 
+import json
+import re
+
+def _apply_corrections(text, corrections):
+    """Aplica correcciones JSON al texto via reemplazo de strings."""
+    applied = 0
+    for c in corrections:
+        find_text = c.get("find", "")
+        replace_text = c.get("replace", "")
+        if find_text and find_text in text:
+            text = text.replace(find_text, replace_text)
+            applied += 1
+        elif find_text:
+            print(f"[WARN] Texto no encontrado para reemplazar: {find_text[:80]}...")
+    print(f"[ALCANCE-MINIMO] {applied}/{len(corrections)} correcciones aplicadas.")
+    return text
+
+def _correct_alcance_minimo(text, blockers, context_label):
+    """
+    ALCANCE MÍNIMO: el LLM corrige SOLO las frases con blockers.
+    Devuelve el texto con correcciones aplicadas (no reescribe todo).
+    Resuelve el límite de output tokens del LLM.
+    """
+    from ai.groq_client import generate_content_groq
+    if not blockers:
+        return text
+
+    # Construir texto de blockers (incluir evidence si está disponible)
+    blockers_lines = []
+    for b in blockers:
+        if isinstance(b, dict):
+            line = f"- [{b.get('category', '?')}] {b.get('message', '')}"
+            if b.get('evidence'):
+                line += f'\n  Texto problemático: "{b["evidence"]}"'
+        else:
+            line = f"- {b}"
+        blockers_lines.append(line)
+
+    blockers_text = "\n".join(blockers_lines)
+
+    prompt = f"""Eres un corrector narrativo para informes de adopción tecnológica.
+Corrige SOLO las frases que tienen blockers. NO reescribas el documento completo.
+
+REGLAS DE CORRECCIÓN:
+- Elimina cifras de adopción y métricas de la prosa (deben vivir en tablas).
+- Elimina años de citación entre paréntesis (los modelos se citan solo por nombre).
+- Si una frase menciona un valor numérico, reescríbela sin el número, remitiendo a la tabla.
+- NO añadas nueva información. Solo corrige lo que los blockers indican.
+
+--- {context_label} (contexto, NO reescribir) ---
+{text}
+
+--- BLOCKERS A CORREGIR ---
+{blockers_text}
+
+INSTRUCCIONES:
+1. Para cada blocker, identifica la frase exacta que necesita corrección.
+2. Escribe la versión corregida de esa frase.
+3. Devuelve un array JSON donde cada elemento tiene:
+   {{"find": "texto exacto a reemplazar (copia exacta del documento)", "replace": "texto corregido"}}
+4. NO reescribas el documento completo. SOLO devuelve las correcciones.
+5. Si un blocker no requiere cambio de texto, omítelo.
+
+Devuelve EXCLUSIVAMENTE el array JSON:"""
+    try:
+        response = generate_content_groq(
+            prompt=prompt,
+            temperature=0,
+            response_mime_type="application/json"
+        )
+        # Limpiar respuesta (manejar markdown wrapping)
+        response = response.strip()
+        if response.startswith("```"):
+            response = re.sub(r'^```(?:json)?\s*', '', response)
+            response = re.sub(r'\s*```$', '', response)
+
+        corrections = json.loads(response)
+        if not isinstance(corrections, list):
+            corrections = [corrections]
+
+        return _apply_corrections(text, corrections)
+    except json.JSONDecodeError as e:
+        print(f"[WARN] ALCANCE MÍNIMO: JSON inválido del LLM: {e}")
+        return text
+    except Exception as e:
+        print(f"[WARN] ALCANCE MÍNIMO falló: {e}")
+        return text
+
 def correct_report_narrative_with_llm(report_md, blockers, real_series, model_fits_obj, canonical_block=""):
     """[GLM-PATCH] Wrapper LLM (red-team): reescribe el informe resolviendo los blockers."""
     try:
-        from llm_reviewer import historical_table_to_summary, model_fits_to_summary
-        tables_summary = (historical_table_to_summary(real_series)
-                          + "\n" + model_fits_to_summary(model_fits_obj))
-        blockers_text = "\n".join(f"- {b}" for b in blockers)
-        _hist_years = sorted(int(_y) for _y in real_series.keys())
-        _hist_range = f"{_hist_years[0]} a {_hist_years[-1]}" if len(_hist_years) > 1 else f"{_hist_years[0]}"
-        prompt = (
-            "Eres un auditor y editor experto en consistencia de informes de mercado. \n"
-            "Tu tarea es corregir la narrativa de este reporte de adopción tecnológica para eliminar CUALQUIER incoherencia numérica o contradicción.\n\n"
-            "Aquí tienes los datos oficiales de referencia:\n"
-            "--- DATOS DE REFERENCIA ---\n"
-            f"{tables_summary}\n"
-            f"{canonical_block}"
-            "--- ERRORES/BLOCKERS DETECTADOS (DEBES CORREGIR CADA UNO DE ELLOS) ---\n"
-            f"{blockers_text}\n"
-            "--- REGLAS DE ORO DE CORRECCIÓN ---\n"
-            "0. PROHIBIDO AÑADIR CIFRAS: no introduzcas NINGÚN número nuevo con M/milliones al corregir. Al corregir un blocker, elimina la cifra problemática y sustitúyela por referencia a la tabla ('según la proyección oficial del modelo recomendado').\n"
-            "0b. SECCIÓN INTOCABLE: NO modifiques NADA del texto bajo '## 📄 1. Resumen Ejecutivo y Contexto de Mercado' hasta '## 🔬 2.' — ese texto proviene de la base de datos auditada. Si un blocker apunta a esa sección, NO lo corrijas tú: devuelve ese texto sin cambios.\n"
-            f"1. CUALQUIER número en el texto que se refiera a la adopción real acumulada anual (años históricos: {_hist_range}) debe coincidir EXACTAMENTE con el valor de la tabla histórica de referencia.\n"
-            "   IMPORTANTE: NO modifiques ni alteres las cifras mensuales, semanales o de hitos específicos de lanzamiento en meses puntuales (como \"1 millón en 5 días\" o \"100 millones de MAU en enero de 2023\"), ya que éstas corresponden a hitos puntuales de un momento del año y no a la adopción acumulada al cierre de ese año.\n"
-            "2. CUALQUIER número en el texto que se refiera a proyecciones futuras (años posteriores a {_hist_years[-1]}: desde {_hist_years[-1] + 1} en adelante) debe coincidir EXACTAMENTE con la cifra de proyección del modelo recomendado/seleccionado en la tabla de referencia.\n"
-            "   IMPORTANTE: Distingue claramente entre el VALOR ABSOLUTO de proyección para el año (que debe coincidir con la tabla) y el INCREMENTO o aumento (que es la resta aritmética: ej. Valor_Año_Posterior - Valor_Año_Anterior). Si el texto describe un \"aumento\", \"incremento\", \"crecimiento adicional\" o \"diferencia\", debes calcular y escribir la resta real correcta en millones (M), NUNCA coloques el valor absoluto de proyección como si fuera el incremento.\n"
-            "3. No inventes unidades (como porcentajes '%'). Si los datos de referencia están en millones (M), mantén todos los números de adopción y proyecciones en millones (M) en todo el texto.\n"
-            "4. NO modifiques las tablas markdown oficiales ni las ecuaciones de LaTeX ni las cabeceras de sección.\n"
-            "5. ALCANCE MÍNIMO OBLIGATORIO: modifica EXCLUSIVAMENTE las frases directamente relacionadas con los blockers listados arriba. NO reescribas ni alteres cifras, bullets o frases que no estén implicadas en un blocker. Cuando corrijas una cifra, copia el valor EXACTO de los DATOS DE REFERENCIA (mismo año, mismo modelo/columna) sin recalcularlo ni transformarlo.\n"
-            "6. Devuelve EXCLUSIVAMENTE el markdown corregido completo (sin explicaciones adicionales, sin fences ```).\n\n"
-            "--- INFORME A CORREGIR ---\n"
-            f"{report_md}"
-        )
-        from ai.groq_client import generate_content_groq
-        return generate_content_groq(prompt=prompt, temperature=0).strip()
+        return _correct_alcance_minimo(report_md, blockers, "INFORME")
     except Exception as e:
         print(f"[WARN] correct_report_narrative_with_llm falló: {e}")
         return report_md
@@ -1266,7 +1324,7 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
         # [R2.3] Orden D2 (bytecode 4575-4820): LLM → fix_proj → fix_hist
         report_md = correct_report_narrative_with_llm(
             report_md=report_md,
-            blockers=[f"[{it.category}] {it.message}" for it in last_blockers],
+            blockers=[{"category": it.category, "message": it.message, "evidence": getattr(it, 'evidence', None)} for it in last_blockers],
             real_series=real_series,
             model_fits_obj=model_fits_obj,
             canonical_block=canonical_block,
