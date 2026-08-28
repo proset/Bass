@@ -140,17 +140,26 @@ def obtener_datos_y_analisis_ia(tech_name):
        - **Hitos y Eventos Tecnológicos Críticos**: Línea de tiempo de lanzamientos o discontinuaciones clave.
        
     JERARQUÍA DE FUENTES DE DATOS:
-    1. Nivel 1 (preferida): Usuarios directos — MAU, subscribers, unidades vendidas.
-    2. Nivel 2 (fallback): Facturación anual ÷ ARPU — si no hay datos directos (empresa privada).
-    3. Nivel 3 (último recurso): Estimaciones de analistas.
+    1. Nivel 1 (preferida): Usuarios directos — MAU, subscribers, unidades vendidas. Publicados por la empresa o reportes oficiales.
+    2. Nivel 2 (fallback): Estimaciones de analistas — SimilarWeb (visitas web mensuales al dominio de la empresa), SensorTower (descargas de app), eMarketer. Estas estimaciones incluyen usuarios free + paid (adopción total).
+    3. Nivel 3 (último recurso): Facturación anual ÷ ARPU — solo si no hay datos directos ni estimaciones de analistas. Nota: revenue/ARPU solo cuenta paying users, no free tier.
     
     SI NO ENCUENTRAS DATOS DIRECTOS (Nivel 1):
-    1. Busca la facturación anual (revenue) de la empresa
-    2. Estima el ARPU (precio por usuario/año: B2C = mensual×12, B2B = asiento/mes×12)
-    3. Calcula: usuarios = facturación / ARPU
-    4. Usa estos valores como serie histórica
-    5. Incluye al INICIO del analisis_cualitativo:
-       "NOTA DE FUENTE DE DATOS: [empresa] no publica usuarios. Estimado desde facturación ÷ ARPU."
+    1. Busca estimaciones de analistas:
+       - SimilarWeb: visitas web mensuales al dominio principal de la empresa (ej: claude.ai, chat.openai.com)
+       - SensorTower: descargas de la app móvil
+       - eMarketer, Statista: reportes de mercado
+       - Estas estimaciones incluyen free + paid → son la mejor proxy de adopción total
+       - Si encuentras un rango (ej: 60M-85M), usa el valor medio (ej: 72M)
+    2. Si tampoco hay estimaciones de analistas, usa facturación ÷ ARPU:
+       - Busca la facturación anual (revenue) de la empresa
+       - Estima el ARPU promedio (B2C = mensual×12, B2B = asiento/mes×12)
+       - Calcula: usuarios = facturación / ARPU
+       - ADVERTENCIA: este método solo cuenta paying users, no free tier. Úsalo solo si no hay nada mejor.
+    3. En cualquier caso, incluye al INICIO del analisis_cualitativo:
+       "NOTA DE FUENTE DE DATOS: [empresa] no publica usuarios oficiales.
+       Datos estimados a partir de [método: SimilarWeb/SensorTower/facturación÷ARPU].
+       Incertidumbre: alta — los valores son estimaciones, no datos verificados."
        
     Debes estructurar el resultado estrictamente en formato JSON con la siguiente estructura:
     {{
