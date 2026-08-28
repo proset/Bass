@@ -100,6 +100,44 @@ def clean_bd(tech):
     log("clean", f"Deleted {data_deleted} data rows (2026) + {qa_deleted} qualitative analysis rows")
     return data_deleted + qa_deleted
 
+def auto_residual(tech, min_points=5):
+    """
+    Fix 31: If series has < min_points after trimming (leading zeros removed),
+    assign 0.1M to pre-launch years with 0.0M to reach min_points.
+    """
+    from config import get_conn, release_conn
+    res = call_glm_loaders(tech)
+    if res.get("n", 0) >= min_points:
+        return True  # enough points, no action needed
+        
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT anio, adopcion_acumulada FROM historical_adoption WHERE tecnologia = %s ORDER BY anio",
+        (tech,),
+    )
+    rows = cur.fetchall()
+    # Find years with 0.0 that were likely trimmed
+    zero_years = [row[0] for row in rows if float(row[1]) == 0.0]
+    
+    if not zero_years:
+        release_conn(conn)
+        return False  # no zeros to fix
+        
+    needed = min_points - res.get("n", 0)
+    to_fix = zero_years[-needed:]  # take the last N zeros (most recent)
+    
+    for anio in to_fix:
+        cur.execute(
+            "UPDATE historical_adoption SET adopcion_acumulada = 0.1 WHERE tecnologia = %s AND anio = %s AND adopcion_acumulada = 0.0",
+            (tech, anio),
+        )
+        log("auto-residual", f"Updated {anio}: 0.0 → 0.1M")
+        
+    conn.commit()
+    release_conn(conn)
+    return True
+
 def extract_tech(tech):
     """Extract data using Gemini + Google Search Grounding. Save BOTH outputs."""
     from ai.analysis import obtener_datos_y_analisis_ia
@@ -140,8 +178,18 @@ def verify_bd(tech):
         return False
         
     if n < 5:
-        log("verify", f"ERROR: Only {n} points (minimum 5 required)")
-        return False
+        log("verify", f"WARNING: Only {n} points — attempting auto-residual...")
+        if auto_residual(tech, min_points=5):
+            res = call_glm_loaders(tech)
+            n = res.get("n", 0)
+            years = res.get("years", [])
+            log("verify", f"After auto-residual: {n} points")
+            if n < 5:
+                log("verify", f"ERROR: Still only {n} points after auto-residual")
+                return False
+        else:
+            log("verify", f"ERROR: Only {n} points and no zeros to fix")
+            return False
         
     if n < 10:
         log("verify", f"WARNING: Only {n} points (10+ recommended)")
