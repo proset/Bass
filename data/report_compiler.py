@@ -94,7 +94,7 @@ def calculate_mape(y_true, y_pred):
         return 0.0
     return np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100.0
 
-def df_to_markdown_manual(df):
+def df_to_markdown_manual(df, last_historical_value=None):
     headers = list(df.columns)
     lines = []
     lines.append("| " + " | ".join(str(h) for h in headers) + " |")
@@ -106,7 +106,11 @@ def df_to_markdown_manual(df):
                 if "Desv" in col_name or "%" in col_name:
                     row_str.append(f"{val:+.1f}%" if not np.isnan(val) else "N/D")
                 else:
-                    row_str.append(f"{val:.2f}")
+                    # Fix 38: proyecciones < último dato real → "N/D" (no tiene sentido decrecer en adopción acumulada)
+                    if last_historical_value is not None and col_name != "Año" and not np.isnan(val) and val < last_historical_value:
+                        row_str.append("N/D")
+                    else:
+                        row_str.append(f"{val:.2f}" if not np.isnan(val) else "N/D")
             else:
                 row_str.append(str(val))
         lines.append("| " + " | ".join(row_str) + " |")
@@ -1270,7 +1274,7 @@ Comparativa detallada de las predicciones de los modelos frente a los datos hist
 Predicciones de adopción acumulada (en millones) para los próximos 10 años (horizonte proyectado):
 
 """
-    report_md += df_to_markdown_manual(df_proj)
+    report_md += df_to_markdown_manual(df_proj, last_historical_value=float(y_true[-1]) if len(y_true) > 0 else 0.0)
     report_md += f"""
 
 ---
