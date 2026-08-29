@@ -821,13 +821,16 @@ def compilar_informe_global(tech, force_consenso=False):
         
         y_proj = project_model(m_key, p, t_proj)
         
-        # Fix 38: proyección no puede decrecer por debajo del último dato real
+        # Fix 38: proyección no puede decrecer por debajo del último dato real ni ser NaN
         if len(y_true) > 0:
             last_hist_value = y_true[-1]
             if isinstance(y_proj, np.ndarray):
                 for i, val in enumerate(y_proj):
-                    if not np.isnan(val) and val < last_hist_value:
+                    if np.isnan(val) or val < last_hist_value:
                         y_proj[i] = last_hist_value
+            else:
+                if np.isnan(y_proj) or y_proj < last_hist_value:
+                    y_proj = last_hist_value
                         
         df_proj[f"{model_labels[m_key]} (M)"] = y_proj
 

@@ -8,11 +8,23 @@ import numpy as np
 def project_bass(p, q, m, t_array):
     """Bass analítica: N(t) = m * (1 - exp(-(p+q)*t)) / (1 + (q/p) * exp(-(p+q)*t))"""
     if p == 0:
-        # Límite cuando p→0: N(t) = m * (1 - exp(-q*t))  (solo imitadores)
-        return m * (1 - np.exp(-q * t_array))
+        exponent = np.clip(-q * t_array, -700, 700)
+        return m * (1 - np.exp(exponent))
+    
     pq = p + q
-    exp_term = np.exp(-pq * t_array)
-    return m * (1 - exp_term) / (1 + (q / p) * exp_term)
+    exponent = np.clip(-pq * t_array, -700, 700)
+    exp_term = np.exp(exponent)
+    
+    # Manejar posible división por cero o NaN
+    with np.errstate(divide='ignore', invalid='ignore'):
+        result = m * (1 - exp_term) / (1 + (q / p) * exp_term)
+    
+    # Si hay NaN (ej. inf/inf), aproximar al límite
+    if np.any(np.isnan(result)):
+        limit_val = -m * (p / q) if q != 0 else m
+        result = np.where(np.isnan(result), limit_val, result)
+        
+    return result
 
 def project_dual_market(p1, q1, m1, p2, q2, m2, t_array):
     """Dual Market: suma de dos Bass analíticas"""
