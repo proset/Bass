@@ -31,17 +31,17 @@ print(f"  CLAUDE-TODO TEST: '{TECH}' (Run {RUN})")
 print(f"{'='*60}\n")
 
 response = client.messages.create(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-sonnet-5",
     max_tokens=8000,
-    temperature=0,
     messages=[{"role": "user", "content": prompt}]
 )
 
+print("DEBUG Content:", response.content)
 # Extraer el texto final
 result_text = ""
 for block in response.content:
-    if hasattr(block, "text"):
-        result_text += block.text
+    if getattr(block, "type", "") == "text":
+        result_text += getattr(block, "text", "")
 
 # Guardar resultado
 output_file = f"claude_todo_{TECH.replace(' ', '_')}_run{RUN}.txt"
