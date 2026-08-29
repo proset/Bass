@@ -817,13 +817,18 @@ def compilar_informe_global(tech, force_consenso=False):
         if m_key not in params:
             continue
         p = params[m_key]
-        popt = reconstruct_popt(m_key, p)
-        if not popt:
-            continue
-        model_func = get_model_func(m_key)
-        if not model_func:
-            continue
-        y_proj = model_func(t_proj, *popt)
+        from models.analytical_projections import project_model
+        
+        y_proj = project_model(m_key, p, t_proj)
+        
+        # Fix 38: proyección no puede decrecer por debajo del último dato real
+        if len(y_true) > 0:
+            last_hist_value = y_true[-1]
+            if isinstance(y_proj, np.ndarray):
+                for i, val in enumerate(y_proj):
+                    if not np.isnan(val) and val < last_hist_value:
+                        y_proj[i] = last_hist_value
+                        
         df_proj[f"{model_labels[m_key]} (M)"] = y_proj
 
     # ==================================================================
