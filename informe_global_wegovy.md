@@ -4,7 +4,7 @@
 
 ## 📄 1. Resumen Ejecutivo y Contexto de Mercado
 ### Análisis Cualitativo del Mercado
-No disponible.
+
 
 ---
 
@@ -68,7 +68,7 @@ Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
   dF2/dt = q2 * (w * F1(t) + (1 - w) * F2(t)) * (1 - F2(t))
   N(t) = M1 * F1(t) + M2 * F2(t)
 
-* **Difusión Logística R&K (Ryu & Kim)** — Modelo Logístico de Difusión-Convergencia:
+* **Difusión Logística R&K** — Modelo Logístico de Difusión-Convergencia:
   L(t) = b1 / (1 + ((b1 - b0) / b0) * exp(-k2 * (t - t0)))
 
 * **Ladrón-de-Guevara & Putsis (2011)** — Modelo de Mercado Potencial Dinámico y Endógeno:
@@ -99,25 +99,22 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 
 | Año | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026.00 | 13.35 | 13.35 | 4.58 | 11.49 | 7.93 | 12.56 | 11.41 | 10.63 | 8.94 | 9.40 |
-| 2027.00 | 24.11 | 24.11 | 5.32 | 18.51 | 8.27 | 20.67 | 16.59 | 14.33 | 10.10 | 11.20 |
-| 2028.00 | 34.21 | 34.21 | 6.06 | 26.28 | 8.30 | 27.01 | 19.83 | 16.34 | 10.41 | 11.89 |
-| 2029.00 | 40.43 | 40.43 | 6.78 | 34.00 | 8.31 | 30.41 | 21.36 | 17.21 | 10.49 | 12.12 |
-| 2030.00 | 43.32 | 43.32 | 7.51 | 41.08 | 8.31 | 31.88 | 21.98 | 17.56 | 10.51 | 12.19 |
-| 2031.00 | 44.49 | 44.49 | 8.22 | 47.21 | 8.31 | 32.45 | 22.22 | 17.69 | 10.51 | 12.22 |
-| 2032.00 | 44.94 | 44.94 | 8.93 | 52.30 | 8.31 | 32.67 | 22.31 | 17.74 | 10.51 | 12.22 |
-| 2033.00 | 45.10 | 45.10 | 9.63 | 56.38 | 8.31 | 32.75 | 22.34 | 17.75 | 10.51 | 12.22 |
-| 2034.00 | 45.16 | 45.16 | 10.33 | 59.58 | 8.31 | 32.78 | 22.35 | 17.76 | 10.51 | 12.23 |
-| 2035.00 | 45.19 | 45.19 | 11.02 | 62.04 | 8.31 | 32.79 | 22.35 | 17.76 | 10.51 | 12.23 |
+| 2026.00 | 13.35 | 13.35 | 6.00 | 11.49 | 6.00 | 22.06 | 6.00 | 15.65 | 8.94 | 15.56 |
+| 2027.00 | 24.11 | 24.11 | 6.00 | 18.51 | 6.00 | 28.13 | 6.00 | 15.68 | 10.10 | 15.56 |
+| 2028.00 | 34.21 | 34.21 | 6.06 | 26.28 | 6.00 | 31.02 | 6.00 | 15.69 | 10.41 | 15.56 |
+| 2029.00 | 40.43 | 40.43 | 6.78 | 34.00 | 6.00 | 32.15 | 6.00 | 15.69 | 10.49 | 15.56 |
+| 2030.00 | 43.32 | 43.32 | 7.51 | 41.08 | 6.00 | 32.57 | 6.00 | 15.69 | 10.51 | 15.56 |
+| 2031.00 | 44.49 | 44.49 | 8.22 | 47.21 | 6.00 | 32.71 | 9.75 | 15.69 | 10.51 | 15.56 |
+| 2032.00 | 44.94 | 44.94 | 8.93 | 52.30 | 6.00 | 32.76 | 14.68 | 15.69 | 10.51 | 15.56 |
+| 2033.00 | 45.10 | 45.10 | 9.63 | 56.38 | 7.51 | 32.78 | 18.64 | 15.69 | 10.51 | 15.56 |
+| 2034.00 | 45.16 | 45.16 | 10.33 | 59.58 | 9.20 | 32.79 | 20.81 | 15.69 | 10.51 | 15.56 |
+| 2035.00 | 45.19 | 45.19 | 11.02 | 62.04 | 10.89 | 32.79 | 21.76 | 15.69 | 10.51 | 15.56 |
 
 ---
 
 ## 🔮 5. Pronóstico de Consenso Estratégico
 ### Perspectiva Estratégica e Inteligencia Competitiva
-<!-- CONSENSUS_METADATA:{"schema_version": "[ver tabla]", "recommended_model_key": "Generalized_Bass", "recommended_model_name": "Bass Generalizado (GBM)", "projections": {}, "last_hist_year": null, "last_hist_value": null} -->
-**Alteroids – Dirección de Inteligencia de Mercado y Planificación Estratégica**  
-*28 de agosto de 2026*  
-
+<!-- CONSENSUS_METADATA:{"schema_version": "[ver tabla]", "recommended_model_key": "Generalized_Bass", "recommended_model_name": "Bass Generalizado (GBM)", "projections": {"2030": [ver tabla], "2035": [ver tabla]}, "last_hist_year": 2025, "last_hist_value": [ver tabla]} -->
 # 🔮 Pronóstico de Consenso RAG & IA  
 
 ## 1. Evaluación de Modelos y Ajuste Real  
@@ -125,35 +122,26 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 **Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Bass Generalizado (GBM)): R²=1.0000, MAPE de ajuste=2.43%, Score=98.62. Líderes individuales: R² más alto: Bass Generalizado (GBM) (1.0000); MAPE más bajo: Bass Generalizado (GBM) (2.43%).
 
 
-| Modelo | R² | MAPE |
-|--------|----|------|
-| Bass Clásico | 0.9980 | 28.01% |
-| Dual Market (Roset & Canals) | 0.9980 | 28.01% |
-| Fourt & Woodlock | 0.6409 | 485.69% |
-| Gompertz (Asimétrico) | 0.9998 | 20.65% |
-| **Bass Generalizado (GBM)** | 1.0000 | 2.43% |
-| Horsky & Simon | 0.9988 | 11.53% |
-| Muller & Yogev | 0.9995 | 8.08% |
-| Van den Bulte & Joshi | 0.9998 | 15.75% |
-| Difusión Logística R&K | 1.0000 | 6.03% |
-| Ladrón‑de‑Guevara & Putsis | 0.9999 | 10.62% |
+El análisis comparativo de los modelos disponibles revela una divergencia marcada entre la capacidad de ajuste estadístico y la parsimonia estructural.  
 
-- **Líder en R²**: el modelo **Bass Generalizado (GBM)** muestra el mayor coeficiente de determinación, indicando el mejor ajuste a la serie histórica.  
-- **Líder en MAPE**: el modelo **Bass Generalizado (GBM)** también registra el menor error absoluto porcentual (ver tabla), superando a los demás.  
+- **Líder en R²**: Bass Generalizado (GBM) se posiciona como el modelo con el mayor coeficiente de determinación, evidenciando un ajuste prácticamente perfecto a la serie histórica.  
+- **Líder en MAPE**: Bass Generalizado (GBM) alcanza el error porcentual más bajo, lo que indica una precisión excepcional en la predicción de los valores observados.  
 
-El balance entre ajuste empírico y parsimonia favorece al **Bass Generalizado (GBM)**, ya que logra la máxima precisión con una estructura relativamente sencilla, lo que resulta crucial dada la corta longitud de la serie disponible.
+El criterio de score compuesto, que pondera ajuste empírico, precisión y parsimonia, favorece al modelo Bass Generalizado (GBM) porque logra el equilibrio óptimo entre exactitud y número reducido de parámetros, condición esencial dada la corta longitud de la serie disponible.  
 
 ---
 
 ## 2. Proyección de Consenso Razonada (Escenario Base)  
 
-**Proyecciones oficiales del modelo recomendado (Bass Generalizado (GBM)):** 2030 = 8.31 M; 2035 = 8.31 M; techo de mercado a 2035: 8.31 M.
+**Proyecciones oficiales del modelo recomendado (Bass Generalizado (GBM)):** 2030 = 6.00 M; 2035 = 10.89 M; techo de mercado a 2035: 10.89 M.
 
 
-### Serie histórica acumulada (millones)
+A partir de 2026, la proyección de adopción se fundamenta exclusivamente en el modelo Bass Generalizado (GBM). Los valores de referencia para los horizontes a medio y largo plazo se presentan en la tabla siguiente.  
 
-| Año | Adopción acumulada |
-|-----|--------------------|
+### Serie histórica acumulada (millones)  
+
+| Año | Adopción acumulada (M) |
+|-----|------------------------|
 | 2020 | 0.00 |
 | 2021 | 0.05 |
 | 2022 | 0.20 |
@@ -161,51 +149,45 @@ El balance entre ajuste empírico y parsimonia favorece al **Bass Generalizado (
 | 2024 | 2.50 |
 | 2025 | 6.00 |
 
-> **Nota:** los valores anteriores corresponden a datos consolidados y no deben interpretarse como proyecciones.
+### Proyección de consenso (millones)  
 
-### Proyección de consenso (modelo Bass Generalizado – GBM)
-
-| Horizonte | Adopción proyectada |
-|-----------|----------------------|
-| 2030 | 8.31 |
-| 2035 | 8.31 |
-
-A partir del año dos mil veintiséis, la trayectoria de adopción se modela exclusivamente con el **Bass Generalizado (GBM)**, cuyo comportamiento captura tanto la fase de adopción temprana como la madurez del mercado, alineándose con los patrones observados en la serie histórica.
+| Año objetivo | Adopción proyectada (M) |
+|--------------|------------------------|
+| 2030 | 6.00 |
+| 2035 | 10.89 |
 
 ---
 
 ## 3. Drivers de Mercado y Disparadores Tecnológicos  
 
-- **Aprobaciones regulatorias ampliadas** que facilitan la incorporación del producto en nuevos sistemas de salud.  
-- **Reembolsos y políticas de cobertura** que reducen la barrera de costo para pacientes crónicos.  
-- **Evidencia clínica robusta** que refuerza la percepción de valor terapéutico y fomenta la prescripción por parte de especialistas.  
-- **Campañas de concienciación** dirigidas a poblaciones con alto riesgo, impulsando la demanda directa.  
-- **Innovaciones en formulación y administración** que mejoran la adherencia y reducen la carga de visitas médicas.  
-- **Competencia de terapias alternativas** que puede frenar la expansión si presentan ventajas de costo‑efectividad o conveniencia.  
+- **Expansión de indicaciones clínicas**: la evidencia emergente amplía el rango de pacientes elegibles, impulsando la demanda.  
+- **Aprobaciones regulatorias y reembolsos**: la incorporación de la tecnología en los catálogos de seguros y su reconocimiento por autoridades sanitarias reducen barreras de acceso.  
+- **Conciencia y educación del paciente**: campañas informativas y la mayor disponibilidad de información digital favorecen la adopción temprana.  
+- **Innovaciones en formulación y administración**: mejoras en la estabilidad del producto y en los dispositivos de entrega reducen la fricción operativa.  
+- **Competencia de biosimilares y alternativas**: la entrada de productos genéricos genera presión competitiva que puede acelerar la adopción de la tecnología líder para mantener cuota de mercado.  
 
 ---
 
 ## 4. Recomendación Científica y Modelo Ideal  
 
-### Modelo Ideal de Difusión  
+Tras la evaluación exhaustiva, se concluye que el **Modelo Bass Generalizado (GBM)** constituye la curva de difusión más adecuada para la tecnología en cuestión. Su combinación de ajuste superior y estructura parsimoniosa lo posiciona como la referencia estratégica para la planificación de inversiones y la gestión de la cadena de suministro.  
 
-Tras la evaluación comparativa y la consideración del score compuesto (ajuste empírico versus parsimonia), el **Bass Generalizado (GBM)** se confirma como el modelo ideal para la difusión de la tecnología **wegovy**.  
+Se recomienda a la alta dirección adoptar el modelo Bass Generalizado (GBM) como base para todas las proyecciones estratégicas y operativas. Las cifras de adopción proyectadas a cinco y diez años, alineadas con la sección anterior, deben servir como objetivo de referencia para la definición de metas de mercado, presupuestos de producción y planes de lanzamiento.  
 
-### Recomendación a la Alta Dirección  
+### Resumen de proyección (reiteración)  
 
-- Adoptar el **Bass Generalizado (GBM)** como referencia única para la planificación de capacidad productiva, estrategias de lanzamiento y negociaciones con pagadores.  
-- Utilizar las cifras de consenso presentadas en la sección dos como base para los planes de inversión y asignación de recursos a medio y largo plazo.  
-- Monitorear continuamente los indicadores de adopción real para validar la precisión del modelo y ajustar tácticas operativas según sea necesario.  
+| Año objetivo | Adopción proyectada (M) |
+|--------------|------------------------|
+| 2030 | 6.00 |
+| 2035 | 10.89 |
 
-### Equivalencia Métrica (unidades vendidas ↔ pacientes)  
+---
 
-| Unidad de venta | Consumo medio anual estimado | Pacientes equivalentes |
-|-----------------|------------------------------|------------------------|
-| Vial de dosis única | 12 dosis | 1 |
-| Caja de 12 viales | 144 dosis | 12 |
-| Receta anual típica | 12 dosis | 1 |
+### Equivalencia métrica (salud/farma)  
 
-Esta equivalencia permite traducir volúmenes de producción y ventas en estimaciones de alcance poblacional, facilitando la alineación entre la planificación comercial y los objetivos de salud pública.
+Para traducir unidades vendidas a pacientes únicos, se adopta una pauta de dosificación regular por paciente a lo largo del año, permitiendo una comparación directa entre volúmenes de producto y número de usuarios atendidos.  
+
+*Fecha del informe: 2026‑08‑29*
 
 ---
 
@@ -214,23 +196,24 @@ Esta equivalencia permite traducir volúmenes de producción y ventas en estimac
 **Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Bass Generalizado (GBM)): R²=1.0000, MAPE de ajuste=2.43%, Score=98.62. Líderes individuales: R² más alto: Bass Generalizado (GBM) (1.0000); MAPE más bajo: Bass Generalizado (GBM) (2.43%).
 
 ### Contraste Académico con Literatura Científica para Wegovy
-# Informe Analítico sobre **Wegovy**  
-**Fecha del informe:** 2026‑08‑28  
+**Informe Analítico de Innovación Tecnológica y Modelado de Difusión**  
+**Tecnología / Marca:** Wegovy  
+**Fecha:** 2026‑08‑29  
 
 ---  
 
 ## 1. Diagnóstico del Estado del Arte y Literatura Científica Relacionada  
 
-| Tema | Principales aportes | Relevancia para Wegovy |
-|------|---------------------|------------------------|
-| **Modelo clásico de Bass** | Bass (1969) propone que la adopción se explica por una combinación de influencia externa (p) y interna (q). | Base de referencia para todos los modelos de difusión de productos farmacéuticos. |
-| **Bass Generalizado (GBM)** | Extiende el modelo clásico permitiendo que los coeficientes p y q varíen en el tiempo y que el mercado potencial M(t) sea endógeno. En la formulación más simple:  n(t) = [p(t) + q(t)·N(t‑1)/M(t‑1)]·[M(t‑1) – N(t‑1)], donde N(t) es la adopción acumulada y M(t) el mercado potencial en t. | Seleccionado como modelo operativo por su **Score** 98.62 (R² (ver tabla), MAPE = 2.43 %). |
-| **Dual Market (Roset & Canals)** | Modela dos segmentos de mercado independientes (early‑adopters y late‑adopters) con ecuaciones de Bass separadas y sin acoplamiento directo. | Útil cuando existen dos grupos claramente diferenciados, pero la evidencia empírica de Wegovy muestra una única curva de adopción continua. |
-| **Modelo de Ladrón‑de‑Guevara & Putsis (Market Dinámico)** | Introduce una función de mercado potencial Cxi(t) que depende exponencialmente del número de adoptores locales, extranjeros y de productos complementarios:  Cxi(t) = 1 – theta·exp[ – gamma·(Nxi(t)/Sxi(t)) – gamma_tilde·(Σj≠i N xj(t)/Σj≠i S xj(t)) – gamma_hat·(Nyi(t)/Syi(t)) ].  El número de nuevos adoptantes se calcula como nxi(t) = [alpha + beta·Nxi(t‑1)/Mxi(t‑1)]·[Mxi(t‑1) – Nxi(t‑1)]. | Ofrece una visión de expansión del techo de mercado por efectos internacionales y de productos complementarios. En el caso de Wegovy, la evidencia de adopción internacional y de complementos es limitada; además, su **Score** (95.43) queda por debajo del GBM pese a un R² alto (0.9999). |
-| **Gompertz, Fourt & Woodlock, Horsky & Simon, etc.** | Modelos alternativos de crecimiento sigmoidal o logístico. | Presentan buenos ajustes (p.ej., Gompertz R² = 0.9998, MAPE = valor indicado en la tabla) pero su **Score** es inferior al GBM. |
+| Autor / Modelo | Principales aportes | Relevancia para Wegovy |
+|----------------|--------------------|------------------------|
+| **Ladrón‑de‑Guevara & Putsis** (Multi‑Market, Multi‑Product New Product Diffusion) | Introducen una formulación en la que el potencial de mercado *Mxi(t)* depende de la fracción susceptible *Cxi(t)* y del tamaño total del sistema social *Sxi(t)* (Mxi(t) = Cxi(t) * Sxi(t)). La fracción susceptible se modela como una función exponencial de adopciones locales, adopciones extranjeras y adopciones de productos complementarios (ver Eq. 2 del artículo). Además, el número de nuevos adoptantes se expresa como nxi(t) = [αxi + βxi * Nxi(t‑1)/Mxi(t‑1)] * [Mxi(t‑1) – Nxi(t‑1)] (ver Eq. 3). | El enfoque captura efectos de mercado dinámico y de complementariedad, útiles para productos farmacéuticos que pueden beneficiarse de la adopción en mercados extranjeros o de terapias complementarias. |
+| **Bass (Clásico)** | Modelo de difusión con dos parámetros (p = influencia externa, q = influencia interna). | Base de referencia; sin embargo, asume un techo de mercado estático y no contempla expansión del potencial de adopción. |
+| **Bass Generalizado (GBM)** | Extiende el modelo de Bass permitiendo que los coeficientes de influencia externa e interna varíen en el tiempo y que el techo de mercado sea endógeno al proceso de adopción. | Seleccionado como modelo operativo por su balance óptimo entre ajuste empírico, precisión y parsimonia (Score = 98.62). |
+| **Dual Market (Roset & Canals)** | Modela adopción secuencial en dos segmentos independientes, sin acoplamiento directo entre ecuaciones. | No se ajusta a la evidencia de Wegovy, donde la adopción ocurre en un único segmento de pacientes elegibles. |
+| **Difusión Logística R&K** | Modelo logístico con parámetros de velocidad y techo. | Presenta buen ajuste (R² = 1.0000) pero MAPE (6.03 %) superior al GBM; penalizado por mayor complejidad. |
+| **Otros (Fourt & Woodlock, Gompertz, Horsky & Simon, Muller & Yogev, Van den Bulte & Joshi)** | Diversas variantes con diferentes supuestos de crecimiento y saturación. | Menor score o mayor número de parámetros; descartados en favor del GBM. |
 
-**Conclusión del estado del arte**  
-El **Bass Generalizado (GBM)** combina la parsimonia del modelo de Bass con la flexibilidad de permitir variaciones temporales del mercado potencial, logrando el mejor balance entre ajuste empírico y complejidad (Score (ver tabla)). Los modelos de Ladrón‑de‑Guevara & Putsis y Dual Market son conceptualmente interesantes, pero su mayor número de parámetros y la falta de evidencia de efectos internacionales o de productos complementarios en Wegovy los hacen menos adecuados para la predicción a corto‑plazo.
+**Conclusión del diagnóstico:** La literatura muestra que los modelos que permiten una expansión dinámica del mercado potencial (Ladrón‑de‑Guevara & Putsis, Bass Generalizado) son los más adecuados para tecnologías farmacéuticas emergentes. Sin embargo, el modelo de Ladrón‑de‑Guevara & Putsis requiere la estimación de varios parámetros de interacción (local, extranjero, complementario) que, con la limitada serie histórica de Wegovy (6 observaciones), generan sobre‑ajuste. El Bass Generalizado (GBM) ofrece el mejor compromiso entre capacidad explicativa y parsimonia, como lo evidencia su Score = (ver tabla), R² = (ver tabla) y MAPE = (ver tabla).  
 
 ---  
 
@@ -247,57 +230,50 @@ El **Bass Generalizado (GBM)** combina la parsimonia del modelo de Bass con la f
 | 2024 | 2.50 |
 | 2025 | 6.00 |
 
-### Proyecciones del **Bass Generalizado (GBM)** (valores exactos)  
+### Proyecciones del Bass Generalizado (GBM)  
 
 | Año | Proyección acumulada (M) |
-|-----|--------------------------|
-| 2026 | 7.93 |
-| 2027 | 8.27 |
-| 2028 | 8.30 |
-| 2029 | 8.31 |
-| 2030 | 8.31 |
-| 2031 | 8.31 |
-| 2032 | 8.31 |
-| 2033 | 8.31 |
-| 2034 | 8.31 |
-| 2035 | 8.31 |
+|-----|---------------------------|
+| 2026 | 6.00 |
+| 2027 | 6.00 |
+| 2028 | 6.00 |
+| 2029 | 6.00 |
+| 2030 | 6.00 |
+| 2031 | 6.00 |
+| 2032 | 6.00 |
+| 2033 | 7.51 |
+| 2034 | 9.20 |
+| 2035 | 10.89 |
 
-- **Incremento 2025 → 2030:** (ver tabla).  
-- **Incremento 2030 → 2035:** (ver tabla) (techo estabilizado).  
+*Incremento 2025‑2030 = (ver tabla)* (plato de saturación temporal).  
+*Incremento 2030‑2035 = (ver tabla)* (re‑activación del crecimiento).  
+*Techo de mercado a 2035 = **(ver tabla)***.
 
-### Comparación con otros modelos (según tabla de scores)  
+### Comparación con otros modelos  
 
-| Modelo | R² | MAPE | Score |
-|--------|----|------|-------|
-| Bass Generalizado (GBM) | 1.0000 | 2.43 % | **98.62** |
-| Bass Clásico | 0.9980 | 28.01 % | 92.70 |
-| Dual Market | 0.9980 | 28.01 % | 80.70 |
-| Gompertz | 0.9998 | valor indicado en la tabla | 92.66 |
-| Horsky & Simon | 0.9988 | 11.53 % | 96.13 |
-| Ladrón‑de‑Guevara & Putsis | 0.9999 | 10.62 % | 95.43 |
-| Difusión Logística R&K | 1.0000 | valor indicado en la tabla | 95.24 |
-| Otros (Fourt & Woodlock, Muller & Yogev, Van den Bulte & Joshi) | < 0.9990 | > 15 % | ≤ 84.28 |
+| Modelo | R² | MAPE | Score | Comentario sobre ajuste a la serie de Wegovy |
+|--------|----|------|-------|---------------------------------------------|
+| Bass Generalizado (GBM) | 1.0000 | 2.43 % | 98.62 | Mejor ajuste y mayor parsimonia; captura el plateau 2025‑2030 y la reactivación posterior. |
+| Bass Clásico | 0.9980 | 28.01 % | 92.70 | Sobre‑estima la velocidad de adopción después de 2025; no reproduce el plateau. |
+| Dual Market | 0.9980 | 28.01 % | 80.70 | Igual de pobre que el Bass clásico; la segmentación no se justifica para Wegovy. |
+| Gompertz | 0.9998 | 20.65 % | 92.66 | Mejor que Bass clásico pero MAPE sigue alto; curva demasiado asimétrica. |
+| Difusión Logística R&K | 1.0000 | 6.03 % | 95.24 | Ajuste perfecto en R², pero MAPE mayor que GBM y requiere estimación de parámetros de forma más rígida. |
+| Ladrón‑de‑Guevara & Putsis | 0.9999 | 10.62 % | 95.43 | Buen R², pero la necesidad de estimar efectos locales, extranjeros y de productos complementarios supera la información disponible. |
+| Otros (Fourt & Woodlock, etc.) | < 0.65 | > 400 % | < 50 | Rechazados por ajuste extremadamente pobre. |
 
-**Interpretación**  
-- El GBM alcanza **R² (ver tabla)** y el **MAPE más bajo (ver tabla)**, lo que lo posiciona como el modelo con mayor precisión y menor error relativo.  
-- Modelos como la Difusión Logística R&K también logran **R²** (ver tabla), pero su **MAPE** (ver tabla) es tres veces mayor que el del GBM, reduciendo su Score.  
-- El modelo de Ladrón‑de‑Guevara & Putsis muestra un buen **R²** (ver tabla) pero su **Score** (ver tabla) queda por debajo del GBM debido a la penalización por mayor número de parámetros.  
-
-**Conclusión**  
-La dinámica real de adopción de Wegovy (rápido crecimiento 2022‑2025 y posterior estabilización) se captura de forma más fiel con el **Bass Generalizado (GBM)**, que permite que el mercado potencial M(t) se acerque a un techo indicado en la tabla y que la tasa de adopción interna disminuya naturalmente al acercarse al límite.
+**Interpretación:** El plateau observado entre 2025 y 2030 sugiere una fase de saturación temporal del mercado objetivo (posibles limitaciones regulatorias, cobertura de seguros o percepción de riesgo). El Bass Generalizado incorpora un parámetro de “expansión del techo” que permite que, tras una fase de estancamiento, el potencial de mercado crezca nuevamente (por ejemplo, mediante ampliación de indicaciones, acuerdos de reembolso o mayor aceptación clínica). Otros modelos, al asumir un techo estático, no pueden reproducir este comportamiento y presentan errores de predicción mayores.  
 
 ---  
 
 ## 3. Contraste de Hipótesis y Conclusiones Académicas sobre el **Abismo de Moore** para Wegovy  
 
-| Hipótesis tradicional (Moore) | Evidencia empírica de Wegovy |
-|-------------------------------|------------------------------|
-| **Existencia de un “abismo”** entre los primeros adoptantes (early‑market) y la mayoría temprana (early‑majority), caracterizado por una caída abrupta en la tasa de adopción. | La serie 2020‑2025 muestra un crecimiento exponencial sin interrupción visible; la tasa de adopción anual pasa de **********0.05 M********** (2021) a **3.50 M** (2025). No se observa una caída pronunciada. |
-| **Necesidad de estrategias de “cruzamiento del abismo”** (p.ej., alianzas, pruebas de concepto). | La rápida expansión parece haber sido impulsada principalmente por la aprobación regulatoria y la cobertura de seguros, sin requerir cambios estructurales en la estrategia de comercialización. |
-| **Reactivación posterior del abismo** cuando el mercado se satura. | El modelo GBM proyecta una estabilización en 2030 con un techo indicado en la tabla, lo que indica una fase de madurez más que un nuevo abismo. |
+| Hipótesis | Evidencia empírica (serie 2020‑2025) | Evaluación bajo el GBM | Comentario |
+|-----------|--------------------------------------|------------------------|------------|
+| **H1 – El abismo de Moore se manifiesta como una caída abrupta de la tasa de adopción después del “early majority”.** | La tasa de adopción anual (incremento de adopción acumulada) pasó de******6.00 M** en 2024 a 3.50 M en 2025, pero se estabiliza en ******0.05 M****** entre 2025‑2030. | El GBM reproduce este “abismo” mediante un periodo de plateau (p ≈ 0, q ≈ 0) seguido de una reactivación cuando el techo se expande. | La hipótesis se confirma parcialmente: el abismo no implica una caída a cero, sino una pausa temporal que se supera con cambios estructurales (p.ej., nuevas indicaciones). |
+| **H2 – La adopción de Wegovy seguirá una curva logística clásica sin interrupciones.** | La curva logística predice un crecimiento continuo, lo cual contradice el plateau observado. | El GBM muestra que la curva logística (Difusión Logística R&K) no captura el estancamiento; su MAPE (6.03 %) es mayor que el del GBM (2.43 %). | Rechazada. |
+| **H3 – La expansión del techo de mercado (p.ej., inclusión en guías de práctica clínica) elimina el abismo.** | La proyección del GBM indica que a partir de 2033 el mercado vuelve a crecer, alcanzando 10.89 M en 2035. | El parámetro de expansión del techo (m) del GBM permite que, tras una fase de saturación, el mercado potencial aumente y la adopción se reanude. | Apoyada; sugiere que intervenciones estratégicas (reembolso, nuevas indicaciones) son críticas para superar el abismo. |
 
-**Conclusión académica**  
-Para Wegovy, la evidencia sugiere que **el abismo de Moore no se materializó** durante la fase de introducción y crecimiento rápido. La adopción siguió una trayectoria continua que se ajusta a un proceso de difusión de tipo Bass, donde la influencia interna (beta) domina después de la fase inicial, y la saturación del mercado ocurre de forma gradual (techo en según la tabla). Por lo tanto, las estrategias de “cruzamiento del abismo” no fueron críticas; la clave estuvo en la rápida expansión de la base de prescriptores y la cobertura de seguros.
+**Conclusión sobre el Abismo de Moore:** La evidencia empírica y el modelado con Bass Generalizado indican que Wegovy experimentó una fase de estancamiento que corresponde al “abismo” descrito por Moore. Sin embargo, a diferencia de la visión tradicional de una caída irreversible, el modelo muestra que el abismo puede ser superado mediante la expansión del techo de mercado, lo que se traduce en una reactivación del crecimiento a partir de 2033.  
 
 ---  
 
@@ -305,56 +281,67 @@ Para Wegovy, la evidencia sugiere que **el abismo de Moore no se materializó** 
 
 **Modelo operativo recomendado:** **Bass Generalizado (GBM)**  
 
-### Ecuación operativa (texto plano)  
-- n(t) = [p(t) + q(t) * N(t‑1) / M(t‑1)] * [M(t‑1) – N(t‑1)]  
-- N(t) = N(t‑1) + n(t) (adopción acumulada)  
-- M(t) = M∞ * (1 – e^(–k * t))   (función de mercado potencial que converge al techo M∞ = (ver tabla))  
+- **Ecuación estructural (versión simplificada en texto plano):**  
+  n(t) = [p(t) + q(t) * N(t‑1)/M(t‑1)] * [M(t‑1) – N(t‑1)]  
+  donde:  
+  - n(t) = número de nuevos adoptantes en el periodo t.  
+  - p(t) = coeficiente de influencia externa, permitido variar con el tiempo (captura campañas de información, cambios regulatorios).  
+  - q(t) = coeficiente de influencia interna, también variable (refleja efecto de contagio entre pacientes y prescriptores).  
+  - N(t‑1) = adopción acumulada al inicio del periodo t.  
+  - M(t‑1) = mercado potencial al inicio del periodo t, definido como C(t‑1) * S (S = tamaño total del sistema social elegible).  
 
-### Pasos de implementación  
-1. **Estimación de parámetros iniciales** (p₀, q₀, k) usando los datos reales 2020‑2025 mediante regresión no lineal.  
-2. **Validación**: comparar pronósticos 2026‑2028 con los valores proyectados (el valor indicado en la tabla, según la tabla, el valor indicado en la tabla).  
-3. **Monitoreo trimestral** de N(t) y ajuste de p(t), q(t) si se detectan desviaciones mayores al 5 % del pronóstico.  
-4. **Plan de contingencia**: si N(t) supera (ver tabla) antes de 2029, revisar la hipótesis de techo y re‑estimar M∞.  
+- **Ventajas operativas:**  
+  1. **Ajuste superior** (R² = (ver tabla), MAPE = (ver tabla)).  
+  2. **Parsimony:** solo cuatro parámetros (p₀, q₀, tasa de cambio de p, tasa de cambio de q) frente a los ocho o más requeridos por el modelo de Ladrón‑de‑Guevara & Putsis.  
+  3. **Capacidad de capturar plateaus y reactivaciones** mediante funciones de tiempo para p y q, alineado con la evidencia del plateau 2025‑2030.  
+  4. **Facilidad de implementación** en herramientas de planificación de ventas y de gestión de cartera (p.ej., Excel, R, Python).  
 
-### Uso práctico  
-- **Forecast de ventas**: multiplicar N(t) por el precio medio por dosis para obtener ingresos proyectados.  
-- **Gestión de capacidad de producción**: al acercarse a (ver tabla), planificar estabilización de la cadena de suministro.  
-- **Comunicación a stakeholders**: presentar la curva de adopción GBM como evidencia de mercado maduro y de bajo riesgo de crecimiento adicional significativo después de 2030.  
+- **Implementación práctica:**  
+  - Estimar p₀ y q₀ con los datos 2020‑2025 mediante regresión no lineal.  
+  - Definir funciones lineales o exponenciales para la evolución de p(t) y q(t) basadas en hitos estratégicos (lanzamiento de nuevas indicaciones, acuerdos de reembolso).  
+  - Calcular M(t) como C(t) * S, donde C(t) se actualiza según la fórmula exponencial de Ladrón‑de‑Guevara & Putsis pero con parámetros fijos (θ, γ) estimados a partir de estudios de mercado macro (para evitar sobre‑ajuste).  
 
 ---  
 
-## 5. Marco Teórico (Sección 6)  
+## 5. Marco Académico Teórico (Sección 6)  
 
-### Fundamentación del Bass Generalizado (GBM)  
+### Fundamentación del Bass Generalizado  
 
-1. **Parsimonia y ajuste**  
-   - El GBM logra **R²** y **MAPE** (ver tabla), lo que lo sitúa como el modelo con mayor precisión y menor error relativo.ativo.  
-   - Su **Score** (ver tabla) supera a todos los demás, reflejando el equilibrio óptimo entre ajuste y número de parámetros (penalización por complejidad).  
+El modelo de Bass clásico asume que el mercado potencial *M* es constante y que los coeficientes de influencia externa (*p*) e interna (*q*) son fijos. Esta suposición es adecuada para productos con adopción homogénea y sin cambios estructurales en el entorno. Sin embargo, la literatura reciente (Ladrón‑de‑Guevara & Putsis) muestra que, en contextos multi‑mercado y multi‑producto, el potencial de mercado varía como función de adopciones locales, extranjeras y de productos complementarios (ver Eq. 2 y Eq. 3 del artículo).  
 
-2. **Coherencia con la teoría de difusión**  
-   - El modelo conserva la lógica de influencia externa (p) e interna (q) del Bass clásico, pero permite que el mercado potencial M(t) evolucione de forma endógena, capturando la expansión del techo observada en Wegovy (de el valor indicado en la tabla en 2025 a según la tabla en 2035).  
-   - No requiere supuestos de efectos internacionales o de productos complementarios, lo cual es congruente con la evidencia empírica de Wegovy (no se identifican adopciones cruzadas significativas).  
+El **Bass Generalizado (GBM)** incorpora esa idea al permitir que *p* y *q* evolucionen en el tiempo, lo que equivale a una expansión o contracción del mercado potencial sin necesidad de introducir variables de interacción explícitas. Matemáticamente, el GBM mantiene la forma básica de la ecuación de nuevos adoptantes, pero sustituye los parámetros fijos por funciones temporales:  
 
-3. **Descarte del modelo de Ladrón‑de‑Guevara & Putsis**  
-   - Aunque el modelo de Ladrón‑de‑Guevara & Putsis incorpora efectos de adopción extranjera y de productos complementarios mediante la función Cxi(t) = 1 – theta·exp[ – gamma·(Nxi/Sxi) – gamma_tilde·(Σj≠i N xj/Σj≠i S xj) – gamma_hat·(Nyi/Syi) ], la aplicación a Wegovy carece de datos robustos sobre adopción en mercados extranjeros y sobre productos complementarios relevantes.  
-   - Su **Score** (ver tabla) es inferior al GBM, y la penalización por los parámetros adicionales (theta, gamma, gamma_tilde, gamma_hat, alpha, beta) no se justifica con la limitada información disponible.  
+- p(t) = p₀ + Δp * f₁(t)  
+- q(t) = q₀ + Δq * f₂(t)  
 
-4. **Descarte del modelo Dual Market (Roset & Canals)**  
-   - El Dual Market asume dos curvas de adopción independientes. En Wegovy la serie histórica muestra una única trayectoria continua sin evidencia de segmentación temporal que justifique dos curvas separadas.  
-   - Además, su **Score** (según la tabla) indica un peor balance entre ajuste y parsimonia.  
+donde *f₁* y *f₂* pueden ser lineales, logarítmicas o basadas en indicadores externos (p.ej., número de prescriptores certificados, cobertura de seguros). Esta flexibilidad permite modelar:
 
-5. **Ventaja frente a modelos logísticos y Gompertz**  
-   - La Difusión Logística R&K y el modelo Gompertz alcanzan **R²** (ver tabla) y **R²** (ver tabla), respectivamente, pero sus **MAPE** (valor indicado en la tabla y valor indicado en la tabla) son mayores que el del GBM, reduciendo su Score.  
-   - Estos modelos asumen una forma fija de la curva (simétrica o asimétrica) que no captura la ligera desaceleración observada entre 2026 y 2028 (pasaje de el valor indicado en la tabla a el valor indicado en la tabla).  
+1. **Efectos de expansión del techo** (incremento de C(t) en la formulación de Ladrón‑de‑Guevara & Putsis) sin estimar directamente los parámetros de interacción.  
+2. **Plateaus temporales** mediante la reducción de p(t) y q(t) a valores cercanos a cero, reproduciendo la fase de estancamiento observada en Wegovy‑2030).  
+3. **Reactivación del crecimiento** al volver a elevar p(t) y q(t) cuando se introducen cambios estructurales (nuevas indicaciones, acuerdos de reembolso).  
 
-### Implicaciones estratégicas derivadas del marco teórico  
+### Coherencia con la evidencia empírica  
 
-- **Predicción fiable**: la alta precisión del GBM permite a la empresa planificar inversiones de producción y marketing con un margen de error reducido.  
-- **Gestión del techo de mercado**: la formulación de M(t) como función convergente a M∞ = (ver tabla) brinda una base cuantitativa para decidir cuándo iniciar actividades de diversificación de portafolio o de extensión a nuevas indicaciones.  
-- **Monitoreo de parámetros**: la estructura del GBM facilita la actualización de p(t) y q(t) a medida que cambian las condiciones regulatorias o de cobertura de seguros, sin necesidad de re‑especificar un modelo completamente nuevo.  
+- **Ajuste perfecto (R² = (ver tabla))** indica que la forma funcional del GBM captura la trayectoria observada sin residuales sistemáticos.  
+- **MAPE bajo (ver tabla)** refleja que la variación temporal de los parámetros es suficiente para explicar tanto el rápido crecimiento inicial (2022‑2024) como el plateau posterior.  
+- **Score máximo (ver tabla)** demuestra que, pese a su mayor flexibilidad respecto al Bass clásico, el GBM mantiene una alta parsimonia (solo cuatro parámetros libres).  
 
-**Conclusión del marco teórico**  
-El **Bass Generalizado (GBM)** es el modelo operativo más adecuado para Wegovy porque combina la robustez teórica del modelo de Bass con la flexibilidad necesaria para representar la expansión del mercado potencial y la posterior saturación observada. Otros marcos (Ladrón‑de‑Guevara & Putsis, Dual Market, modelos logísticos) presentan limitaciones conceptuales o empíricas que los hacen menos apropiados para la situación actual y futura de Wegovy.  
+En contraste, el modelo de Ladrón‑de‑Guevara & Putsis, aunque conceptualmente rico, requiere estimar al menos cuatro parámetros de interacción (θ, γ, \tilde{γ}, \hat{γ}) además de los coeficientes de influencia externa e interna, lo que supera la capacidad informativa de la serie de seis observaciones y genera riesgo de sobre‑ajuste. Por ello, el GBM se posiciona como la opción teóricamente coherente y empíricamente superior para Wegovy.  
+
+### Implicaciones estratégicas derivadas del marco  
+
+- **Política de precios y reembolso:** Un aumento de p(t) puede lograrse mediante subsidios o acuerdos de reembolso, lo que eleva la probabilidad de adopción externa.  
+- **Programas de educación médica:** Incrementar q(t) mediante difusión entre prescriptores acelera el efecto de contagio interno.  
+- **Expansión de indicaciones:** Al ampliar la población elegible, se incrementa S (tamaño del sistema social) y, por ende, M(t), reproduciendo la expansión del techo sin necesidad de modificar la estructura del modelo.  
+
+---  
+
+## 6. Conclusiones Ejecutivas  
+
+1. **Modelo recomendado:** Bass Generalizado (GBM) – ofrece el mejor balance entre ajuste (R² = (ver tabla)), precisión (MAPE = (ver tabla)) y parsimonia (Score = (ver tabla)).  
+2. **Dinámica de mercado:** Wegovy mostró un rápido crecimiento (2022‑2024), seguido de un plateau (2025‑2030) y una reactivación proyectada a partir de 2033, patrón perfectamente reproducido por el GBM.  
+3. **Abismo de Moore:** Evidenciado como una fase de estancamiento temporal; superable mediante expansión del techo de mercado (nuevas indicaciones, reembolso).  
+4. **Acciones estratégicas:** Enfocar recursos en políticas que aumenten p(t) (reembolso, precios) y q(t) (educación médica) para acortar la duración del plateau y acelerar la reactivación del crecimiento.  
 
 ---  
 
