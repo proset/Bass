@@ -19,11 +19,6 @@ def insertar_historico_db(tech, datos_json):
         # Fix 29: DELETE antes de INSERT — prevenir duplicados (mismo patrón que guardar_analisis_cualitativo)
         cursor.execute("DELETE FROM historical_adoption WHERE LOWER(TRIM(tecnologia)) = %s", (tech_norm,))
         
-        # Filtrar ceros iniciales excesivos: mantener máximo 1 año cero previo al primer año con adopción > 0
-        non_zero_indices = [i for i, d in enumerate(datos_json) if float(d.get("usuarios_millones", 0)) > 0]
-        if non_zero_indices and non_zero_indices[0] > 1:
-            first_nz = non_zero_indices[0]
-            datos_json = datos_json[first_nz - 1:]
 
         prev_acumulada = 0.0
         records = []

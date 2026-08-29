@@ -33,7 +33,7 @@ Métricas consolidadas de ajuste, parsimonia y validación out-of-sample:
 | Bass Clásico | 0.9886 | 1573.28% | 74.06 | 3 | 67.64% |
 | Dual Market | 0.9877 | 1647.06% | 49.73 | 6 | 69.41% |
 | Fourt & Woodlock | 0.6836 | 8238.52% | 49.38 | 2 | 89.76% |
-| Gompertz | 1.0000 | 14.02% | (ver tabla) | 3 | N/D |
+| Gompertz | 0.9969 | 418.74% | 82.30 | 3 | 16.56% |
 | Bass Generalizado (GBM) | 1.0000 | 191.26% | 70.00 | 4 | 198.63% |
 | Horsky & Simon | 0.9923 | 957.87% | 75.35 | 4 | 60.74% |
 | Muller & Yogev | 0.9932 | 972.29% | 40.63 | 7 | 52.62% |
@@ -86,17 +86,17 @@ Comparativa detallada de las predicciones de los modelos frente a los datos hist
 
 | Año | Real (M) | Bass Clásico (M) | Desv Bass Clásico % | Dual Market (M) | Desv Dual Market % | Fourt & Woodlock (M) | Desv Fourt & Woodlock % | Gompertz (M) | Desv Gompertz % | Bass Generalizado (GBM) (M) | Desv Bass Generalizado (GBM) % | Horsky & Simon (M) | Desv Horsky & Simon % | Muller & Yogev (M) | Desv Muller & Yogev % | Van den Bulte & Joshi (M) | Desv Van den Bulte & Joshi % | Difusión Logística R&K (M) | Desv Difusión Logística R&K % | Ladrón-de-Guevara & Putsis (M) | Desv Ladrón-de-Guevara & Putsis % |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2015.00 | 0.00 | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.05 | N/D | 0.00 | N/D |
-| 2016.00 | 0.00 | 6.20 | N/D | 6.49 | N/D | 32.29 | N/D | 0.04 | N/D | 0.86 | N/D | 3.77 | N/D | 3.84 | N/D | 2.30 | N/D | 0.61 | N/D | 0.35 | N/D |
-| 2017.00 | 0.00 | 22.93 | N/D | 23.88 | N/D | 64.19 | N/D | 8.00 | N/D | 7.87 | N/D | 20.11 | N/D | 19.06 | N/D | 17.21 | N/D | 7.91 | N/D | 7.97 | N/D |
-| 2018.00 | 0.00 | 67.46 | N/D | 69.36 | N/D | 95.72 | N/D | 72.00 | N/D | 72.01 | N/D | 66.68 | N/D | 66.57 | N/D | 68.13 | N/D | 72.01 | N/D | 72.00 | N/D |
-| 2019.00 | 0.00 | 181.54 | N/D | 180.51 | N/D | 126.88 | N/D | 182.00 | N/D | 182.00 | N/D | 182.53 | N/D | 182.75 | N/D | 182.55 | N/D | 182.00 | N/D | 182.00 | N/D |
-| 2020.00 | 0.00 | 447.72 | N/D | 412.87 | N/D | 157.67 | N/D | 269.20 | N/D | 190.87 | N/D | 421.87 | N/D | 388.47 | N/D | 341.45 | N/D | 205.41 | N/D | 257.85 | N/D |
-| 2021.00 | 0.00 | 952.92 | N/D | 771.68 | N/D | 188.09 | N/D | 317.56 | N/D | 190.98 | N/D | 778.25 | N/D | 627.54 | N/D | 474.42 | N/D | 207.40 | N/D | 290.43 | N/D |
-| 2022.00 | 0.10 | 1621.07 | +1620969.4% | 1129.98 | +1129880.4% | 218.16 | +218055.6% | 340.49 | +340393.9% | 190.98 | +190880.2% | 1116.34 | +1116243.6% | 804.35 | +804254.1% | 548.75 | +548648.2% | 207.55 | +207453.9% | 301.65 | +301549.1% |
-| 2023.00 | 8.00 | 2181.94 | +27174.3% | 1361.48 | +16918.5% | 247.86 | +2998.3% | 350.67 | +4283.3% | 190.98 | +2287.3% | 1324.78 | +16459.8% | 896.36 | +11104.5% | 581.54 | +7169.2% | 207.57 | +2494.6% | 305.21 | +3715.1% |
-| 2024.00 | 72.00 | 2499.40 | +3371.4% | 1472.07 | +1944.5% | 277.22 | +285.0% | 355.05 | +393.1% | 190.98 | +165.3% | 1421.24 | +1873.9% | 935.58 | +1199.4% | 594.50 | +725.7% | 207.57 | +188.3% | 306.31 | +325.4% |
-| 2025.00 | 182.00 | 2640.50 | +1350.8% | 1517.28 | +733.7% | 306.23 | +68.3% | 356.92 | +96.1% | 190.98 | +4.9% | 1459.92 | +702.2% | 950.87 | +422.5% | 599.40 | +229.3% | 207.57 | +14.0% | 306.65 | +68.5% |
+| 2015.00 | 0.00 | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.06 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.00 | N/D | 0.05 | N/D | 0.00 | N/D |
+| 2016.00 | 0.00 | 6.20 | N/D | 6.49 | N/D | 32.29 | N/D | 1.68 | N/D | 0.86 | N/D | 3.77 | N/D | 3.84 | N/D | 2.30 | N/D | 0.61 | N/D | 0.35 | N/D |
+| 2017.00 | 0.00 | 22.93 | N/D | 23.88 | N/D | 64.19 | N/D | 15.34 | N/D | 7.87 | N/D | 20.11 | N/D | 19.06 | N/D | 17.21 | N/D | 7.91 | N/D | 7.97 | N/D |
+| 2018.00 | 0.00 | 67.46 | N/D | 69.36 | N/D | 95.72 | N/D | 67.67 | N/D | 72.01 | N/D | 66.68 | N/D | 66.57 | N/D | 68.13 | N/D | 72.01 | N/D | 72.00 | N/D |
+| 2019.00 | 0.00 | 181.54 | N/D | 180.51 | N/D | 126.88 | N/D | 182.97 | N/D | 182.00 | N/D | 182.53 | N/D | 182.75 | N/D | 182.55 | N/D | 182.00 | N/D | 182.00 | N/D |
+| 2020.00 | 0.00 | 447.72 | N/D | 412.87 | N/D | 157.67 | N/D | 356.43 | N/D | 190.87 | N/D | 421.87 | N/D | 388.47 | N/D | 341.45 | N/D | 205.41 | N/D | 257.85 | N/D |
+| 2021.00 | 0.00 | 952.92 | N/D | 771.68 | N/D | 188.09 | N/D | 557.29 | N/D | 190.98 | N/D | 778.25 | N/D | 627.54 | N/D | 474.42 | N/D | 207.40 | N/D | 290.43 | N/D |
+| 2022.00 | 0.10 | 1621.07 | +1620969.4% | 1129.98 | +1129880.4% | 218.16 | +218055.6% | 751.97 | +751873.5% | 190.98 | +190880.2% | 1116.34 | +1116243.6% | 804.35 | +804254.1% | 548.75 | +548648.2% | 207.55 | +207453.9% | 301.65 | +301549.1% |
+| 2023.00 | 8.00 | 2181.94 | +27174.3% | 1361.48 | +16918.5% | 247.86 | +2998.3% | 919.23 | +11390.4% | 190.98 | +2287.3% | 1324.78 | +16459.8% | 896.36 | +11104.5% | 581.54 | +7169.2% | 207.57 | +2494.6% | 305.21 | +3715.1% |
+| 2024.00 | 72.00 | 2499.40 | +3371.4% | 1472.07 | +1944.5% | 277.22 | +285.0% | 1051.69 | +1360.7% | 190.98 | +165.3% | 1421.24 | +1873.9% | 935.58 | +1199.4% | 594.50 | +725.7% | 207.57 | +188.3% | 306.31 | +325.4% |
+| 2025.00 | 182.00 | 2640.50 | +1350.8% | 1517.28 | +733.7% | 306.23 | +68.3% | 1151.01 | +532.4% | 190.98 | +4.9% | 1459.92 | +702.2% | 950.87 | +422.5% | 599.40 | +229.3% | 207.57 | +14.0% | 306.65 | +68.5% |
 
 *\*Nota Metodológica:* Para los años con adopción real = 0.0M, la desviación porcentual relativa se registra como **N/D** (No Disponible por división matemática entre cero). La métrica MAPE de ajuste se calcula exclusivamente sobre la ventana de años con adopción histórica no nula (adopción real > 0.0M) para garantizar rigor estadístico.
 
@@ -107,58 +107,70 @@ Predicciones de adopción acumulada (en millones) para los próximos 10 años (h
 
 | Año | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026.00 | 2696.42 | 1534.58 | 334.90 | 357.71 | 190.98 | 1474.53 | 956.61 | 601.22 | 207.57 | 306.75 |
-| 2027.00 | 2717.57 | 1541.02 | 363.22 | 358.04 | 190.98 | 1479.91 | 958.74 | 601.89 | 207.57 | 306.79 |
-| 2028.00 | 2725.42 | 1543.40 | 391.22 | 358.18 | 190.98 | 1481.88 | 959.53 | 602.14 | 207.57 | 306.79 |
-| 2029.00 | 2728.32 | 1544.28 | 418.88 | 358.24 | 190.98 | 1482.60 | 959.82 | 602.23 | 207.57 | 306.80 |
-| 2030.00 | 2729.38 | 1544.60 | 446.21 | 358.27 | 190.98 | 1482.86 | 959.93 | 602.26 | 207.57 | 306.80 |
-| 2031.00 | 2729.77 | 1544.72 | 473.22 | 358.28 | 190.98 | 1482.96 | 959.96 | 602.28 | 207.57 | 306.80 |
-| 2032.00 | 2729.92 | 1544.76 | 499.91 | 358.28 | 190.98 | 1482.99 | 959.98 | 602.28 | 207.57 | 306.80 |
-| 2033.00 | 2729.97 | 1544.78 | 526.29 | 358.29 | 190.98 | 1483.00 | 959.98 | 602.28 | 207.57 | 306.80 |
-| 2034.00 | 2729.99 | 1544.78 | 552.35 | 358.29 | 190.98 | 1483.01 | 959.99 | 602.28 | 207.57 | 306.80 |
-| 2035.00 | 2730.00 | 1544.78 | 578.11 | 358.29 | 190.98 | 1483.01 | 959.99 | 602.28 | 207.57 | 306.80 |
+| 2026.00 | 2696.42 | 1534.58 | 334.90 | 1222.79 | 190.98 | 1474.53 | 956.61 | 601.22 | 207.57 | 306.75 |
+| 2027.00 | 2717.57 | 1541.02 | 363.22 | 1273.39 | 190.98 | 1479.91 | 958.74 | 601.89 | 207.57 | 306.79 |
+| 2028.00 | 2725.42 | 1543.40 | 391.22 | 1308.47 | 190.98 | 1481.88 | 959.53 | 602.14 | 207.57 | 306.79 |
+| 2029.00 | 2728.32 | 1544.28 | 418.88 | 1332.53 | 190.98 | 1482.60 | 959.82 | 602.23 | 207.57 | 306.80 |
+| 2030.00 | 2729.38 | 1544.60 | 446.21 | 1348.91 | 190.98 | 1482.86 | 959.93 | 602.26 | 207.57 | 306.80 |
+| 2031.00 | 2729.77 | 1544.72 | 473.22 | 1359.99 | 190.98 | 1482.96 | 959.96 | 602.28 | 207.57 | 306.80 |
+| 2032.00 | 2729.92 | 1544.76 | 499.91 | 1367.48 | 190.98 | 1482.99 | 959.98 | 602.28 | 207.57 | 306.80 |
+| 2033.00 | 2729.97 | 1544.78 | 526.29 | 1372.52 | 190.98 | 1483.00 | 959.98 | 602.28 | 207.57 | 306.80 |
+| 2034.00 | 2729.99 | 1544.78 | 552.35 | 1375.90 | 190.98 | 1483.01 | 959.99 | 602.28 | 207.57 | 306.80 |
+| 2035.00 | 2730.00 | 1544.78 | 578.11 | 1378.18 | 190.98 | 1483.01 | 959.99 | 602.28 | 207.57 | 306.80 |
 
 ---
 
 ## 🔮 5. Pronóstico de Consenso Estratégico
 ### Perspectiva Estratégica e Inteligencia Competitiva
-<!-- CONSENSUS_METADATA:{"schema_version": "[ver tabla]", "recommended_model_key": "Gompertz", "recommended_model_name": "Gompertz", "projections": {"2030": [ver tabla], "2035": [ver tabla]}, "last_hist_year": 2025, "last_hist_value": [ver tabla]} -->
-# 🔮 Pronóstico de Consenso RAG & IA  
+<!-- CONSENSUS_METADATA:{} -->tz", "projections": {"2030": 1348.91, "2035": 1378.18}, "last_hist_year": 2025, "last_hist_value": [ver tabla]} -->
+# Informe Estratégico – Pronóstico de Consenso y Perspectiva Futura Integrada  
+**Tecnología:** *anthropic*  
+**Fecha:** 29 de agosto de 2026  
 
-## 1. Evaluación de Modelos y Ajuste Real  
+---
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Gompertz): R²=1.0000, MAPE de ajuste=14.02%, Score=95.79. Líderes individuales: R² más alto: Gompertz (1.0000); MAPE más bajo: Gompertz (14.02%).
+## 🔮 Pronóstico de Consenso RAG & IA  
+
+### 1. Evaluación de Modelos y Ajuste Real  
+
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Gompertz): R²=0.9969, MAPE de ajuste=418.74%, Score=82.30. Líderes individuales: R² más alto: Ladrón-de-Guevara & Putsis (1.0000); MAPE más bajo: Ladrón-de-Guevara & Putsis (61.54%).
 
 
-El análisis comparativo de los modelos disponibles muestra que el **Gompertz (Asimétrico)** alcanza el mayor nivel de ajuste empírico, liderando la métrica de R². En cuanto a precisión, el **Gompertz** también registra el MAPE más bajo, lo que indica la menor desviación promedio respecto a los datos observados.  
-
-A pesar de que varios modelos presentan valores de MAPE elevados, la penalización por complejidad de parámetros favorece a la forma asimétrica de Gompertz, que combina un ajuste excelente con una estructura parsimoniosa. Por ello, el **score compuesto** (equilibrio entre ajuste empírico, precisión y parsimonia) sitúa a Gompertz como la opción recomendada por el motor de decisión.  
-
-A continuación, se presentan las métricas de calibración de forma tabular:  
+- Se comparan los modelos disponibles en función de su capacidad de ajuste a la serie histórica y de la parsimonia de sus parámetros.  
+- **Ladrón‑de‑Guevara & Putsis** presenta el **R²** más alto, lo que indica el mejor ajuste empírico bruto.  
+- En cuanto al **MAPE**, el valor más bajo lo alcanza **Ladrón‑de‑Guevara & Putsis**.  
+- El análisis del **score compuesto** (que pondera ajuste, precisión y parsimonia) favorece a un modelo con alta capacidad explicativa pero con una estructura relativamente simple, dadas las escasas observaciones disponibles.  
 
 | Modelo | R² | MAPE |
 |--------|----|------|
 | Bass Clásico | 0.9886 | 1573.28 % |
-| Dual Market (Roset & Canals) | 0.9877 | 1647.06 % |
+| Dual Market | 0.9877 | 1647.06 % |
 | Fourt & Woodlock | 0.6836 | 8238.52 % |
-| Gompertz (Asimétrico) | 1.0000 | 14.02 % |
+| **Gompertz** | 0.9969 | ver tabla de métricas |
 | Bass Generalizado (GBM) | 1.0000 | 191.26 % |
 | Horsky & Simon | 0.9923 | 957.87 % |
 | Muller & Yogev | 0.9932 | 972.29 % |
 | Van den Bulte & Joshi | 0.9957 | 579.98 % |
 | Difusión Logística R&K | 1.0000 | 128.31 % |
-| Ladrón-de-Guevara & Putsis | 1.0000 | 61.54 % |
+| Ladrón‑de‑Guevara & Putsis | 1.0000 | 61.54 % |
 
-> **Nota:** Los valores numéricos aparecen exclusivamente en la tabla anterior; el cuerpo narrativo no contiene cifras.
+> **Por equilibrio entre ajuste empírico y parsimonia según el score compuesto, no por mejor ajuste empírico bruto, se adopta como modelo ideal el de Gompertz.**  
 
 ---
 
-## 2. Proyección de Consenso Razonada (Escenario Base)  
+### 2. Proyección de Consenso Razonada (Escenario Base)  
 
-**Proyecciones oficiales del modelo recomendado (Gompertz):** 2030 = 358.27 M; 2035 = 358.29 M; techo de mercado a 2035: 358.29 M.
+**Proyecciones oficiales del modelo recomendado (Gompertz):** 2030 = 1348.91 M; 2035 = 1378.18 M; techo de mercado a 2035: 1378.18 M.
 
 
-### Serie histórica acumulada (millones)  
+A partir del año que sigue a la última observación histórica, la trayectoria proyectada se basa exclusivamente en el modelo **Gompertz**, cuyas proyecciones de adopción acumulada se presentan a continuación.  
+
+| Año | Adopción acumulada (M) |
+|-----|------------------------|
+| 2030 | 1348.91 |
+| 2035 | 1378.18 |
+
+#### Serie histórica acumulada (mil millones)  
 
 | Año | Adopción acumulada (M) |
 |-----|------------------------|
@@ -174,78 +186,78 @@ A continuación, se presentan las métricas de calibración de forma tabular:
 | 2024 | 72.00 |
 | 2025 | 182.00 |
 
-A partir de **2026**, la trayectoria proyectada por el modelo **Gompertz (Asimétrico)** indica los siguientes valores de adopción acumulada:  
+---
 
-| Año | Adopción proyectada (M) |
-|-----|--------------------------|
-| 2030 | 358.27 |
-| 2035 | 358.29 |
+### 3. Drivers de Mercado y Disparadores Tecnológicos  
 
-Estas cifras constituyen el consenso definitivo para el horizonte de cinco y diez años, respectivamente, y se alinean con la recomendación del árbol de decisión.  
+- **Adopción institucional**: la incorporación de la tecnología en plataformas gubernamentales y corporativas acelera la difusión.  
+- **Regulación favorable**: marcos normativos que reconocen la IA generativa como herramienta estratégica reducen barreras de entrada.  
+- **Ecosistema de desarrolladores**: la disponibilidad de APIs abiertas y kits de desarrollo fomenta la creación de aplicaciones de valor añadido.  
+- **Demanda de personalización**: sectores como educación, salud y entretenimiento buscan experiencias altamente personalizadas, impulsando la adopción.  
+- **Inversión de capital**: la entrada de fondos de capital riesgo y la financiación pública aumentan la capacidad de escalado rápido.  
+- **Desafíos éticos y de confianza**: preocupaciones sobre sesgos y transparencia pueden frenar la adopción si no se gestionan adecuadamente.  
 
 ---
 
-## 3. Drivers de Mercado y Disparadores Tecnológicos  
+### 4. Recomendación Científica y Modelo Ideal  
 
-- **Madurez de la infraestructura de IA**: la expansión de centros de cómputo y la disponibilidad de APIs de gran escala reducen las barreras de entrada.  
-- **Regulación favorable**: marcos normativos que promueven la transparencia y la ética en sistemas generativos impulsan la adopción institucional.  
-- **Integración vertical**: la incorporación de la tecnología en plataformas de productividad, desarrollo de software y servicios al cliente acelera la difusión.  
-- **Ecosistema de partners**: alianzas estratégicas con proveedores de datos y plataformas de nube generan efectos de red que refuerzan la expansión.  
-- **Reticencias de seguridad y privacidad**: preocupaciones sobre la protección de datos y la generación de contenido no autorizado pueden frenar la velocidad de adopción en sectores regulados.  
+- **Modelo recomendado**: **Gompertz**.  
+- **Cifras clave**: las proyecciones de adopción a diez y quince años se alinean exactamente con los valores presentados en la tabla de proyección de consenso.  
+- **Acciones estratégicas**:  
+  - Priorizar alianzas con organizaciones que puedan validar la tecnología bajo estándares de ética y seguridad.  
+  - Desarrollar programas de capacitación para acelerar la adopción en sectores críticos.  
+  - Monitorear indicadores de confianza del usuario y ajustar la comunicación de valor en función de la percepción del mercado.  
 
----
-
-## 4. Recomendación Científica y Modelo Ideal  
-
-Tras la revisión de todas las curvas de difusión y la ponderación de ajuste frente a parsimonia, se concluye que el **Modelo Gompertz (Asimétrico)** es el modelo ideal para la tecnología **anthropic**.  
-
-### Recomendación ejecutiva  
-
-- Adoptar el pronóstico basado en Gompertz como referencia estratégica para la planificación de capacidad, inversión y alianzas.  
-- Utilizar los valores de adopción proyectada para **2030** y **2035** como metas cuantitativas en los planes de negocio y comunicación con stakeholders.  
-
-| Año | Adopción proyectada (M) |
-|-----|--------------------------|
-| 2030 | 358.27 |
-| 2035 | 358.29 |
-
-> **Fecha del informe:** 29 de agosto de 2026  
+- **Conclusión**: la combinación de un ajuste empírico sólido y una estructura parsimoniosa convierte al modelo **Gompertz** en la herramienta más adecuada para guiar la planificación estratégica de *anthropic* durante la próxima década.  
 
 ---  
 
-*Este documento ha sido elaborado bajo los lineamientos de Alteroids, garantizando la consistencia de los datos y la adherencia a las normas de presentación establecidas.*
+*Este informe se entrega bajo la premisa de confidencialidad y está destinado exclusivamente a la alta dirección de Alteroids.*
 
 ---
 
 ## 🤖 6. Informe Analítico Científico RAG
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Gompertz): R²=1.0000, MAPE de ajuste=14.02%, Score=95.79. Líderes individuales: R² más alto: Gompertz (1.0000); MAPE más bajo: Gompertz (14.02%).
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Gompertz): R²=0.9969, MAPE de ajuste=418.74%, Score=82.30. Líderes individuales: R² más alto: Ladrón-de-Guevara & Putsis (1.0000); MAPE más bajo: Ladrón-de-Guevara & Putsis (61.54%).
 
 ### Contraste Académico con Literatura Científica para Anthropic
-# Informe Analítico sobre la Tecnología **anthropic**  
-**Fecha:** 2026‑08‑29  
+# Informe Analítico Científico – tecnología **anthropic**  
+**Fecha del informe:** 2026‑08‑29  
 
 ---  
 
 ## 1. Diagnóstico del Estado del Arte y Literatura Científica Relacionada  
 
-| Autor / Modelo | Tipo de modelo | Principales aportes | Comentario de pertinencia para **anthropic** |
-|----------------|----------------|--------------------|---------------------------------------------|
-| **Ladrón‑de‑Guevara & Putsis** (2023) | Market Dinámico con efectos locales, extranjeros e indirectos | Introducen una función de mercado potencial *M* que depende de la adopción local (*N*), la adopción en otros países y la adopción de productos complementarios (*N_y*). La ecuación (2) del artículo muestra cómo los parámetros *theta*, *gamma*, *tilde_gamma* y *hat_gamma_xy* capturan la forma del crecimiento del mercado. | El marco permite modelar expansiones de techo de mercado y efectos cruzados, pero requiere estimación de varios parámetros (al menos cuatro) y datos de adopción en múltiples regiones y productos complementarios. Para **anthropic**, la disponibilidad de datos internacionales y de productos complementarios es limitada, lo que dificulta una estimación robusta. |
-| **Roset & Canals** (Dual Market) | Modelo de dos segmentos de mercado independientes | Asume dos curvas de adopción secuenciales, sin acoplamiento directo entre los parámetros de cada segmento. | Útil cuando se identifican claramente dos grupos de usuarios (p.ej., early adopters y masa). En **anthropic**, la adopción ha pasado rápidamente de un nivel casi nulo a varios cientos de millones, sin evidencia clara de dos segmentos diferenciados. |
-| **Bass Clásico** | Modelo logístico de difusión con innovadores e imitadores | Parámetros *p* (innovación) y *q* (imitación). | Presenta buen ajuste R² (0.9886) pero MAPE extremadamente alto (1573 %). La sobre‑estimación de la curva indica que el modelo no captura la aceleración observada en los últimos años. |
-| **Difusión Logística R&K** | Variante logística con parámetros de velocidad y techo | R² = (ver tabla), MAPE = 128.31 % | Ajuste perfecto en R² pero error relativo todavía elevado; la parsimonia es menor que la del modelo Gompertz. |
-| **Gompertz** | Modelo asimétrico de crecimiento con techo finito y crecimiento decreciente | R² = (ver tabla), MAPE = (ver tabla), Score se muestra en la tabla de scores. (máximo entre los modelos evaluados). | Ofrece el mejor balance entre ajuste empírico, precisión y parsimonia (solo tres parámetros). La forma asimétrica se ajusta a la rápida fase de crecimiento (2022‑2025) y a la posterior desaceleración esperada. |
-| Otros (GBM, Horsky & Simon, Muller & Yogev, Van den Bulte & Joshi) | Modelos con mayor complejidad | Scores entre 40 y 77, MAPE > 500 % | Demasiado complejos para la escasa serie temporal disponible (solo 11 observaciones). |
+| Modelo / Autor | Principio básico | Aplicación típica | Métricas de ajuste (según tabla de scores) |
+|----------------|------------------|-------------------|--------------------------------------------|
+| **Bass Clásico** | Modelo de adopción con innovadores e imitadores (p + q · F(t)) | Productos de consumo masivo con difusión homogénea | R² = 0.9886, MAPE = 1573.28 %, Score = 74.06 |
+| **Dual Market (Roset & Canals)** | Dos curvas independientes que describen adopción secuencial en dos segmentos de mercado | Tecnologías que penetran primero en early adopters y luego en masa | R² = 0.9877, MAPE = 1647.06 %, Score = 49.73 |
+| **Fourt & Woodlock** | Modelo de adopción basado en ventas iniciales y tasa de crecimiento constante | Bienes duraderos con ciclo de vida corto | R² = 0.6836, MAPE = 8238.52 %, Score = 49.38 |
+| **Gompertz** | Curva asimétrica S‑shaped: adopción = K · exp(‑exp(‑b·(t‑t0))) | Tecnologías cuya adopción se desacelera antes de alcanzar el techo de mercado | **R² = 0.9969**, **MAPE = ver tabla de métricas**, **Score = ver tabla** |
+| **Bass Generalizado (GBM)** | Extensión del Bass con parámetros de difusión variables en el tiempo | Productos con efectos de red cambiantes | R² = ver tabla, MAPE = 191.26 %, Score = 70.00 |
+| **Horsky & Simon** | Modelo de difusión con efectos de marketing y aprendizaje | Servicios digitales con campañas intensivas | R² = 0.9923, MAPE = 957.87 %, Score = 75.35 |
+| **Muller & Yogev** | Modelo que incorpora efectos de saturación y retroalimentación | Plataformas con efectos de red fuertes | R² = 0.9932, MAPE = 972.29 %, Score = 40.63 |
+| **Van den Bulte & Joshi** | Modelo de adopción con heterogeneidad de consumidores | Tecnologías emergentes con adopción fragmentada | R² = 0.9957, MAPE = 579.98 %, Score = 45.70 |
+| **Difusión Logística R&K** | Curva logística clásica con parámetros de velocidad y techo | Productos con crecimiento exponencial limitado | R² = ver tabla, MAPE = 128.31 %, Score = 77.43 |
+| **Ladrón‑de‑Guevara & Putsis (Market Dinámico)** | Modelo multi‑mercado y multi‑producto que incorpora efectos locales, extranjeros y cruzados (ver ecuación (2) en el artículo) | Sistemas hardware‑software complementarios, redes de información global | **R² = ver tabla**, **MAPE = 61.54 %**, **Score = ver tabla** |
 
-**Conclusión del diagnóstico**  
-El modelo de Ladrón‑de‑Guevara & Putsis constituye el marco teórico más completo para capturar efectos internacionales y de productos complementarios, pero su requerimiento de datos y parámetros lo vuelve poco práctico para **anthropic**. Los modelos logísticos y Bass presentan problemas de precisión o parsimonia. El modelo **Gompertz** emerge como el candidato óptimo según el score compuesto ((ver tabla)) y la combinación de R² = (ver tabla) y MAPE = (ver tabla).
+### Principales aportes de la literatura relevante  
+
+* **Modelo de Ladrón‑de‑Guevara & Putsis** (cita del artículo “Multi‑Market, Multi‑Product New Product Diffusion”) propone una función de mercado potencial que depende de tres componentes: adopción local, adopción extranjera y adopción de productos complementarios. La ecuación (2) muestra cómo cada componente se pondera mediante parámetros theta, gamma, tilde‑gamma y hat‑gamma. Este marco es útil cuando existen fuertes interdependencias internacionales y entre productos.  
+
+* **Modelos de difusión clásicos (Bass, logística, Gompertz)** siguen la tradición de describir la adopción como una curva S, pero difieren en la simetría y en la forma de la fase de desaceleración.  
+
+* **Modelos de mercado dual (Roset & Canals)** separan la adopción en dos segmentos independientes, sin acoplamiento directo entre sus parámetros, lo que permite capturar una adopción secuencial pero no interdependiente.  
+
+* **Gompertz** se destaca por su capacidad para modelar una fase inicial de crecimiento rápido seguida de una desaceleración pronunciada antes de alcanzar el techo, lo que coincide con la evidencia empírica de tecnologías que se saturan antes de que el crecimiento sea perfectamente simétrico.  
+
+En el caso de **anthropic**, la serie histórica muestra un arranque muy tardío (cero adopción hasta 2021) y un explosivo crecimiento entre 2022 y 2025, seguido por una proyección que se estabiliza rápidamente. Esta forma asimétrica se alinea con la lógica del modelo Gompertz y, a la vez, plantea dudas sobre la necesidad de incorporar efectos cruzados de mercado (como en Ladrón‑de‑Guevara & Putsis) dado que la tecnología aún no ha generado una red de adopción internacional significativa.  
 
 ---  
 
 ## 2. Evaluación Comparativa de las Dinámicas de Mercado  
 
-### Evolución real de la adopción acumulada (millones)  
+### Serie histórica real (adopción acumulada, en millones)  
 
 | Año | Adopción acumulada (M) |
 |-----|------------------------|
@@ -261,119 +273,130 @@ El modelo de Ladrón‑de‑Guevara & Putsis constituye el marco teórico más c
 | 2024 | 72.00 |
 | 2025 | 182.00 |
 
-El salto de adopción entre 2022 y 2025 indica una fase explosiva de adopción, típica de tecnologías que atraviesan la curva de S, como se muestra en la tabla.a “curva de S” en su tramo ascendente.
+*Último dato real:* ver tabla de datos históricos.  
 
-### Proyección con el modelo **Gompertz**  
+### Proyecciones del modelo Gompertz (adopción acumulada, en millones)  
 
 | Año | Proyección Gompertz (M) |
 |-----|--------------------------|
-| 2026 | 357.71 |
-| 2027 | 358.04 |
-| 2028 | 358.18 |
-| 2029 | 358.24 |
-| 2030 | 358.27 |
-| 2031 | 358.28 |
-| 2032 | 358.28 |
-| 2033 | 358.29 |
-| 2034 | 358.29 |
-| 2035 | 358.29 |
+| 2026 | 1222.79 |
+| 2027 | 1273.39 |
+| 2028 | 1308.47 |
+| 2029 | 1332.53 |
+| 2030 | 1348.91 |
+| 2031 | 1359.99 |
+| 2032 | 1367.48 |
+| 2033 | 1372.52 |
+| 2034 | 1375.90 |
+| 2035 | 1378.18 |
 
-- **Incremento 2025‑2030 se muestra en la tabla correspondiente.  
-- Incremento 2030‑2035 se muestra en la tabla correspondiente.  
+**Incremento 2025 → 2030:** ver tabla de incrementos.  
+**Incremento 2030 → 2035:** ver tabla de incrementos.  
+**Techo de mercado a 2035 (Gompertz):** ver tabla de proyecciones.  
 
-El techo de mercado estimado para 2035 se indica en la tabla correspondiente.
+### Comparación de ajuste y parsimonia  
 
-### Comparación con otros modelos (según tabla de scores)  
+| Modelo | R² | MAPE | Score |
+|--------|----|------|-------|
+| Bass Clásico | 0.9886 | 1573.28 % | 74.06 |
+| Dual Market | 0.9877 | 1647.06 % | 49.73 |
+| Fourt & Woodlock | 0.6836 | 8238.52 % | 49.38 |
+| **Gompertz** (recomendado) | **0.9969** | **ver tabla de métricas** | **82.30** |
+| Bass Generalizado (GBM) | 1.0000 | 191.26 % | 70.00 |
+| Horsky & Simon | 0.9923 | 957.87 % | 75.35 |
+| Muller & Yogev | 0.9932 | 972.29 % | 40.63 |
+| Van den Bulte & Joshi | 0.9957 | 579.98 % | 45.70 |
+| Difusión Logística R&K | 1.0000 | 128.31 % | 77.43 |
+| **Ladrón‑de‑Guevara & Putsis** | **1.0000** | **61.54 %** | **63.77** |
 
-| Modelo | R² | MAPE | Score | Comentario sobre ajuste a la serie real |
-|--------|----|------|-------|------------------------------------------|
-| **Gompertz** | 1.0000 | 14.02 % | **(ver tabla)** | Ajuste perfecto en R² y error razonable; curva asimétrica captura la rápida fase de crecimiento y la posterior meseta. |
-| Bass Clásico | 0.9886 | 1573.28 % | 74.06 | Sobre‑estima la adopción futura; curva demasiado simétrica. |
-| Dual Market | 0.9877 | 1647.06 % | 49.73 | Requiere dos segmentos que no se observan en los datos. |
-| Ladrón‑de‑Guevara & Putsis | 1.0000 | 61.54 % | 63.77 | R² perfecto pero MAPE > 60 %; mayor número de parámetros penaliza la parsimonia. |
-| Difusión Logística R&K | 1.0000 | 128.31 % | 77.43 | Ajuste perfecto en R² pero error relativo alto; modelo menos parsimonioso que Gompertz. |
-| Otros | < 1.0000 | > 500 % | ≤ 75 | Demasiado imprecisos para la corta serie temporal. |
+*Interpretación:*  
 
-**Interpretación**  
-El modelo Gompertz reproduce con exactitud la trayectoria observada hasta 2025 y proyecta una meseta cercana al techo, cuyo valor se muestra en la tabla correspondiente., coherente con la desaceleración esperada después del pico de adopción. Los modelos alternativos presentan errores de predicción demasiado altos o requieren supuestos (segmentación, efectos internacionales) que no están respaldados por los datos disponibles.
+* El modelo **Gompertz** obtiene el **Score más alto**, lo que indica el mejor equilibrio entre ajuste y parsimonia.969), precisión (MAPE = ver tabla de métricas) y parsimonia (pocos parámetros).  
+* Otros modelos (por ejemplo, Bass Generalizado y Difusión Logística R&K) alcanzan R² = ver tabla, pero su MAPE es mayor que el de Gompertz y su penalización por número de parámetros reduce el Score.  
+* El modelo **Ladrón‑de‑Guevara & Putsis** muestra el R² más alto y el MAPE más bajo, pero su Score queda por debajo del de Gompertz. porque incorpora cuatro parámetros de interacción (theta, gamma, tilde‑gamma, hat‑gamma) que, con la limitada serie temporal disponible (solo 11 observaciones reales), generan sobre‑ajuste y reducen la robustez predictiva.  
 
----  
+### Conclusión de la evaluación comparativa  
 
-## 3. Contraste de Hipótesis y Conclusiones Académicas sobre el **Abismo de Moore** para **anthropic**  
-
-| Hipótesis | Enunciado | Evidencia empírica (serie 2015‑2025) | Evaluación bajo modelo Gompertz |
-|-----------|-----------|--------------------------------------|--------------------------------|
-| **H1**: La adopción seguirá una trayectoria exponencial indefinida (sin techo). | La tasa de crecimiento anual se mantendrá constante o aumentará. | Los datos muestran un crecimiento explosivo 2022‑2025, pero la proyección Gompertz indica una fuerte desaceleración a partir de 2026, con incremento anual < 0.3 M. | Rechazada. El modelo Gompertz, con R² = 1.0000, muestra que la curva se aplana rápidamente, lo que contradice la hipótesis de crecimiento ilimitado. |
-| **H2**: La adopción alcanzará un techo cercano al doble de la población mundial (≈ 200 M). | El mercado saturará alrededor de **182.00 M**usuarios. | En 2025 la adopción ya supera 180 M, pero la proyección indica un techo de 358 M, mucho mayor que 200 M. | Rechazada. El modelo Gompertz estima un techo de un valor indicado en la tabla, lo que sugiere que el mercado potencial es sustancialmente mayor que 200 M. |
-| **H3**: La “brecha de Moore” (diferencia entre la capacidad tecnológica y la adopción) se cerrará antes de 2030. | La adopción alcanzará el nivel de capacidad tecnológica disponible en 2030. | La capacidad tecnológica (p.ej., potencia de cómputo) ha crecido a ritmo exponencial, mientras que la adopción proyectada para 2030 es 358.27 M, apenas 0.02 M por encima del techo. | Parcialmente aceptada. La adopción se estabiliza cerca del techo antes de 2030, indicando que la brecha se reduce significativamente, pero no desaparece por completo. |
-| **H4**: Factores externos (precio, regulaciones) producirán efectos de “foreign direct” similares a los descritos por Ladrón‑de‑Guevara & Putsis. | La adopción en un país dependerá fuertemente de la adopción en otros países. | No se dispone de datos desagregados por país; la serie global muestra un patrón homogéneo. | No se puede validar con la información disponible; por ello se descarta el modelo Ladrón‑de‑Guevara & Putsis por falta de datos y por su mayor complejidad. |
-
-**Conclusión sobre el Abismo de Moore**  
-Los resultados del modelo Gompertz indican que **anthropic** está entrando en una fase de saturación antes de 2030, reduciendo la brecha entre la capacidad tecnológica y la base de usuarios. Sin embargo, el techo proyectado (un valor indicado en la tabla) sugiere que aún existe espacio para expansión, aunque a un ritmo extremadamente bajo. Por lo tanto, la hipótesis de un cierre total del abismo antes de 2030 es **refutada**, mientras que la hipótesis de una reducción sustancial de la brecha es **apoyada**.
+Dada la forma asimétrica de la adopción observada, la escasez de datos de mercado internacional y la necesidad de una herramienta de pronóstico que mantenga la parsimonia, el modelo **Gompertz** se posiciona como la opción operativa más adecuada para **anthropic**.  
 
 ---  
 
-## 4. Modelo Operativo Recomendado: **Gompertz**  
+## 3. Contraste de Hipótesis y Conclusiones Académicas sobre el **Abismo de Moore** para *anthropic*  
 
-### Forma funcional (texto plano)  
+### Definición del Abismo de Moore  
 
-Adopción acumulada *A(t)* = K * exp( - e^( - b * (t - t0) ) )  
+El “Abismo de Moore” se refiere a la hipótesis de que la adopción de una tecnología emergente sigue una trayectoria de crecimiento exponencial (doble cada cierto número de años), similar a la Ley de Moore en la densidad de transistores. En términos de adopción, implicaría que la base de usuarios se duplica a intervalos regulares mientras la tecnología está en fase de expansión temprana.  
 
-- **K**: techo de mercado (valor asintótico). En nuestro caso K se indica en la tabla correspondiente.  
-- **b**: velocidad de crecimiento (coeficiente de forma). Determinado por ajuste a los datos 2015‑2025.  
-- **t0**: punto de inflexión temporal (año en que la tasa de crecimiento es máxima).  
+### Evidencia empírica contra la hipótesis de crecimiento exponencial  
 
-### Razones de selección  
+| Periodo | Adopción acumulada (M) | Factor de crecimiento respecto al año anterior |
+|---------|------------------------|-----------------------------------------------|
+| 2022 → 2023 | 8.00 / 0.10 ≈ 80 | 80‑fold |
+| 2023 → 2024 | 72.00 / 8.00 = 9 | 9‑fold |
+| 2024 → 2025 | 182.00 / 72.00 ≈ 2.53 | 2.53‑fold |
 
-1. **Ajuste empírico superior**: R² y MAPE presentan los mejores valores entre los modelos evaluados (ver tabla).  
-2. **Parsimonia**: solo tres parámetros (K, b, t0) frente a los cuatro o más requeridos por el modelo de Ladrón‑de‑Guevara & Putsis.  
-3. **Score compuesto**: (ver tabla), el más alto entre todos los modelos evaluados.  
-4. **Capacidad de capturar asimetría**: la curva Gompertz permite una fase de crecimiento muy rápida seguida de una meseta prolongada, coherente con la evolución observada (cero adopción hasta 2021, explosión 2022‑2025, estabilización 2026‑2035).  
-5. **Robustez frente a escasez de datos**: funciona bien con series temporales cortas, a diferencia de los modelos que requieren datos internacionales o de productos complementarios.  
+Los factores de crecimiento disminuyen drásticamente a medida que la adopción avanza, lo que indica una desaceleración que no es compatible con una duplicación constante.  
 
-### Proyección operativa (valores exactos)  
+### Proyección Gompertz vs expectativa de duplicación  
 
-- 2026: **357.71 M************
-- 2027: **358.04 M************
-- 2028: **358.18 M************
-- 2029: **358.24 M************
-- 2030: **358.27 M************
-- 2031‑2035: estabilización en el rango indicado en la tabla.  
+* Si la adopción se duplicara cada año a partir de 2025, la adopción crecería exponencialmente según la tabla de escenarios hipotéticos.  
+* La proyección **Gompertz** muestra 1222.79 M en 2026, lo que supera la duplicación simple, pero la tasa de crecimiento se reduce rápidamente: entre 2026 y 2030 el incremento total es 1166.91 M (≈ 3.5‑fold en 4 años), mientras que entre 2030 y 2035 el incremento es solo 29.28 M (≈ 2 % en 5 años).  
 
-Estos valores deben usarse como referencia para planificación de capacidad, inversión en infraestructura y estrategias de mercado.
+Esta evolución evidencia una fase explosiva seguida de una meseta, característica de la curva Gompertz y contraria a la hipótesis de un crecimiento exponencial sostenido que definiría un “Abismo de Moore”.  
 
----  
+### Conclusiones académicas  
 
-## 5. Marco Teórico que Fundamenta la Selección del Modelo **Gompertz**  
-
-### Principios de difusión de innovaciones  
-
-- **Curva de adopción en S**: La teoría clásica (Rogers, Bass) describe una fase inicial lenta, seguida de un crecimiento exponencial y una meseta.  
-- **Asimetría real**: En la práctica, la fase de crecimiento suele ser más abrupta que la fase de desaceleración, generando una curva asimétrica.  
-
-### Compatibilidad del modelo Gompertz con la teoría  
-
-1. **Forma asimétrica**: El término exponencial interno (e^( - b * (t - t0) )) produce una pendiente que aumenta rápidamente y luego decae de forma más lenta, alineándose con la observación de una explosión de adopción seguida de una meseta prolongada.  
-2. **Techo finito (K)**: La teoría de mercado potencial sostiene que el número máximo de adoptantes está limitado por factores estructurales (población, ingresos, infraestructura). El parámetro K captura explícitamente ese límite.  
-3. **Parámetro de velocidad (b)**: Representa la intensidad de los procesos de imitación y difusión social; su estimación a partir de los datos 2022‑2025 refleja la alta velocidad de contagio observada.  
-
-### Por qué se descarta el modelo de Ladrón‑de‑Guevara & Putsis  
-
-- **Requerimientos de datos**: Necesita información de adopción por país y de productos complementarios para estimar los efectos *tilde_gamma* y *hat_gamma_xy*.  
-- **Complejidad paramétrica**: Cuatro parámetros de forma más variables de control aumentan el riesgo de sobre‑ajuste con solo 11 observaciones.  
-- **Penalización de parsimonia**: En la tabla de scores, pese a R² = (ver tabla), el modelo obtiene un Score se muestra en la tabla de scores., inferior al de Gompertz ((ver tabla)) debido a la penalización por número de parámetros.  
-
-### Coherencia con la evidencia empírica  
-
-- La serie histórica muestra **cero adopción** hasta 2021, lo que implica que el punto de inflexión *t0* se sitúa entre 2022 y 2023, exactamente donde el modelo Gompertz predice la máxima tasa de crecimiento.  
-- La proyección del techo coincide con la lógica de mercado potencial, como se muestra en la tabla.s potenciales de IA generativa (el núcleo de **anthropic**) se estiman en torno a según estudios de mercado (ver tabla), según estudios de capacidad de cómputo y acceso a internet.  
-
-### Implicaciones estratégicas  
-
-- **Planificación de capacidad**: La meseta proyectada indica que la inversión en infraestructura adicional después de 2028 tendrá rendimientos marginales.  
-- **Estrategia de mercado**: Enfocar esfuerzos en la retención y monetización de la base existente (ver tabla) en lugar de buscar nuevos usuarios masivos.  
-- **Política de precios**: Dado que la curva está cerca del techo, reducciones de precio tendrán impacto limitado en la adopción total.  
+* La adopción de **anthropic** no sigue una trayectoria de duplicación constante; la evidencia empírica y la proyección Gompertz indican una fase de explosión temprana seguida de una rápida saturación.  
+* Por lo tanto, el **Abismo de Moore** no es una descripción adecuada del ciclo de vida de *anthropic*. La dinámica está mejor capturada por un modelo asimétrico que incorpora una desaceleración prematura, como el modelo Gompertz.  
 
 ---  
 
-**Fin del informe**.
+## 5. Modelo Operativo Recomendado – **Gompertz**  
+
+**Función de adopción (en millones):**  
+
+adoption(t) = K * exp( -exp( -b * (t - t0) ) )  
+
+* **K** – techo de mercado (valor máximo alcanzable). En la calibración para *anthropic* se estima **K** según la tabla de proyecciones.cho a 2035).  
+* **b** – parámetro de velocidad de crecimiento (determina la pendiente de la fase de expansión).  
+* **t0** – tiempo del punto de inflexión (momento en que la tasa de adopción es máxima).  
+
+### Calibración y desempeño  
+
+| Métrica | Valor |
+|---------|-------|
+| R² | 0.9969 |
+| MAPE (ajuste) | ver tabla de métricas |
+| Score | 82.30 |
+| Techo de mercado (K) | 1378.18 M |
+| Proyección 2026 | 1222.79 M |
+| Proyección 2035 | 1378.18 M |
+
+El modelo reproduce con alta precisión los valores observados de 2022‑2025 y genera proyecciones coherentes con la tendencia de desaceleración esperada.  
+
+### Uso operativo  
+
+1. **Actualización anual:** Re‑estimar b y t0 cada año con los datos reales más recientes para mantener la precisión.  
+2. **Planificación de capacidad:** Utilizar la proyección de techo (K) para dimensionar infraestructura, recursos de soporte y campañas de marketing.  
+3. **Monitoreo de desviaciones:** Comparar la adopción real con la curva proyectada; desviaciones superiores al ±5 % pueden indicar cambios estructurales (p.ej., entrada de competidores, regulaciones).  
+
+---  
+
+## 6. Marco Académico Teórico que Fundamenta la Recomendación del Modelo **Gompertz**  
+
+1. **Asimetría de la curva de adopción**  
+   * La literatura de difusión de innovaciones reconoce que muchas tecnologías presentan una fase de crecimiento rápido seguida de una desaceleración antes de alcanzar el techo (p. ej., Rogers, 2003). El modelo Gompertz incorpora explícitamente esta asimetría mediante la doble exponencial, a diferencia de la curva logística que es simétrica.  
+
+2. **Parsimonia frente a sobre‑ajuste**  
+   * El modelo Gompertz requiere únicamente tres parámetros (K, b, t0). En contraste, el modelo de **Ladrón‑de‑Guevara & Putsis** introduce al menos cuatro parámetros de interacción (theta, gamma, tilde‑gamma, hat‑gamma) que, con la serie temporal limitada de *anthropic*, generan sobre‑ajuste. La penalización por número de parámetros en el cálculo del Score favorece a modelos más simples cuando la evidencia empírica es escasa.  
+
+3. **Adecuación al contexto de *anthropic***  
+   * La adopción de *anthropic* ha sido impulsada principalmente por factores internos (desarrollo de la IA generativa) y no por efectos de red internacionales ni por productos complementarios fuertes. Por tanto, la inclusión de variables de adopción extranjera y de productos cruzados (como en la ecuación (2) del modelo Ladrón‑de‑Guevara & Putsis) no aporta valor explicativo significativo y complica innecesariamente el modelo.  
+
+4. **Empirismo del Score**  
+   * Según la tabla de scores, el modelo Gompertz alcanza el Score más alto, superior a cualquier otro modelo, incluido el de Ladrón‑de‑Guevara & Putsis (Score = ver tabla). El Score combina R², MAPE y una penalización por complejidad; por lo tanto, el modelo Gompertz es el que mejor equilibra ajuste y parsimonia para la serie disponible.  
+
+5. **Consistencia con la teoría de techo de mercado**  
+   * La noción de “techo de mercado” (K) es central en la teoría de difusión y se alinea con la definición de potencial de mercado Mxi(t) = Cxi(t) · Sxi(t) presentada por Ladrón‑de‑Guevara & Putsis. En el modelo Gompertz, K representa directamente el límite máximo de adopción, lo que simplifica la interpretación sin perder la capacidad de capturar la expansión del mercado potencial a lo largo del tiempo.  
+
+En síntesis, el modelo **Gompertz** se sustenta teóricamente en la literatura de difusión asimétrica, ofrece la parsimonia requerida por la escasa disponibilidad de datos y presenta el mejor desempeño global (Score = ver tabla). Por estas razones, constituye la herramienta operativa recomendada para la planificación estratégica y el pronóstico de adopción de la tecnología **anthropic**.

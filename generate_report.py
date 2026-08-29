@@ -173,10 +173,6 @@ def verify_bd(tech):
         log("verify", f"Years: {years[0]} - {years[-1]}")
     log("verify", f"Validation: ok={res.get('validation_ok')}")
     
-    if res.get("errors"):
-        log("verify", f"ERRORS: {res.get('errors')}")
-        return False
-        
     if n < 5:
         log("verify", f"WARNING: Only {n} points — attempting auto-residual...")
         if auto_residual(tech, min_points=5):
@@ -190,6 +186,10 @@ def verify_bd(tech):
         else:
             log("verify", f"ERROR: Only {n} points and no zeros to fix")
             return False
+        
+    if res.get("errors"):
+        log("verify", f"ERRORS: {res.get('errors')}")
+        return False
         
     if n < 10:
         log("verify", f"WARNING: Only {n} points (10+ recommended)")
