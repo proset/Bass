@@ -76,40 +76,30 @@ def obtener_datos_y_analisis_ia(tech_name):
     _current_year = _dt.datetime.now().year
     _anio_inicio = 2015
 
-    # Hitos verificados que sobrescriben cualquier valor de la búsqueda web
-    ANCLAS_HISTORICAS = {
-        "chatgpt":       {2022: 57.0, 2023: 180.5, 2024: 300.0},
-        "chatgpi":       {2022: 57.0, 2023: 180.5, 2024: 300.0},
-        "iphone":        {2007: 1.4, 2008: 11.6, 2009: 34.0, 2010: 73.0},
-        "facebook":      {2008: 100.0, 2009: 300.0, 2010: 500.0, 2012: 1000.0},
-        "netflix": {
-            2010: 20.0, 2011: 23.5, 2012: 33.3, 2013: 44.4, 2014: 57.4,
-            2015: 70.0, 2016: 93.8, 2017: 117.6, 2018: 139.3, 2019: 167.1,
-            2020: 200.0, 2021: 221.8, 2022: 230.7, 2023: 260.9,
-            # 2024-2025: verificar contra SEC 10-K más recientes antes de correr
-        },
-        "openai":        {2022: 57.0, 2023: 180.5},
-        "claude":        {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0},
-        "anthropic":     {2015: 0.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.0, 2020: 0.0, 2021: 0.0, 2022: 0.0, 2023: 4.0, 2024: 18.0, 2025: 30.0},
-        "ar smartglasses": {
-            2016: 0.10, 2017: 0.25, 2018: 0.45, 2019: 0.75,
-            2020: 1.15, 2021: 1.75, 2022: 2.65, 2023: 4.25,
-            2024: 7.05, 2025: 11.25
-        },
-    }
-
     def _aplicar_anclas(datos, tech_key):
         """Sobrescribe valores con anclas verificadas y filtra años incompletos."""
         # [Fix 15b] Guard: solo años completos son verídicos (anio <= año actual - 1)
         _cy = _dt.datetime.now().year
         if datos:
             datos = [d for d in datos if int(d.get("anio", 0)) <= _cy - 1]
-        anclas = ANCLAS_HISTORICAS.get(tech_key.lower().strip(), {})
-        if not anclas or not datos:
+            
+        try:
+            with open("custom_anchors.json", "r", encoding="utf-8") as f:
+                anclas_data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            anclas_data = {}
+            
+        anclas = anclas_data.get(tech_key.lower().strip(), {})
+        
+        # Convert string keys to int since JSON dict keys are always strings
+        anclas_int = {int(k): float(v) for k, v in anclas.items()}
+        
+        if not anclas_int or not datos:
             return datos
+            
         for d in datos:
-            if d["anio"] in anclas:
-                d["usuarios_millones"] = anclas[d["anio"]]
+            if d["anio"] in anclas_int:
+                d["usuarios_millones"] = anclas_int[d["anio"]]
         return datos
     
     # Detectar si hay restricciones geográficas en el nombre
