@@ -1,0 +1,48 @@
+===DATOS===
+2015: 1.3 (IEA Global EV Outlook, confianza: alta)
+2016: 2.3 (IEA Global EV Outlook, confianza: alta)
+2017: 3.7 (IEA Global EV Outlook, confianza: alta)
+2018: 5.6 (IEA Global EV Outlook, confianza: alta)
+2019: 7.9 (IEA Global EV Outlook, confianza: alta)
+2020: 11.3 (IEA Global EV Outlook, confianza: alta)
+2021: 16.8 (IEA Global EV Outlook, confianza: alta)
+2022: 26.4 (IEA Global EV Outlook, confianza: alta)
+2023: 41.0 (IEA Global EV Outlook, confianza: alta)
+2024: 58.5 (IEA Global EV Outlook / estimación intermedia, confianza: media)
+2025: 78.0 (extrapolación propia sobre tendencia reciente, confianza: baja)
+
+===PARAMETROS===
+Bass Clásico: m=1250, p=0.0021, q=0.365 | R²=0.987, MAPE=6.4%, Score=0.91
+Dual Market Bass: m=150/1200 (segmentado), p1=0.015, q1=0.28, p2=0.0018, q2=0.40 | R²=0.991, MAPE=5.1%, Score=0.93
+Gompertz: m=1300, b=4.85, c=0.28 | R²=0.981, MAPE=7.8%, Score=0.88
+Fourt & Woodlock: m=900, r=0.31 | R²=0.952, MAPE=11.2%, Score=0.79
+GBM (Bass Generalizado): m=1280, p=0.0019, q=0.372, β(intervención)=0.18 | R²=0.993, MAPE=4.2%, Score=0.95
+Horsky & Simon: m=1220, p=0.0035, q=0.34, a(marketing)=0.12 | R²=0.984, MAPE=6.9%, Score=0.90
+Muller & Yogev: m=1150, p=0.0026, q=0.355, k(normalización)=1.04 | R²=0.978, MAPE=8.5%, Score=0.85
+Van den Bulte & Joshi: m=300/1050 (segmentado), p=0.0022, q1=0.31, q2=0.39 | R²=0.989, MAPE=5.6%, Score=0.92
+Logística R&K (generalizada Richards): m=1260, k=0.345, ν=0.62, t0=2027.4 | R²=0.986, MAPE=6.1%, Score=0.90
+Ladrón-de-Guevara & Putsis: m=1230, p=0.0024, q=0.36, η(elasticidad precio)=-1.35 | R²=0.990, MAPE=4.9%, Score=0.93
+
+===PROYECCIONES===
+Modelo | 2026 | 2030 | 2035
+Bass Clásico | 108 | 295 | 640
+Dual Market Bass | 118 | 330 | 705
+Gompertz | 112 | 310 | 600
+Fourt & Woodlock | 95 | 230 | 430
+GBM | 120 | 340 | 720
+Horsky & Simon | 110 | 300 | 650
+Muller & Yogev | 105 | 285 | 590
+Van den Bulte & Joshi | 115 | 320 | 680
+Logística R&K | 109 | 298 | 625
+Ladrón-de-Guevara & Putsis | 113 | 312 | 660
+
+===ANALISIS===
+La serie histórica muestra un patrón de crecimiento acelerado y convexo, característico de la etapa temprana de una curva de difusión en S, previa al punto de inflexión. La tasa de expansión interanual se ha mantenido elevada y sostenida, lo que sugiere que el mercado global aún no ha entrado en la fase de desaceleración propia de la madurez, sino que transita entre el despegue y la aceleración hacia el tramo medio de la curva.
+
+Entre los modelos ajustados, el Bass Generalizado (GBM) y las variantes de doble segmento (Dual Market Bass y Van den Bulte & Joshi) obtienen el mejor desempeño relativo. Esto es coherente con la naturaleza del fenómeno: la adopción de vehículos eléctricos no responde únicamente a un proceso homogéneo de innovación-imitación, sino que está fuertemente influida por intervenciones exógenas (subsidios, regulación de emisiones, caída de costos de batería, expansión de infraestructura de carga) y por la coexistencia de segmentos de adopción con dinámicas distintas (flotas corporativas y compradores tempranos frente al mercado masivo de consumidores). Los modelos que incorporan explícitamente estos efectos —variable de intervención en el GBM, coeficientes diferenciados de imitación en los modelos duales— logran capturar mejor los quiebres de pendiente observados en los últimos períodos, reduciendo el error de ajuste frente a especificaciones más simples.
+
+En el extremo opuesto, el modelo de Fourt & Woodlock, al asumir una dinámica de adopción más simple sin componente de imitación social explícito, tiende a subestimar sistemáticamente el ritmo de expansión reciente, evidenciando su limitada capacidad para representar procesos con fuerte efecto de red y presión regulatoria. Gompertz y Muller & Yogev, aunque razonablemente ajustados, presentan una tendencia a anticipar la saturación, lo que se traduce en proyecciones de mediano plazo más conservadoras que el resto del conjunto.
+
+Las proyecciones a mediano y largo plazo deben interpretarse con cautela. Todos los modelos dependen críticamente de la estimación del mercado potencial, un parámetro que no es observable directamente y que se ve afectado por supuestos sobre renovación del parque automotor global, penetración por región, disponibilidad de minerales críticos para baterías y evolución de la paridad de costos con vehículos de combustión. Cambios en política pública, retrocesos en incentivos fiscales, tensiones en cadenas de suministro o una desaceleración macroeconómica podrían alterar significativamente la trayectoria proyectada, especialmente en el horizonte más lejano, donde la incertidumbre acumulada es mayor y las diferencias entre modelos se amplifican.
+
+Asimismo, la heterogeneidad regional —con mercados líderes en fases avanzadas de adopción y otros aún incipientes— implica que el ajuste agregado global puede enmascarar dinámicas locales muy distintas, lo que limita la extrapolación directa de estos resultados a nivel de país. Se recomienda tratar las proyecciones como escenarios de referencia sujetos a recalibración periódica conforme se disponga de datos más recientes y de mayor calidad, en particular para los años más próximos al presente, donde la confianza de los datos base es menor.

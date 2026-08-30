@@ -100,7 +100,19 @@ def analyze_with_claude(tech):
     """Claude analysis (sin web_search)."""
     from data.loaders import load_historical_data, load_model_parameters
     from models.analytical_projections import project_model
-    from data.report_compiler import model_labels
+    
+    model_labels = {
+        "Bass_Clasico": "Bass Clásico",
+        "Dual_Market": "Dual Market",
+        "Fourt_Woodlock": "Fourt & Woodlock",
+        "Gompertz": "Gompertz",
+        "Generalized_Bass": "Bass Generalizado (GBM)",
+        "Horsky_Simon": "Horsky & Simon",
+        "Muller_Yogev": "Muller & Yogev",
+        "VdB_Joshi": "Van den Bulte & Joshi",
+        "Logistic_Diffusion_Convergence": "Difusión Logística R&K",
+        "Ladron_Putsis": "Ladrón-de-Guevara & Putsis",
+    }
     
     df_hist = load_historical_data(tech)
     params = load_model_parameters(tech)
@@ -187,7 +199,13 @@ def main():
     
     # 1. Claude extracción
     log("1/3", "Extracción con Claude web_search...")
-    data, in_tok, out_tok = extract_with_claude(tech)
+    data, in_tok, out_tok = [], 0, 0
+    for attempt in range(5):
+        data, in_tok, out_tok = extract_with_claude(tech)
+        if len(data) > 0:
+            break
+        log("1/3", f"Intento {attempt+1} falló (0 puntos). Reintentando...")
+        
     log("1/3", f"Extraído: {len(data)} puntos")
     
     # 2. GLM fit

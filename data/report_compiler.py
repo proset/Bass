@@ -535,16 +535,34 @@ import json
 import re
 
 def _apply_corrections(text, corrections):
-    """Aplica correcciones JSON al texto via reemplazo de strings."""
+    """Aplica correcciones JSON al texto via reemplazo de strings (ignorando tablas)."""
     applied = 0
     for c in corrections:
         find_text = c.get("find", "")
         replace_text = c.get("replace", "")
-        if find_text and find_text in text:
-            text = text.replace(find_text, replace_text)
-            applied += 1
-        elif find_text:
-            print(f"[WARN] Texto no encontrado para reemplazar: {find_text[:80]}...")
+        if not find_text:
+            continue
+            
+        if '\n' not in find_text:
+            lines = text.split('\n')
+            new_lines = []
+            replaced_in_this_correction = False
+            for line in lines:
+                if line.lstrip().startswith('|'):
+                    new_lines.append(line)
+                elif find_text in line:
+                    new_lines.append(line.replace(find_text, replace_text))
+                    replaced_in_this_correction = True
+                else:
+                    new_lines.append(line)
+            text = '\n'.join(new_lines)
+            if replaced_in_this_correction:
+                applied += 1
+        else:
+            if find_text in text:
+                text = text.replace(find_text, replace_text)
+                applied += 1
+                
     print(f"[ALCANCE-MINIMO] {applied}/{len(corrections)} correcciones aplicadas.")
     return text
 

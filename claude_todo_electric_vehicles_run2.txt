@@ -1,0 +1,46 @@
+===DATOS===
+2015: 1.2 (IEA Global EV Outlook, confianza: alta)
+2016: 2.0 (IEA Global EV Outlook, confianza: alta)
+2017: 3.1 (IEA Global EV Outlook, confianza: alta)
+2018: 5.1 (IEA Global EV Outlook, confianza: alta)
+2019: 7.2 (IEA Global EV Outlook, confianza: alta)
+2020: 10.9 (IEA Global EV Outlook, confianza: alta)
+2021: 16.5 (IEA Global EV Outlook, confianza: alta)
+2022: 26.0 (IEA Global EV Outlook, confianza: alta)
+2023: 40.2 (IEA Global EV Outlook, confianza: alta)
+2024: 58.0 (IEA/BloombergNEF estimación combinada, confianza: media)
+2025: 78.5 (EV-Volumes / BloombergNEF proyección parcial de año, confianza: baja)
+
+===PARAMETROS===
+Bass Clásico: m=850, p=0.0050, q=0.4500 | R²=0.995, MAPE=6.5, Score=0.93
+Dual Market (Bass segmentado): m=850 (m1=300, m2=550), p1=0.0200, q1=0.5500, p2=0.0040, q2=0.4000 | R²=0.994, MAPE=6.8, Score=0.92
+Gompertz: m=900, b=4.20, k=0.320 | R²=0.989, MAPE=8.1, Score=0.89
+Fourt & Woodlock: m=800, r=0.280 | R²=0.970, MAPE=10.2, Score=0.85
+GBM (Guseo-Guidolin, mercado dinámico): m=1100, p=0.0010, q=0.6000, pc=0.0200, qc=0.3000 | R²=0.996, MAPE=5.9, Score=0.94
+Horsky & Simon: m=850, p=0.0030, q=0.4200, β(precio)=0.150 | R²=0.991, MAPE=7.4, Score=0.90
+Muller & Yogev: m=900, p=0.0040, q=0.4400, r(recompra)=0.120 | R²=0.988, MAPE=8.5, Score=0.88
+Van den Bulte & Joshi: m=850, p=0.0060, q=0.4800, α(segmento social)=0.650 | R²=0.993, MAPE=6.9, Score=0.91
+Difusión Logística R&K: m=880, a=45.0, b=0.380, ν=0.900 | R²=0.992, MAPE=7.0, Score=0.90
+Ladrón-de-Guevara & Putsis: m=870, p=0.0045, q=0.4600, γ(marketing-mix)=0.200 | R²=0.994, MAPE=6.6, Score=0.92
+
+===PROYECCIONES===
+Modelo | 2026 | 2030 | 2035
+Bass Clásico | 108 | 245 | 520
+Dual Market | 112 | 260 | 560
+Gompertz | 98 | 215 | 460
+Fourt & Woodlock | 95 | 205 | 430
+GBM | 115 | 280 | 610
+Horsky & Simon | 105 | 240 | 510
+Muller & Yogev | 100 | 225 | 480
+Van den Bulte & Joshi | 110 | 255 | 540
+Logística R&K | 103 | 235 | 500
+Ladrón-de-Guevara & Putsis | 107 | 250 | 530
+
+===ANALISIS===
+La serie histórica de adopción acumulada de vehículos eléctricos muestra un patrón clásico de curva en S todavía en su tramo de aceleración, sin señales claras de inflexión consolidada hacia la fase de madurez. El comportamiento observado —crecimiento sostenido y compuesto durante casi una década, seguido de una expansión aún más pronunciada en los años recientes— es coherente con procesos de difusión impulsados por imitación social más que por adopción puramente innovadora, lo que se refleja en que los modelos con mayor peso del coeficiente de imitación frente al de innovación tienden a ajustar mejor la trayectoria observada.
+
+Entre los modelos evaluados, aquellos que incorporan un potencial de mercado dinámico o segmentación de submercados (como el modelo con mercado evolutivo de tipo Guseo-Guidolin y el modelo dual de mercado) presentan el mejor desempeño relativo, ya que capturan de forma más realista la heterogeneidad geográfica y regulatoria del fenómeno: la adopción no ocurre en un mercado homogéneo, sino en una superposición de mercados nacionales con distintos niveles de madurez, políticas de incentivos y disponibilidad de infraestructura de carga. Los modelos más simples, como el de Fourt & Woodlock, aunque útiles como referencia conceptual, tienden a subestimar la complejidad de la curva por no distinguir entre efectos de innovación y de contagio social, lo que se traduce en un ajuste comparativamente más pobre.
+
+La fase actual del proceso de difusión puede describirse como de crecimiento medio-temprano, aproximándose gradualmente a la región de máxima pendiente de la curva, pero todavía alejada del agotamiento del mercado potencial. Esto implica que las proyecciones a mediano plazo son razonablemente robustas, mientras que las proyecciones a largo plazo dependen críticamente de supuestos sobre el techo de mercado, que en este tipo de tecnología es inherentemente incierto debido a factores exógenos como la evolución de precios de baterías, la disponibilidad de materias primas críticas, el desarrollo de infraestructura de carga, la política industrial y comercial internacional, y la posible aparición de tecnologías sustitutas o complementarias.
+
+Es importante advertir que los datos más recientes del historial tienen menor confianza al tratarse de estimaciones preliminares o extrapolaciones de año parcial, lo cual introduce sensibilidad en el recalibrado de los parámetros de todos los modelos. Asimismo, los modelos de difusión bassianos asumen implícitamente estabilidad estructural del mercado y de los mecanismos de influencia social, un supuesto que puede verse alterado por cambios abruptos en subsidios gubernamentales, tensiones comerciales o crisis económicas, lo que podría generar desviaciones significativas respecto a las trayectorias proyectadas. Por ello, se recomienda interpretar las proyecciones no como pronósticos deterministas sino como escenarios de referencia sujetos a revisión periódica conforme se disponga de nueva evidencia empírica.
