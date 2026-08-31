@@ -177,6 +177,9 @@ def load_historical_data(tech):
             if non_zero_mask.any():
                 first_nz_idx = df[non_zero_mask].index[0]
                 start_idx = max(0, first_nz_idx - 1)
+                # Garantizar al menos 5 puntos si hay suficientes
+                if len(df) - start_idx < 5:
+                    start_idx = max(0, len(df) - 5)
                 df = df.iloc[start_idx:].reset_index(drop=True)
         return df
     except Exception as e:
