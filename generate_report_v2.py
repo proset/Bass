@@ -90,12 +90,33 @@ RESULTADOS DEL AJUSTE (10 modelos):
 {fit_str}
 MODELO RECOMENDADO: {recommended_model_name} (Score={float(recommended_params.get('score',0)):.2f})
 PROYECCIONES:  2030: {float(y_proj[4]):.1f}M  2035: {float(y_proj[9]):.1f}M
-INSTRUCCIONES:
-1. NO números en prosa (todo en tablas).
-2. NO años de citación (modelos SOLO por nombre).
-3. Escribe: §1 Resumen Ejecutivo, §5 Análisis Cualitativo, §6 Marco Teórico, §4.2 Recomendación.
-4. Explica selección de modelo, fase de crecimiento, advertencias (sobreajuste, escasez de datos).
-5. Si la empresa es privada: "NOTA DE FUENTE DE DATOS: [empresa] no publica usuarios oficiales. Datos estimados. Incertidumbre: alta."
+INSTRUCCIONES ESTRICTAS:
+1. NO escribas NINGÚN número en la prosa narrativa (ni adopción, ni R², ni MAPE, ni Score, ni porcentajes, ni incrementos). Las cifras van en tablas aparte. ÚNICA excepción: números dentro de tablas markdown que tú mismo generes (señaladas como tablas, con formato de | Año | Valor |).
+2. NO cites años entre paréntesis (modelos SOLO por nombre: "Gompertz", "Dual Market").
+3. FORMATO DE NÚMEROS EN TABLAS: usa punto decimal (1052.00), NUNCA coma como miles (no "~1,052"). Sin virgulillas (~). Formato idéntico a las tablas de Python: valor con 2 decimales.
+4. Escribe estas secciones:
+
+## 1. Resumen Ejecutivo
+(Resumen. Modelo seleccionado y por qué. Fase de crecimiento. Nivel de confianza de la proyección: ALTA/MEDIA/BAJA con justificación.)
+
+## 5. Análisis Cualitativo y Validación Estadística
+Además del análisis cualitativo, realiza ESTAS 4 validaciones analíticas:
+a) CONTROL DE SOBREAJUSTE (AIC mental): Con n puntos de datos y k parámetros por modelo, evalúa si el modelo ganador justifica su complejidad. Regla práctica: si k_ganador > n/2, advierte explícitamente "riesgo alto de sobreajuste". Si dos modelos tienen R² similares pero k distinto, señala que el parsimonioso puede generalizar mejor.
+b) DETECCIÓN DE DEGENERACIÓN PARAMÉTRICA: Si dos o más modelos muestran métricas de ajuste prácticamente idénticas (R² y MAPE iguales), explica que esto indica colapso paramétrico: los parámetros "extra" del modelo complejo se vuelven irrelevantes con pocos datos, y el modelo colapsa matemáticamente al más simple. NO es un error de cálculo, es una limitación de identificabilidad.
+c) CONTRASTE CON REFERENCIAS EXTERNAS: Usa tu conocimiento del sector. Si conoces proyecciones de autoridades de referencia (IEA para energía/vehículos, Gartner/IDC para tecnología, OMS para salud), compáralas CUALITATIVAMENTE con la proyección del modelo. Si divergen fuertemente (más de 2x), advierte explícitamente: "la proyección del modelo se sitúa muy por debajo/encima de la referencia del sector, que atribuye la diferencia a factores que los datos históricos no capturan (políticas, precios, mercados emergentes)". NO inventes cifras de referencias — si no conoces una referencia confiable, escribe "no se identificó referencia externa confiable para contraste".
+d) MODULACIÓN DE CONFIANZA: Concluye el análisis con una valoración explícita:
+   - Datos (n puntos): suficientes/insuficientes para el modelo seleccionado
+   - Sobreajuste: riesgo alto/medio/bajo (justificar con k vs n)
+   - Conclusión: "proyección OPERATIVA" (fiable para decisiones) o "proyección INDICATIVA" (sujeta a revisión) o "proyección TENTATIVA" (no usar para decisiones sin más datos)
+
+## 6. Marco Académico Teórico
+(Formulación conceptual del modelo. Comparación con otros modelos. Relación con teoría de difusión.)
+
+## 4.2. Recomendación a la Dirección
+(Recomendación estratégica que INTEGRE el nivel de confianza del punto (d): si la proyección es INDICATIVA o TENTATIVA, la recomendación debe reflejar cautela. Sin cifras específicas.)
+
+Si la empresa es privada (no publica usuarios oficiales), incluye al inicio del Resumen Ejecutivo:
+"NOTA DE FUENTE DE DATOS: [empresa] no publica usuarios oficiales. Datos estimados. Incertidumbre: alta."
 """
         }]
     )
