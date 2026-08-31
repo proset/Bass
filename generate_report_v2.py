@@ -180,6 +180,14 @@ def verify_and_fit(tech):
         log("2/3", "ERROR: fit failed")
         sys.exit(1)
 
+def get_extraction_context(tech):
+    """Lee la prosa de extracción de Gemini (qualitative_analysis en BD)."""
+    from data.loaders import load_qualitative_analysis
+    text = load_qualitative_analysis(tech)
+    if not text or text.strip() == "" or "No disponible" in text:
+        return "No hay contexto de mercado disponible de la extracción."
+    return text
+
 # --- Step 3: Claude analysis ---
 def analyze_with_claude(tech):
     from data.loaders import load_historical_data, load_model_parameters
@@ -214,6 +222,9 @@ def analyze_with_claude(tech):
     last_val = list(real_series.values())[-1]
     y_proj = np.maximum(y_proj, last_val)
     
+    # Extraer contexto cualitativo
+    extraction_context = get_extraction_context(tech)
+    
     # Claude analysis
     client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
     
@@ -227,12 +238,17 @@ def analyze_with_claude(tech):
         messages=[{
             "role": "user",
             "content": f"""Eres un analista de adopción tecnológica. Redacta el análisis cualitativo del informe de '{tech}'.
+
+CONTEXTO DE MERCADO (de la extracción con búsqueda web — úsalo como base, corrígelo si contiene errores, complétalo con tu conocimiento del sector):
+{extraction_context}
+
 DATOS HISTÓRICOS:
 {hist_str}
 RESULTADOS DEL AJUSTE (10 modelos):
 {fit_str}
 MODELO RECOMENDADO: {recommended_model_name} (Score={float(recommended_params.get('score',0)):.2f})
 PROYECCIONES:  2030: {float(y_proj[4]):.1f}M  2035: {float(y_proj[9]):.1f}M
+
 INSTRUCCIONES ESTRICTAS:
 1. NO escribas NINGÚN número en la prosa narrativa (ni adopción, ni R², ni MAPE, ni Score, ni porcentajes, ni incrementos). Las cifras van en tablas aparte. ÚNICA excepción: números dentro de tablas markdown que tú mismo generes (señaladas como tablas, con formato de | Año | Valor |).
 2. NO cites años entre paréntesis (modelos SOLO por nombre: "Gompertz", "Dual Market").
@@ -241,6 +257,9 @@ INSTRUCCIONES ESTRICTAS:
 
 ## 1. Resumen Ejecutivo
 (Resumen. Modelo seleccionado y por qué. Fase de crecimiento. Nivel de confianza de la proyección: ALTA/MEDIA/BAJA con justificación.)
+
+## 3. Análisis del Mercado y Contexto Competitivo
+(Usa el CONTEXTO DE MERCADO de la extracción y tu conocimiento del sector. Cubre: drivers de adopción (factores que impulsan), competidores clave y dinámica competitiva, barreras de adopción (factores que frenan), tendencias tecnológicas y regulatorias, y factores externos relevantes (pandemias, políticas, crisis). Sin cifras en prosa.)
 
 ## 5. Análisis Cualitativo y Validación Estadística
 Además del análisis cualitativo, realiza ESTAS 4 validaciones analíticas:
