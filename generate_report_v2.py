@@ -15,6 +15,149 @@ sys.path.insert(0, BASS_DIR)
 def log(step, msg): 
     print(f"[{step}] {msg}")
 
+def build_deviation_table(params, real_series, model_labels):
+    """Desviación de cada modelo por año (histórico)."""
+    from models.analytical_projections import project_model
+    import numpy as np
+    
+    years = sorted(real_series.keys())
+    t_hist = np.arange(len(years), dtype=float)
+    real_vals = [real_series[y] for y in years]
+    
+    header = "| Año | Real (M) |"
+    models = [mk for mk in params.keys()]
+    for mk in models:
+        name = model_labels.get(mk, mk)
+        header += f" {name} (M) |"
+    rows = [header, "|" + " --- |" * (len(models) + 1)]
+    
+    # Calcular predicciones de cada modelo para años históricos
+    preds = {}
+    for mk in models:
+        p = params[mk]
+        try:
+            y_pred = project_model(mk, p, t_hist)
+            preds[mk] = y_pred
+        except Exception:
+            preds[mk] = None
+            
+    for i, year in enumerate(years):
+        row = f"| {year} | {real_vals[i]:.2f} |"
+        for mk in models:
+            if preds[mk] is not None and not np.isnan(preds[mk][i]):
+                row += f" {preds[mk][i]:.2f} |"
+            else:
+                row += " N/D |"
+        rows.append(row)
+        
+    return "\n".join(rows)
+
+def build_all_projections_table(params, real_series, model_labels):
+    """Proyecciones 2026-2035 de todos los modelos."""
+    from models.analytical_projections import project_model
+    import numpy as np
+    
+    years = sorted(real_series.keys())
+    last_year = years[-1]
+    t_proj = np.arange(len(years), len(years) + 10, dtype=float)
+    proj_years = list(range(last_year + 1, last_year + 11))
+    
+    # Ordenar modelos por Score (mejor primero)
+    sorted_models = sorted(params.items(), key=lambda x: -float(x[1].get("score", 0)))
+    
+    header = "| Año |"
+    for mk, p in sorted_models:
+        name = model_labels.get(mk, mk)
+        header += f" {name} (M) |"
+    rows = [header, "|" + " --- |" * (len(sorted_models) + 1)]
+    
+    # Calcular proyecciones
+    projections = {}
+    for mk, p in sorted_models:
+        try:
+            y_proj = project_model(mk, p, t_proj)
+            # Monotonicidad
+            last_val = list(real_series.values())[-1]
+            y_proj = np.maximum(y_proj, last_val)
+            projections[mk] = y_proj
+        except Exception:
+            projections[mk] = None
+            
+    for i, year in enumerate(proj_years):
+        row = f"| {year} |"
+        for mk, p in sorted_models:
+            if projections[mk] is not None and not np.isnan(projections[mk][i]):
+                row += f" {projections[mk][i]:.2f} |"
+            else:
+                row += " N/D |"
+        rows.append(row)
+        
+    return "\n".join(rows)
+
+def build_formulations_section():
+    """Renderiza las formulaciones de los 10 modelos (Fix 23/26)."""
+    from data.report_compiler import model_labels, MODEL_EQUATIONS, MODEL_YEARS
+    
+    output = "### 📐 Formulación Matemática de los Modelos Evaluados\n\n"
+    for k, label in model_labels.items():
+        if k not in MODEL_EQUATIONS:
+            continue
+        desc, autores, eq_text = MODEL_EQUATIONS[k]
+        yr = MODEL_YEARS.get(k, "")
+        if yr:
+            inner = (autores + ", " + str(yr)) if autores else str(yr)
+            header = f"* **{label} ({inner})** — {desc}:\n"
+        else:
+            header = f"* **{label}** — {desc}:\n"
+        output += header + eq_text + "\n\n"
+    return output
+
+def build_scenarios_table(params, real_series, model_labels):
+    """Escenarios: conservador / base / optimista para 2030 y 2035."""
+    from models.analytical_projections import project_model
+    import numpy as np
+    
+    years = sorted(real_series.keys())
+    last_year = years[-1]
+    t_proj = np.arange(len(years), len(years) + 10, dtype=float)
+    last_val = list(real_series.values())[-1]
+    
+    # Escenarios: conservador = modelo parsimonioso (k=3) con mejor R²;
+    # base = modelo recomendado; optimista = modelo con proyección 2035 más alta (excluyendo absurdos)
+    
+    best_model = max(params.items(), key=lambda x: float(x[1].get("score", 0)))
+    rec_key = best_model[0]
+    
+    # Parsimonioso: Bass_Clasico o Gompertz (k=3) con mejor R²
+    parsimonious = [mk for mk in params if params[mk].get("n_params", 10) <= 3]
+    cons_key = max(parsimonious, key=lambda mk: float(params[mk].get("r_cuadrado", 0))) if parsimonious else rec_key
+    
+    # Optimista: mejor proyección 2035 que no supere 3x el último dato (evitar absurdos)
+    opt_key = None
+    opt_2035 = -1
+    for mk, p in params.items():
+        try:
+            y_proj = project_model(mk, p, t_proj)
+            y_proj = np.maximum(y_proj, last_val)
+            v2035 = float(y_proj[9])
+            if v2035 <= last_val * 3 and v2035 > opt_2035:
+                opt_2035 = v2035
+                opt_key = mk
+        except Exception:
+            continue
+    if opt_key is None:
+        opt_key = rec_key
+        
+    rows = ["| Escenario | Modelo | 2030 (M) | 2035 (M) |", "| --- | --- | --- | --- |"]
+    for label, mk in [("Conservador", cons_key), ("Base (recomendado)", rec_key), ("Optimista", opt_key)]:
+        p = params[mk]
+        y_proj = project_model(mk, p, t_proj)
+        y_proj = np.maximum(y_proj, last_val)
+        name = model_labels.get(mk, mk)
+        rows.append(f"| {label} | {name} | {float(y_proj[4]):.2f} | {float(y_proj[9]):.2f} |")
+        
+    return "\n".join(rows)
+
 # --- Step 1: Gemini extraction (existing) ---
 def extract(tech):
     from ai.analysis import obtener_datos_y_analisis_ia
