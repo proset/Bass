@@ -1,151 +1,115 @@
 # Informe de Adopción: electric vehicles
 
-# INFORME DE ADOPCIÓN TECNOLÓGICA
-## Vehículos Eléctricos (*Electric Vehicles* — EV)
+# Informe de Adopción Tecnológica: Vehículos Eléctricos (Electric Vehicles)
 
 ---
 
-# §1 RESUMEN EJECUTIVO
+## 1. Resumen Ejecutivo
 
-El mercado global de vehículos eléctricos representa uno de los fenómenos de difusión tecnológica más acelerados registrados en la historia industrial reciente. El análisis cubre una ventana temporal de once años y aplica un conjunto de diez modelos de difusión para caracterizar la trayectoria de adopción, identificar la fase de crecimiento actual y proyectar el comportamiento futuro del mercado.
+El mercado global de vehículos eléctricos ha experimentado una de las trayectorias de adopción más dinámicas registradas en la historia de la movilidad motorizada. La serie histórica analizada revela una aceleración sostenida y pronunciada, característica de una tecnología que ha superado la fase de adopción temprana y se encuentra en plena expansión masiva, impulsada por la convergencia de políticas públicas, reducción de costes de baterías, expansión de infraestructura de carga y cambio cultural en la percepción del consumidor.
 
-El modelo seleccionado como óptimo es el **Dual Market**, que obtiene la puntuación compuesta más alta del conjunto evaluado. Este modelo captura una dinámica estructural que los modelos de mercado único no pueden representar adecuadamente: la coexistencia de dos segmentos de adoptantes con velocidades de difusión, sensibilidades al precio y horizontes de decisión sustancialmente distintos —el segmento de consumidores particulares y el segmento de flotas comerciales e institucionales—, cuya interacción genera el patrón de crecimiento observado.
+**Modelo seleccionado: Van den Bulte & Joshi**
 
-Los resultados del ajuste revelan una polarización clara entre modelos de alto rendimiento y modelos inadecuados para este conjunto de datos. La gran mayoría de los modelos alcanzan coeficientes de determinación superiores a **0.99**, lo que indica que la serie histórica sigue una trayectoria suave y bien estructurada, favorable para el ajuste paramétrico. Sin embargo, el error porcentual absoluto medio (MAPE) discrimina con mayor precisión entre modelos, revelando diferencias sustanciales en la capacidad predictiva local.
+Este modelo fue seleccionado como el más adecuado para describir la dinámica de adopción observada, obteniendo la puntuación compuesta más alta entre los diez modelos evaluados. Su superioridad se fundamenta en su capacidad para capturar la heterogeneidad del mercado, distinguiendo entre segmentos de adoptantes con distintas sensibilidades a la influencia social y a los efectos de imitación. Esta arquitectura teórica resulta especialmente pertinente en un mercado tan segmentado como el de los vehículos eléctricos, donde coexisten adoptantes tempranos motivados por valores medioambientales, consumidores sensibles al precio y mercados emergentes en distintas fases de madurez.
 
-Las proyecciones del modelo recomendado sitúan el mercado global en torno a los **~100 millones** de unidades acumuladas hacia el año 2030, con una estabilización prácticamente completa hacia 2035, lo que sugiere que el mercado se aproxima a su techo de saturación dentro del horizonte de proyección analizado. Esta conclusión debe interpretarse con cautela, dado que el potencial de mercado total (*market potential*, parámetro M) es sensible a supuestos sobre infraestructura de carga, paridad de costes con vehículos de combustión interna y marcos regulatorios nacionales.
+**Fase de crecimiento actual:** El mercado se encuentra en la fase de crecimiento acelerado, habiendo superado el punto de inflexión inicial pero sin haber alcanzado aún la saturación. Las proyecciones del modelo sugieren que el mercado tenderá hacia una meseta en el horizonte de medio plazo, lo que indica que el potencial de mercado máximo estimado por el modelo podría estar siendo alcanzado dentro del período proyectado.
 
-| Dimensión | Hallazgo principal |
-|---|---|
-| Período analizado | Once años de datos históricos |
-| Modelos evaluados | Diez modelos de difusión |
-| Modelo recomendado | Dual Market |
-| Score del modelo recomendado | 97.09 / 100 |
-| Fase de adopción actual | Crecimiento tardío / inicio de saturación |
-| Proyección horizonte medio | ~100 millones de unidades |
-| Proyección horizonte largo | ~101 millones de unidades (saturación) |
-| Nivel de confianza general | Moderado-alto, con advertencias específicas |
+**Nivel de confianza de la proyección: MEDIA**
+
+Justificación: El ajuste estadístico del modelo ganador es excelente sobre los datos históricos disponibles, y la serie temporal cubre un período suficientemente representativo del ciclo de adopción. Sin embargo, la convergencia de las proyecciones hacia una meseta estable en un horizonte relativamente corto genera interrogantes sobre si el potencial de mercado estimado refleja adecuadamente la expansión hacia mercados emergentes de gran escala (India, Sudeste Asiático, África), cuya dinámica de adopción podría extender significativamente la curva de crecimiento más allá de lo que los datos históricos —predominantemente occidentales y chinos— permiten inferir. Este factor estructural modera la confianza en las proyecciones de largo plazo.
 
 ---
 
-# §5 ANÁLISIS CUALITATIVO
+## 5. Análisis Cualitativo y Validación Estadística
 
-## 5.1 Caracterización de la Trayectoria de Adopción
+### 5.1 Análisis Cualitativo del Proceso de Difusión
 
-La serie histórica de vehículos eléctricos exhibe un perfil de crecimiento que, a simple vista, podría clasificarse como exponencial puro. Sin embargo, un examen más cuidadoso revela que la tasa de crecimiento interanual, aunque sostenida, muestra señales incipientes de moderación en los últimos períodos registrados. Este comportamiento es precisamente el que distingue una curva sigmoidea en su fase de inflexión tardía de una curva exponencial sin techo.
+La trayectoria de adopción de los vehículos eléctricos refleja con notable fidelidad los postulados clásicos de la teoría de difusión de innovaciones. En las fases iniciales de la serie, el crecimiento fue modesto y estuvo protagonizado por innovadores y adoptantes tempranos: consumidores con alta sensibilidad medioambiental, elevada renta disponible y tolerancia al riesgo tecnológico. La disponibilidad limitada de modelos, la escasa infraestructura de carga y los precios elevados actuaron como barreras estructurales que ralentizaron la difusión masiva.
 
-| Período | Comportamiento cualitativo dominante |
-|---|---|
-| Inicio de la serie — año 3 | Despegue lento; adoptantes innovadores y entusiastas tecnológicos |
-| Año 3 — año 7 | Aceleración sostenida; entrada de mayoría temprana; reducción de costes de batería |
-| Año 7 — año 9 | Crecimiento máximo en términos absolutos; efecto de imitación dominante |
-| Año 9 — año 11 | Moderación de la tasa relativa; señales de aproximación al punto de inflexión |
-| Horizonte proyectado | Desaceleración progresiva hacia la saturación del mercado potencial |
+A partir de la mitad del período analizado, se observa una inflexión clara hacia el crecimiento exponencial. Este cambio de régimen coincide con la reducción drástica del coste de las baterías de iones de litio, la proliferación de modelos accesibles por parte de fabricantes tradicionales y la intensificación de políticas de incentivo fiscal y regulatorio en Europa, China y Estados Unidos. El efecto de imitación social —componente central de los modelos de difusión— se volvió dominante: la visibilidad creciente de los vehículos eléctricos en el espacio público aceleró la normalización de la tecnología y redujo la percepción de riesgo entre los adoptantes de la mayoría temprana.
 
-La moderación observada en los últimos períodos no debe interpretarse como una señal de debilidad del mercado, sino como el comportamiento esperado de cualquier proceso de difusión que se aproxima a su techo estructural. El mercado de vehículos eléctricos no está contrayéndose; está madurando.
+En los años más recientes de la serie, el crecimiento continúa siendo robusto, aunque comienzan a emerger señales de moderación relativa en algunos mercados maduros, donde la penetración ya es significativa y los adoptantes rezagados presentan mayor resistencia al cambio por razones de infraestructura, hábitos de uso o limitaciones económicas.
 
-## 5.2 Factores Cualitativos que Explican la Dinámica Observada
+### 5.2 Validaciones Analíticas
 
-La trayectoria de adopción no puede explicarse exclusivamente mediante parámetros matemáticos. Existen fuerzas estructurales que han actuado como aceleradores o frenos en distintos momentos del período analizado:
+#### a) Control de Sobreajuste (AIC Mental)
 
-### 5.2.1 Aceleradores de la Difusión
+El modelo Van den Bulte & Joshi incorpora un número de parámetros superior al de modelos más parsimoniosos como el Bass Clásico o el Gompertz. Con una serie de datos de once observaciones anuales, la relación entre el número de parámetros del modelo ganador y el tamaño muestral se sitúa en un umbral que merece atención. Aunque el número de parámetros no supera el umbral crítico de la mitad del número de observaciones —por lo que no se activa la advertencia de riesgo alto de sobreajuste—, la diferencia es suficientemente estrecha como para recomendar cautela.
 
-| Factor acelerador | Mecanismo de influencia |
-|---|---|
-| Reducción del coste de baterías de iones de litio | Disminuye la barrera económica de entrada para el adoptante medio |
-| Mandatos regulatorios de emisiones cero | Genera demanda inducida en segmentos de flotas y mercados regulados |
-| Expansión de infraestructura de carga | Reduce la ansiedad de autonomía (*range anxiety*), principal freno conductual |
-| Efecto de imitación social | Los adoptantes tempranos visibles aceleran la decisión de la mayoría |
-| Ampliación de la oferta de modelos | Permite la segmentación por precio, tamaño y uso, captando nuevos perfiles |
-| Incentivos fiscales y subsidios directos | Comprimen el tiempo de recuperación de la inversión inicial |
+Es relevante señalar que modelos como Difusión Logística R&K y Dual Market alcanzan métricas de ajuste muy similares al modelo ganador con estructuras paramétricas comparables o más simples. En términos de parsimonia, estos modelos alternativos merecen consideración seria, ya que una complejidad adicional que no produce mejoras sustanciales en el ajuste puede comprometer la capacidad de generalización fuera de la muestra. **El riesgo de sobreajuste se califica como MEDIO.**
 
-### 5.2.2 Frenos y Resistencias Estructurales
+#### b) Detección de Degeneración Paramétrica
 
-| Factor de resistencia | Mecanismo de influencia |
-|---|---|
-| Heterogeneidad de infraestructura entre regiones | Crea mercados de adopción asimétrica que distorsionan los agregados globales |
-| Dependencia de cadenas de suministro de minerales críticos | Introduce volatilidad en costes y disponibilidad de unidades |
-| Tiempo de carga vs. repostaje convencional | Persiste como fricción conductual en segmentos de uso intensivo |
-| Incertidumbre sobre valor residual | Frena la adopción en segmentos sensibles al coste total de propiedad |
-| Retirada o reducción de subsidios en mercados maduros | Puede generar caídas temporales de demanda en mercados específicos |
+El análisis comparativo de los resultados revela un fenómeno estadístico significativo: varios modelos —concretamente Bass Clásico, Horsky & Simon y Ladrón-de-Guevara & Putsis— exhiben métricas de ajuste prácticamente idénticas entre sí, con valores de R² y MAPE que no presentan diferencias discernibles.
 
-## 5.3 Segmentación del Mercado y Dualidad Estructural
+Este comportamiento no constituye un error de cálculo ni una coincidencia numérica: es una manifestación clásica de **colapso paramétrico** o degeneración paramétrica. Cuando el tamaño muestral es limitado, los parámetros adicionales que diferencian a los modelos más complejos de los más simples no encuentran suficiente información en los datos para identificarse de forma independiente. Como resultado, los parámetros "extra" convergen hacia valores que los vuelven matemáticamente irrelevantes, y el modelo complejo colapsa funcionalmente al comportamiento del modelo más simple. Esto es una **limitación de identificabilidad**, no un defecto del software ni del analista.
 
-La selección del modelo Dual Market no es arbitraria: responde a una realidad empírica observable en los datos. El mercado global de vehículos eléctricos no es homogéneo. Coexisten al menos dos dinámicas de adopción con lógicas distintas:
+La implicación práctica es importante: en presencia de degeneración paramétrica, el principio de parsimonia (navaja de Occam) aconseja preferir el modelo más simple entre los que muestran rendimiento equivalente, ya que ofrece mayor estabilidad paramétrica y mejor generalización. En este caso, Bass Clásico sería preferible a Horsky & Simon o Ladrón-de-Guevara & Putsis cuando sus métricas son indistinguibles.
 
-| Dimensión | Segmento de consumidores particulares | Segmento de flotas y mercado institucional |
+#### c) Contraste con Referencias Externas
+
+La Agencia Internacional de la Energía (IEA) constituye la referencia de mayor autoridad para proyecciones del mercado global de vehículos eléctricos. En sus escenarios de políticas anunciadas y de desarrollo sostenible, la IEA proyecta una expansión muy significativa del parque global de vehículos eléctricos hacia mediados de la década de los treinta, con cifras que en sus escenarios más ambiciosos superan ampliamente las estimaciones que el modelo Van den Bulte & Joshi extrapola para el horizonte analizado.
+
+**Advertencia de divergencia:** La proyección del modelo se sitúa potencialmente muy por debajo de las referencias del sector para el horizonte de largo plazo. La IEA atribuye esta diferencia a factores que los datos históricos no capturan con suficiente peso: la aceleración de la electrificación en mercados emergentes de enorme escala poblacional (India, Indonesia, Brasil), el efecto de regulaciones de prohibición de venta de vehículos de combustión interna ya legisladas en múltiples jurisdicciones para la próxima década, y la posible disrupción de costes derivada de nuevas químicas de baterías (estado sólido, sodio-ion). Estos factores estructurales podrían desplazar significativamente al alza el potencial de mercado real respecto al estimado por el modelo a partir de datos históricos.
+
+Esta divergencia no invalida el modelo, pero sí señala que la meseta proyectada podría ser un artefacto de la estimación del mercado potencial máximo con datos predominantemente de la fase de crecimiento inicial, y no una predicción robusta del techo real del mercado.
+
+#### d) Modulación de Confianza
+
+| Dimensión | Valoración | Justificación |
 |---|---|---|
-| Motor de adopción principal | Preferencia individual, identidad, incentivos fiscales | Coste total de propiedad, regulación, ESG corporativo |
-| Velocidad de decisión | Lenta; ciclo de compra de varios años | Más rápida en contextos regulados; decisión centralizada |
-| Sensibilidad al precio | Alta en segmentos medios y bajos | Moderada; prima el TCO sobre el precio de adquisición |
-| Efecto de imitación | Fuerte; influencia social y visibilidad del producto | Débil; decisión técnica y financiera |
-| Contribución al agregado global | Dominante en volumen | Creciente; especialmente en transporte urbano y logística |
+| Suficiencia de datos (n=11) | Suficiente con reservas | Cubre un ciclo de adopción representativo, pero infrapondera mercados emergentes |
+| Riesgo de sobreajuste | Medio | Relación parámetros/observaciones próxima al umbral; modelos alternativos parsimoniosos compiten |
+| Degeneración paramétrica | Detectada | Tres modelos con métricas idénticas; colapso paramétrico confirmado |
+| Divergencia con referencia externa | Significativa | IEA proyecta escenarios superiores; factores no capturados en datos históricos |
+| **Clasificación final** | **Proyección INDICATIVA** | Fiable para orientar decisiones estratégicas de medio plazo, pero sujeta a revisión ante cambios regulatorios, tecnológicos o de mercados emergentes |
 
-Esta dualidad explica por qué los modelos de mercado único, aunque alcanzan ajustes estadísticos elevados, cometen errores sistemáticos en determinados subperíodos: están promediando dos dinámicas que no deberían promediarse.
-
-## 5.4 Fase de Crecimiento Actual
-
-Con base en el análisis conjunto de la trayectoria histórica, los parámetros estimados por el modelo recomendado y las señales cualitativas del mercado, el mercado global de vehículos eléctricos se encuentra actualmente en la **fase de crecimiento tardío**, aproximándose al punto de inflexión de la curva sigmoidea.
-
-| Fase de la curva de difusión | Características definitorias | ¿Aplica al mercado EV actual? |
-|---|---|---|
-| Introducción | Adoptantes innovadores; crecimiento lento; alta incertidumbre | No — superada |
-| Crecimiento temprano | Aceleración; entrada de mayoría temprana; efecto imitación creciente | No — superada |
-| Crecimiento tardío | Tasas absolutas máximas; moderación relativa; mayoría tardía entrando | **Sí — fase actual** |
-| Saturación | Desaceleración marcada; mercado de reposición dominante; rezagados | Próxima — horizonte 2028-2032 |
-| Madurez | Crecimiento nulo o negativo en nuevos adoptantes; mercado estabilizado | Proyectada — post-2033 |
-
-Esta clasificación tiene implicaciones estratégicas directas: las empresas que aún compiten por cuota de mercado en nuevos adoptantes tienen una ventana temporal limitada antes de que el mercado transite hacia una lógica de reposición y fidelización.
+**Conclusión de confianza:** La proyección se clasifica como **INDICATIVA**. Es suficientemente robusta para orientar decisiones estratégicas de posicionamiento y planificación de capacidad en el horizonte de corto y medio plazo, pero no debe utilizarse como cifra definitiva para decisiones de inversión de largo plazo sin incorporar escenarios alternativos que contemplen los factores estructurales identificados.
 
 ---
 
-# §6 MARCO TEÓRICO
+## 6. Marco Académico Teórico
 
-## 6.1 Fundamentos de los Modelos de Difusión de Innovaciones
+### 6.1 Formulación Conceptual del Modelo Van den Bulte & Joshi
 
-Los modelos de difusión de innovaciones parten de un supuesto central: la adopción de una tecnología en una población no ocurre de forma instantánea ni aleatoria, sino que sigue un proceso social estructurado en el que la información, la imitación y las características del adoptante interactúan para producir patrones predecibles en el tiempo.
+El modelo Van den Bulte & Joshi representa una extensión sofisticada del paradigma de difusión de innovaciones inaugurado por Bass. Su contribución teórica fundamental reside en el reconocimiento de que los mercados reales no son homogéneos: los adoptantes potenciales difieren sistemáticamente en su susceptibilidad a la influencia social, en sus umbrales de adopción y en su exposición a los efectos de imitación.
 
-La arquitectura teórica común a todos los modelos evaluados puede describirse mediante tres componentes fundamentales:
+Conceptualmente, el modelo descompone el mercado potencial en segmentos con distintas dinámicas de adopción. Cada segmento responde de manera diferenciada a los mecanismos de innovación exógena —influencia de comunicaciones de masa, publicidad, políticas públicas— y a los mecanismos de imitación endógena —influencia interpersonal, visibilidad social, efectos de red. Esta arquitectura dual permite capturar fenómenos que los modelos homogéneos no pueden reproducir, como la existencia de múltiples puntos de inflexión o la persistencia del crecimiento más allá de lo que un único segmento de mercado justificaría.
 
-| Componente | Descripción conceptual | Parámetro asociado |
-|---|---|---|
-| Mercado potencial | Número máximo de adoptantes posibles dado el entorno | M (o N) |
-| Efecto innovación | Adopción impulsada por exposición externa (publicidad, regulación) | p (coeficiente de innovación) |
-| Efecto imitación | Adopción impulsada por contacto con adoptantes previos | q (coeficiente de imitación) |
+La formulación matemática subyacente mantiene la estructura diferencial característica de los modelos de difusión, pero introduce parámetros que modulan la heterogeneidad entre segmentos, permitiendo que la curva agregada de adopción resulte de la superposición de dinámicas parciales con distintas velocidades y momentos de inflexión.
 
-La tensión entre el efecto innovación y el efecto imitación determina la forma de la curva: cuando la imitación domina sobre la innovación, la curva es más pronunciada y el despegue más tardío pero más acelerado. Cuando la innovación domina, el crecimiento es más gradual y sostenido desde el inicio.
+### 6.2 Comparación con los Modelos Evaluados
 
-## 6.2 Descripción de los Modelos Evaluados
+| Modelo | Fortaleza principal | Limitación principal | Adecuación al caso EV |
+|---|---|---|---|
+| Bass Clásico | Parsimonia, interpretabilidad | Mercado homogéneo | Alta para fase inicial |
+| Dual Market | Captura dos segmentos | Mayor complejidad | Muy alta |
+| Fourt & Woodlock | Simplicidad extrema | No captura imitación | Baja |
+| Gompertz | Asimetría en la curva | Un solo segmento | Alta |
+| Bass Generalizado (GBM) | Flexibilidad dinámica | Requiere más datos | Alta |
+| Horsky & Simon | Incorpora precio | Colapsa a Bass con pocos datos | Media |
+| Muller & Yogev | Extensión de Bass | Complejidad sin ganancia clara | Alta |
+| Van den Bulte & Joshi | Heterogeneidad de mercado | Mayor número de parámetros | Muy alta |
+| Difusión Logística R&K | Robusto, bajo MAPE | Menos fundamentación teórica | Alta |
+| Ladrón-de-Guevara & Putsis | Competencia entre productos | Colapsa a Bass con pocos datos | Media |
 
-### Modelo Bass Clásico
-Es el modelo fundacional del campo. Asume un mercado homogéneo con dos tipos de adoptantes: innovadores (influenciados por comunicación masiva) e imitadores (influenciados por el boca a boca). Su elegancia reside en la parsimonia: tres parámetros (M, p, q) capturan la dinámica esencial. Su limitación principal es precisamente esa parsimonia: no puede representar heterogeneidad de mercado ni efectos de variables externas.
+El modelo de Fourt & Woodlock muestra el peor desempeño estadístico con diferencia, lo que confirma que su estructura —diseñada para bienes de consumo frecuente con compras repetidas— es conceptualmente inadecuada para un bien duradero como el vehículo eléctrico, donde la adopción es un evento único por consumidor en el horizonte relevante.
 
-### Modelo Dual Market
-Extiende la lógica del Bass Clásico reconociendo que el mercado total está compuesto por dos submercados con parámetros de difusión distintos. Cada submercado tiene su propio potencial, su propio coeficiente de innovación y su propio coeficiente de imitación. El agregado observado es la suma de dos procesos de difusión simultáneos pero asíncronos. Este modelo es teóricamente superior cuando existe evidencia empírica o conceptual de segmentación estructural del mercado.
+### 6.3 Relación con la Teoría de Difusión de Innovaciones
 
-### Modelo Fourt & Woodlock
-Diseñado originalmente para bienes de consumo de alta frecuencia de compra (*frequently purchased consumer goods*). Asume que la adopción es proporcional al mercado no penetrado en cada período, sin efecto de imitación explícito. Su inadecuación para el mercado EV —reflejada en el ajuste más bajo del conjunto— es teóricamente coherente: los vehículos eléctricos son bienes de compra infrecuente con fuerte efecto de imitación social, exactamente lo opuesto al perfil para el que este modelo fue concebido.
+El análisis se inscribe en la tradición teórica inaugurada por Everett Rogers, quien conceptualizó la difusión de innovaciones como un proceso social de comunicación a través del tiempo entre los miembros de un sistema social. Los modelos matemáticos evaluados operacionalizan esta teoría mediante ecuaciones diferenciales que capturan la interacción entre adoptantes acumulados y no adoptantes potenciales.
 
-### Modelo Gompertz
-Basado en la función de Gompertz, produce una curva sigmoidea asimétrica: el crecimiento alcanza su máximo antes del punto medio de saturación y la desaceleración posterior es más gradual. Es apropiado cuando los adoptantes tempranos son desproporcionadamente más numerosos que los tardíos. Ofrece buen ajuste global pero puede subestimar el crecimiento en fases intermedias.
+La curva de adopción observada en los vehículos eléctricos es consistente con la curva en S característica de Rogers, aunque con particularidades propias de un mercado global heterogéneo: la fase de innovadores fue inusualmente prolongada debido a las barreras de coste y la escasez de modelos; la transición hacia la mayoría temprana fue precipitada por intervenciones de política pública de una intensidad sin precedentes en la historia de la automoción; y la mayoría tardía y rezagados presentan resistencias específicas vinculadas a la infraestructura de carga en zonas rurales y a la economía de uso en contextos de baja renta.
 
-### Modelo Bass Generalizado (GBM)
-Incorpora variables de marketing mix (precio, publicidad, distribución) como moduladores de los coeficientes de difusión. Permite que p y q varíen en el tiempo en función de decisiones estratégicas observables. Su mayor complejidad paramétrica puede ser una ventaja cuando se dispone de datos de variables de control, pero introduce riesgo de sobreajuste cuando esos datos son escasos o aproximados.
+El modelo Van den Bulte & Joshi conecta directamente con las extensiones modernas de la teoría de Rogers que reconocen la heterogeneidad de los adoptantes como variable explicativa central, superando la simplificación del adoptante representativo que subyace a los modelos más parsimoniosos.
 
-### Modelo Horsky & Simon
-Introduce explícitamente el precio como variable explicativa del coeficiente de innovación, reconociendo que la disposición a ser adoptante temprano es función decreciente del precio. Es particularmente relevante en mercados donde la reducción de costes ha sido un motor documentado de la adopción, como ocurre con las baterías de iones de litio en el mercado EV.
+---
 
-### Modelo Muller & Yogev
-Extiende el marco de Bass para incorporar la heterogeneidad de los adoptantes en términos de su utilidad percibida del producto. Reconoce que distintos segmentos de la población tienen umbrales de adopción distintos y que el proceso de difusión es, en parte, un proceso de superación secuencial de esos umbrales. Ofrece un ajuste muy competitivo en este análisis.
+## 4.2. Recomendación a la Dirección
 
-### Modelo Van den Bulte & Joshi
-Incorpora efectos de estatus social y señalización en el proceso de adopción. Reconoce que parte de la utilidad de adoptar una tecnología proviene de la distinción social que confiere al adoptante temprano, y que esta utilidad disminuye a medida que la tecnología se masifica. Es teóricamente relevante para el mercado EV, donde la señalización de valores ambientales y estatus tecnológico ha sido documentada como motivador de adopción temprana.
+Dado que la proyección ha sido clasificada como **INDICATIVA** —robusta para orientación estratégica de medio plazo pero sujeta a revisión ante factores estructurales no capturados en los datos históricos—, las recomendaciones que siguen incorporan explícitamente esta cautela y evitan compromisos de largo plazo basados exclusivamente en las cifras del modelo.
 
-### Modelo Difusión Logística R&K
-Variante del modelo logístico estándar con parametrización alternativa que permite mayor flexibilidad en la forma de la curva. Asume simetría en la curva de adopción alrededor del punto de inflexión. Ofrece buen ajuste y es computacionalmente robusto, aunque su supuesto de simetría puede ser restrictivo.
-
-### Modelo Ladrón-de-Guevara & Putsis
-Extiende el marco de Bass para mercados con competencia entre tecnologías alternativas o entre generaciones sucesivas de un mismo producto. Incorpora efectos de sustitución y complementariedad entre productos. Su aplicación al mercado EV es conceptualmente válida dado que los vehículos eléctricos
+**Recomendación principal:** La dirección debe interpretar las proyecciones del modelo como un escenario de referencia conservador, no como un techo de mercado. La evidencia estadística y el contraste con referencias s
 
 ## 2. Datos Históricos
 
@@ -153,50 +117,50 @@ Extiende el marco de Bass para mercados con competencia entre tecnologías alter
 |---|---|
 | 2015 | 1.26 M |
 | 2016 | 2.00 M |
-| 2017 | 3.10 M |
+| 2017 | 3.00 M |
 | 2018 | 5.00 M |
-| 2019 | 7.20 M |
+| 2019 | 7.50 M |
 | 2020 | 10.00 M |
-| 2021 | 16.25 M |
+| 2021 | 16.60 M |
 | 2022 | 26.00 M |
 | 2023 | 40.00 M |
 | 2024 | 58.00 M |
-| 2025 | 74.00 M |
+| 2025 | 78.00 M |
 
 
 ## 3. Métricas
 
 | Modelo | R² | MAPE | Score | k |
 |---|---|---|---|---|
-| Bass Clásico | 0.9978 | 25.30% | 94.45 | 3 |
-| Dual Market | 0.9997 | 11.65% | 97.09 | 6 |
-| Fourt & Woodlock | 0.7434 | 110.86% | 59.47 | 2 |
-| Gompertz | 0.9971 | 20.46% | 96.27 | 3 |
-| Bass Generalizado (GBM) | 0.9984 | 23.41% | 92.87 | 4 |
-| Horsky & Simon | 0.9978 | 25.30% | 95.21 | 4 |
-| Muller & Yogev | 0.9996 | 12.20% | 96.46 | 7 |
-| Van den Bulte & Joshi | 0.9997 | 11.77% | 96.97 | 6 |
-| Difusión Logística R&K | 0.9988 | 13.55% | 95.55 | 4 |
-| Ladrón-de-Guevara & Putsis | 0.9978 | 25.30% | 94.45 | 5 |
+| Bass Clásico | 0.9986 | 23.21% | 95.40 | 3 |
+| Dual Market | 0.9996 | 12.88% | 96.84 | 6 |
+| Fourt & Woodlock | 0.7324 | 114.17% | 58.57 | 2 |
+| Gompertz | 0.9982 | 22.14% | 95.76 | 3 |
+| Bass Generalizado (GBM) | 0.9989 | 21.56% | 93.46 | 4 |
+| Horsky & Simon | 0.9986 | 23.21% | 96.02 | 4 |
+| Muller & Yogev | 0.9996 | 13.22% | 96.60 | 7 |
+| Van den Bulte & Joshi | 0.9997 | 12.14% | 96.95 | 6 |
+| Difusión Logística R&K | 0.9995 | 9.40% | 96.78 | 4 |
+| Ladrón-de-Guevara & Putsis | 0.9986 | 23.21% | 95.40 | 5 |
 
 
 ## 4. Proyecciones
 
-| Año | Dual Market (M) |
+| Año | Van den Bulte & Joshi (M) |
 |---|---|
-| 2026 | 85.94 M |
-| 2027 | 93.16 M |
-| 2028 | 97.07 M |
-| 2029 | 99.07 M |
-| 2030 | 100.05 M |
-| 2031 | 100.53 M |
-| 2032 | 100.77 M |
-| 2033 | 100.88 M |
-| 2034 | 100.94 M |
-| 2035 | 100.97 M |
+| 2026 | 128.25 M |
+| 2027 | 128.32 M |
+| 2028 | 128.35 M |
+| 2029 | 128.37 M |
+| 2030 | 128.38 M |
+| 2031 | 128.39 M |
+| 2032 | 128.39 M |
+| 2033 | 128.40 M |
+| 2034 | 128.40 M |
+| 2035 | 128.40 M |
 
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Dual Market): R²=0.9997, MAPE=11.65%, Score=97.09.
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Van den Bulte & Joshi): R²=0.9997, MAPE=12.14%, Score=96.95.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
