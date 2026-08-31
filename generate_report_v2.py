@@ -158,6 +158,15 @@ def build_scenarios_table(params, real_series, model_labels):
         
     return "\n".join(rows)
 
+def build_sources_table(df_hist, tech):
+    """Tabla de fuentes: año, valor, tipo (real/estimado)."""
+    rows = ["| Año | Valor (M) | Tipo |", "| --- | --- | --- |"]
+    for _, row in df_hist.iterrows():
+        is_est = bool(row.get("is_estimate", False))
+        tipo = "Estimado (fuentes secundarias)" if is_est else "Real (reportado)"
+        rows.append(f"| {int(row['anio'])} | {float(row['adopcion_acumulada']):.2f} | {tipo} |")
+    return "\n".join(rows)
+
 # --- Step 1: Gemini extraction (existing) ---
 def extract(tech):
     from ai.analysis import obtener_datos_y_analisis_ia
@@ -274,7 +283,7 @@ d) MODULACIÓN DE CONFIANZA: Concluye el análisis con una valoración explícit
 ## 6. Marco Académico Teórico
 (Formulación conceptual del modelo. Comparación con otros modelos. Relación con teoría de difusión.)
 
-## 4.2. Recomendación a la Dirección
+## 7. Recomendación a la Dirección
 (Recomendación estratégica que INTEGRE el nivel de confianza del punto (d): si la proyección es INDICATIVA o TENTATIVA, la recomendación debe reflejar cautela. Sin cifras específicas.)
 
 Si la empresa es privada (no publica usuarios oficiales), incluye al inicio del Resumen Ejecutivo:
@@ -289,57 +298,55 @@ Si la empresa es privada (no publica usuarios oficiales), incluye al inicio del 
             analysis += getattr(block, "text", "")
             
     # Tablas determinísticas
-    hist_table = "## 2. Datos Históricos\n\n| Año | Adopción (M) |\n|---|---|\n"
+    hist_table = "| Año | Adopción (M) |\n|---|---|\n"
     for a, v in sorted(real_series.items()):
         hist_table += f"| {a} | {v:.2f} M |\n"
         
-    metrics_table = "## 3. Métricas\n\n| Modelo | R² | MAPE | Score | k |\n|---|---|---|---|---|\n"
+    deviation_table = build_deviation_table(params, real_series, model_labels)
+    sources_table = build_sources_table(df_hist, tech)
+        
+    metrics_table = "## 3bis. Métricas\n\n| Modelo | R² | MAPE | Score | k |\n|---|---|---|---|---|\n"
     for mk, p in params.items():
         name = model_labels.get(mk, mk)
         metrics_table += f"| {name} | {float(p.get('r_cuadrado',0)):.4f} | {float(p.get('mape_ajuste',0)):.2f}% | {float(p.get('score',0)):.2f} | {p.get('n_params', '?')} |\n"
         
-    proj_table = f"## 4. Proyecciones\n\n| Año | {recommended_model_name} (M) |\n|---|---|\n"
-    for i, year in enumerate(range(last_year + 1, last_year + 11)):
-        proj_table += f"| {year} | {float(y_proj[i]):.2f} M |\n"
+    all_projections_table = build_all_projections_table(params, real_series, model_labels)
+    scenarios_table = build_scenarios_table(params, real_series, model_labels)
+    formulations_section = build_formulations_section()
         
-    datos_oficiales = f"**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado ({recommended_model_name}): R²={float(recommended_params.get('r_cuadrado',0)):.4f}, MAPE={float(recommended_params.get('mape_ajuste',0)):.2f}%, Score={float(recommended_params.get('score',0)):.2f}."
+    r2 = float(recommended_params.get('r_cuadrado',0))
+    mape = float(recommended_params.get('mape_ajuste',0))
+    score = float(recommended_params.get('score',0))
     
-    formulations = """* **Bass Clásico (1969)** — Modelo de Bass Clásico:
-  x(t) = m * (1 - exp(-(p + q) * t)) / (1 + (q / p) * exp(-(p + q) * t))
+    report = f"""# Informe de Adopción: {tech}
 
-* **Dual Market (Roset & Canals, 2011)** — Modelo de Dos Mercados Independientes:
-  x(t) = x1(t) + x2(t), donde x1 y x2 son modelos clásicos de Bass independientes:
-  xi(t) = mi * (1 - exp(-(pi + qi) * t)) / (1 + (qi / pi) * exp(-(pi + qi) * t))
+{analysis}
 
-* **Fourt & Woodlock (1960)** — Modelo de Innovación Pura:
-  N(t) = m * (1 - exp(-p * t))
+## 2. Datos Históricos y Desviaciones
 
-* **Gompertz (1825)** — Modelo Asimétrico de Gompertz:
-  N(t) = m * exp(-exp(-k * (t - t0)))
+### 2.1 Serie Histórica Real
+{hist_table}
 
-* **Bass Generalizado (GBM) (1994)** — Modelo de Bass Generalizado:
-  dN/dt = (p + (q / m) * N(t)) * (m - N(t)) * (1 + beta * t)
+### 2.2 Desviaciones por Modelo (Ajuste Histórico)
+{deviation_table}
 
-* **Horsky & Simon (1983)** — Modelo con Publicidad:
-  dN/dt = (p0 + alpha * ln(1 + t) + (q / m) * N(t)) * (m - N(t))
+### 2.3 Fuentes de Datos
+{sources_table}
 
-* **Muller & Yogev (2006)** — Modelo del Efecto Saddle:
-  I(t) = Ni * (1 - exp(-(pi + qi) * t)) / (1 + (qi / pi) * exp(-(pi + qi) * t))
-  dM/dt = (pm + qm * M(t) / (Ni + Nm) + qim * I(t) / (Ni + Nm)) * (Nm - M(t))
+{metrics_table}
 
-* **Van den Bulte & Joshi (2007)** — Modelo de Influenciadores e Imitadores:
-  F1(t) = (1 - exp(-(p1 + q1) * t)) / (1 + (q1 / p1) * exp(-(p1 + q1) * t))
-  dF2/dt = q2 * (w * F1(t) + (1 - w) * F2(t)) * (1 - F2(t))
-  N(t) = M1 * F1(t) + M2 * F2(t)
+## 4. Proyecciones
 
-* **Difusión Logística R&K (Ryu & Kim)** — Modelo Logístico de Difusión-Convergencia:
-  L(t) = b1 / (1 + ((b1 - b0) / b0) * exp(-k2 * (t - t0)))
+### 4.1 Proyecciones de Todos los Modelos
+{all_projections_table}
 
-* **Ladrón-de-Guevara & Putsis (2011)** — Modelo de Mercado Potencial Dinámico y Endógeno:
-  C(t) = 1.0 - theta * exp(-gamma * N(t) / S), donde M(t) = C(t) * S y la difusión es:
-  dN/dt = (alpha + beta * (N / M)) * (M - N)"""
-    
-    report = f"# Informe de Adopción: {tech}\n\n{analysis}\n\n{hist_table}\n\n{metrics_table}\n\n{proj_table}\n\n{datos_oficiales}\n\n### 📐 Formulación Matemática de los Modelos Evaluados\n\n{formulations}\n"
+### 4.2 Escenarios de Consenso
+{scenarios_table}
+
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado ({recommended_model_name}): R²={r2:.4f}, MAPE de ajuste={mape:.2f}%, Score={score:.2f}.
+
+{formulations_section}
+"""
     
     report_file = f"informe_global_{tech}.md"
     with open(report_file, "w", encoding="utf-8") as f:
