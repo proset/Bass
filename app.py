@@ -15,7 +15,6 @@ from data.ingestion import (
 from data.sources import descargar_dataset_owid
 from ai.analysis import generar_analisis_cualitativo_solo, obtener_datos_y_analisis_ia, generar_consenso_pronostico_ia
 from models.fit_models import fit_all_models
-from models.fit_models import fit_all_models
 from ui.tab_projections import render_tab_projections
 # from ui.tab_market import render_tab_market
 # from ui.tab_scientific import render_tab_scientific
