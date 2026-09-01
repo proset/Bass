@@ -1,44 +1,110 @@
-ETADO DEL PROYECTO BASS/GLM — 24/08/2026 (CIERRE CHATGPT COMPLETADO)
-🎯 HITO: CHATGPT CERRADO AL 100%
-Primera corrida limpia de punta a punta en la historia del proyecto: GATE:True en 2 iteraciones, 0 blockers en Gemini Y Claude, y checklist de artefacto 7/7 (tablas intactas, §1 intacta, sin 400.00 M, sin 123.50, nota H presente, [ver tabla] solo en prosa narrativa). Logrado tras 8 corridas fallidas, 13 fixes con causa raíz identificada, y 1 reforma arquitectónica.
+ESTADO DEL PROYECTO BASS/GLM — 31/08/2026 (FINAL — BASS v2.2 production-ready)
 
-LA REFORMA ARQUITECTÓNICA (el aprendizaje central del proyecto)
-"Narrativa sin cifras": el LLM escribe lenguaje; el código escribe hechos.
+RESUMEN EJECUTIVO
+BASS v2.2 está COMPLETO y VALIDADO. Sistema one-command que genera informes de adopción tecnológica con análisis de calidad consultoría senior, por $0.06/tech en ~5 minutos. Pipeline + frontend + BD limpios y sincronizados. Proyecto cerrado.
 
-Prohibido escribir cifras de adopción (número + M/millones) en prosa narrativa — regla 0 en generador (analysis.py) y los 3 correctores (report_compiler).
-Las cifras viven SOLO en: tablas deterministas, bullets "AÑO: valor" canonizados, y §1 (análisis cualitativo de BD, texto auditado, exento por diseño).
-Stripper determinista v3 (strip_numeric_prose): línea a línea, exime tablas/bullets/§1/notas, no consume saltos; fuga de cifra → [ver tabla].
-Canonización por VALOR (fix_bullet_values): todo bullet histórico con valor ≠ serie se reescribe con el valor real.
-Check determinista cifra_en_prosa (report_validator): cifra en prosa = BLOCKER — la corrección ya no depende del humor del revisor LLM.
-Revisor: categoría 6 ELIMINADA + NOTA DE DISEÑO en rubric (la ausencia de cifras ES el diseño; los pesos del score son parámetros, no métricas).
-Por qué: análisis forense de 8 corridas mostró que el 100% de los blockers persistentes eran LLMs/taps/compitiendo por teclear números (transcripción, no razonamiento). Cada fix desplazaba el error; la arquitectura lo elimina por clase. Las métricas del modelo nunca estuvieron en duda — el motor GLM es 100% determinista y quedó intocado.
+ARQUITECTURA (DEFINITIVA — 3 roles)
+Gemini: BUSCADOR      ($0.02) — extracción de datos via Google Search Grounding
+GLM:    MATEMÁTICO    ($0.00) — fit de 10 modelos con curve_fit (Python, determinista)
+Claude: ESCRITOR-ANALISTA ($0.04) — claude-sonnet-4-6, temperature=0, 1 llamada
+Pipeline: python generate_report_v2.py <tech> → informe completo + validación.
 
-COMPLETADO (commiteado y pusheado)
-Cierre chatgpt: corrida final GATE:True iter 2 + backends 0 blockers + greps de artefacto 7/7 + commit de cierre.
-Fixes 1-10 (sesión 22-23/08): nota "prácticamente idénticas" · canonical block en generador · force_consenso · canonical block dinámico con fallback no-vacío · rangos de años dinámicos en correctores · regla 2 generador → score compuesto · Score visible para el revisor (ModelFit.score) · taps deterministas · año propio en consenso_inconsistente · años clave dinámicos (+5/+10) en year_value_swap · regla ALCANCE MÍNIMO del corrector.
-Fix 11-13 + reforma: stripper v2→v3 (lección: v1 destruyó tablas — GATE:True ≠ informe intacto) · pesos del score fuera de prosa · cat-6 eliminada · Fix 13a: check_recommendation_vs_mape desactivado — el blocker "inmortal" de 3 diagnósticos era un CHECK DETERMINISTA zombi (~25 falsos positivos), no el LLM · Fix 13b: canonización de bullets por valor.
-Fix 9 (pat_rev/pat_paren) DESACTIVADO por vandalismo: los patrones año-antes-del-valor machacaban valores de años futuros ("700→700 en 2030"). Quedan comentados; el forward original sigue activo y vigente.
-PENDIENTE INMEDIATO — ARRANQUE DEL BARRIDO
-Write-back del metadata (deuda obligatoria pre-barrido): last_hist_year queda en 2026 tras regenerar (debería ser 2025) → R2.5 dispara en cada corrida; hoy lo tapa force_consenso. Fix: escribir el metadata correcto tras regenerar consenso.
-Netflix (primera del barrido, fuentes más auditables): auditoría de fuentes con plantilla del 21/08 (procedimiento chatgpt) → python persist_fit.py "netflix" → python -c "from data.report_compiler import compilar_informe_global; compilar_informe_global('netflix')" → greps de artefacto como checklist pre-commit ESTÁNDAR (adaptar los 7 de chatgpt a los valores de la serie: tablas intactas / bullet canonizado / sin cifras en prosa / [ver tabla] solo narrativo).
-Spotify, luego las 4 restantes (anthropic, inteligencia artificial, meta quest, vr devices).
-Nota: sin force_consenso tras arreglar el write-back — R2.5 auto-dispara al agregar años.
-ROADMAP POSTERIOR
-Consolidación Bass→GLM: fósiles (grep proyecto-wide 2031|2036), adc.py/generate_and_validate.py muertos, _label_map Dual Market, fallback_consenso (R² ajeno + "7 modelos").
-Fase 6: PROVIDERS dict → google.generativeai DEPRECADO (FutureWarning en cada corrida) → cliente OpenAI-compatible.
-Endurecimientos opcionales: guardia do-no-harm del corrector (snapshot + revert si empeoran checks) · check redondeo pedante (198.5 vs 198.6) · Fase 2 de la reforma (plantillas {{VALOR}} — LLM escribe prosa, código rellena cifras: para cuando el SaaS pida prosa con look cuantitativo).
-Duplicados de catálogo (chatgpt/chatgpi, iphone/smartphone, tablets×4) — limpieza para el SaaS.
-PROTOCOLO (acumulado)
-Commit ANTES de cada parche; Select-String DESPUÉS; Antigravity propone, el usuario aplica y re-verifica en su propio PowerShell (el reporte de Antigravity no es verificación).
-NUEVA REGLA — greps de artefacto ANTES de todo commit de cierre: GATE:True no garantiza informe intacto (lección del commit prematuro con tablas destruidas). Checklist: tablas con valores reales / bullets canonizados / sin cifras en prosa / [ver tabla] solo narrativo.
-Diseño de regex contra la frase REAL en disco, nunca de hipótesis (lecciones: pat_rev vandalizó por ventana laxa; stripper v1 destruyó tablas por \s*).
-Antes de culpar al LLM, verificar qué es determinista: el blocker más inmortal del proyecto era un check en código. Diagnóstico de recurrencia: si un blocker es VERBATIM idéntico corrida tras corrida → grep su slug en report_validator.py.
-f-strings verificados en toda inserción {var} · años hardcodeados prohibidos (derivar de la serie) · git destructivo prohibido · LLM nunca entra a historical_adoption sin is_estimate=true · Python se edita en archivo, nunca en PowerShell · sin &&.
-CLAVES TÉCNICAS RÁPIDAS
-t=0 en primer año (np.arange(len(df))) · quirk VdB_Joshi (w→param_p2, q→param_q2; rebuild_popt) · score = r2×70 + (100-mape_fit)×0.15 + (100-mape_bt)×0.15 − 12×max(0, k−(n−1)).
-Arquitectura de capas: motor GLM (determinista) → tablas/canonical block (deterministas) → prosa LLM (sin cifras) → stripper + taps (deterministas) → validador (checks deterministas + revisor semántico con nota de diseño) → gate.
-Doble tap actual = ceiling + fix_projection_increments + fix_historical_increments (forward) + fix_bullet_values + strip_numeric_prose (pat_rev/pat_paren desactivados).
-compilar_informe_global(tech, force_consenso=False) — force para regenerar consenso a demanda.
-Anclas dinámicas: +5/+10 desde último año real (2030/2035 para chatgpt).
-Checks desactivados: check_recommendation_vs_mape (zombi). Checks nuevos: cifra_en_prose.
-Tests: python test_backends.py gemini|claude (raíz de Bass).
+LO QUE HAY AHORA
+BD (limpiada 31/08 — 1.280 filas de basura eliminadas, backup JSON commiteado)
+Tech	Puntos	Modelos	Nota
+anthropic	11	10	Privada, anchors MAU (8/72/182M)
+electric vehicles	11	10	Dual_Market R²=0.9997
+instagram	15	10	R&K R²=0.9973, OPERATIVA
+tesla	11	10	R&K R²=0.9999, escenarios 12.5-22.7M
+zoom	11	10	GBM R²=0.9834 (spike COVID)
+Backup completo en backup_historical_adoption.json (commiteado). Las 15+ techs v1 (Netflix, Spotify, etc.) se restauran desde ahí si se necesitan.
+
+Pipeline (generate_report_v2.py)
+[1/3] Gemini Flash + Grounding ($0.02) → datos + custom_anchors.json + contexto de mercado
+[2/3] GLM persist_fit.py ($0.00) → 10 modelos, determinista, backtest (anti-sobreajuste)
+[3/3] Claude claude-sonnet-4-6 temp=0 ($0.04) → análisis + 4 validaciones
+Python ensambla: 6 tablas determinísticas + escenarios + formulaciones
+
+Informe generado (estructura completa)
+Sección	Genera	Contenido
+§1 Resumen Ejecutivo	Claude	+ confianza ALTA/MEDIA/BAJA + NOTA FUENTE si privada
+§3 Análisis de Mercado	Claude	drivers, competidores, barreras, tendencias (contexto Gemini + conocimiento)
+§5 Validación Estadística	Claude	4 validaciones: AIC-sobreajuste, colapso paramétrico, contraste externo (IEA/Gartner), confianza OPERATIVA/INDICATIVA/TENTATIVA
+§6 Marco Académico	Claude	Rogers aplicado al caso
+§7 Recomendación	Claude	integrada al nivel de confianza
+§2.1 Serie Histórica	Python	determinista
+§2.2 Desviaciones por Modelo	Python	todos vs real
+§2.3 Fuentes	Python	data lineage real/estimado
+§3bis Métricas	Python	R²/MAPE/Score/k todos
+§4.1 Proyecciones Todos	Python	10 modelos × 2026-2035
+§4.2 Escenarios	Python	Conservador/Base/Optimista
+📐 Formulaciones	Python	MODEL_EQUATIONS + MODEL_YEARS by id
+
+Frontend (Streamlit — 3 pestañas)
+📈 Proyecciones: gráfico consenso (mejor Score de BD) + histórico + proyección dashed hasta 2035 + zona sombreada. Multiselect 10 modelos, consenso SIEMPRE visible. Verificado con Tesla.
+📊 Comparativa: multi-tech (tab_benchmarking adaptada a v2).
+📄 Informe Global: renderiza informe_global_{tech}.md.
+Sidebar: 🤖 Carga Inteligente (subprocess v2, spinner 5min, rerun/error) + CSV + Edición manual + Eliminar (todo conservado).
+Ocultadas (comentadas, no borradas): tab_market, tab_scientific, tab_rag, tab_report.
+
+Validación
+python test_backends.py claude <tech>   → ESTÁNDAR (0/5 corridas con blockers en v2.x)
+python test_backends.py gemini <tech>   → secundario (FPs semánticos conocidos, documentar)
+Validación independiente (Claude replicó el fit "al decimal"): matemática correcta y reproducible. ✓
+
+HISTORIA DEL PROYECTO (aprendizajes)
+Fase	Fechas	Resultado
+BASS v1 (Groq loop)	25-28/08	20+ fixes, 70% fiabilidad, whack-a-mole — REEMPLAZADO
+Experimentos	29-30/08	Claude-todo: no reproducible (m=850↔1250). Claude-ext: N/A pre-lanzamiento, sin temp=0 en sonnet-5 — DESCARTADOS
+BASS v2	30/08	Arquitectura 3 roles, validada (Anthropic, EV, Zoom)
+v2.1	31/08	Claude-analista senior (4 validaciones en prompt) — FPs eliminados por auto-documentación
+v2.2	31/08	Informes completos (6 tablas + mercado + escenarios) + frontend + limpieza BD
+
+Lecciones críticas (10)
+1. LLM correcto por rol: buscar ≠ calcular ≠ escribir. Gemini busca, Python calcula, Claude escribe.
+2. Groq era determinista pero incorrecto — 20+ fixes compensaban sus limitaciones. Claude es determinista Y correcto: 0 fixes.
+3. El fit SIEMPRE en Python (curve_fit), nunca en LLM — Claude-todo falló por matemática no reproducible.
+4. Privadas sin datos: SimilarWeb es JavaScript → ningún buscador lo indexa → custom_anchors.json (usuario pone MAU verificado).
+5. claude-sonnet-4-6 soporta temp=0; sonnet-5 no. Modelo correcto para determinismo.
+6. El prompt correcto convierte a Claude en analista senior: 4 validaciones espontáneas, sin código extra.
+7. El informe que documenta sus limitaciones elimina sus propios FPs (colapso explicado → reviewer no lo flaggea).
+8. Score con backtest penaliza sobreajuste implícitamente (R²=1.0 + MAPE_bt=1209% = último).
+9. Escenarios > cifra única: el rango Conservador/Optimista ES la información.
+10. Whack-a-mole = arquitectura mal: si cada fix crea un problema nuevo, rediseñar, no parchear.
+
+COMPONENTES CLAVE
+generate_report_v2.py — pipeline one-command (v2.2)
+models/analytical_projections.py — proyecciones (5 analíticas + RK4+NaN handling)
+custom_anchors.json — anchors verificados (usuario edita JSON, no Python)
+data/loaders.py — zero-filter guard (min 5 pts)
+persist_fit.py (GLM) — TECH required (fail loud)
+backup_historical_adoption.json — backup completo pre-limpieza
+
+FIXES VIGENTES vs ELIMINADOS
+Vigentes: 23 (MODEL_EQUATIONS), 26 (MODEL_YEARS by id), 29 (DELETE antes INSERT), 30b/30c (jerarquía + anchors JSON), zero-filter guard (ex-31), 35 (Grounding sin JSON mode), 36 (precisión .2f).
+Eliminados (compensaban Groq-loop): 20/22, 24a/24b, 25, 27/28, 33/33b, 34, 37, 38/38b.
+
+PROTOCOLO (vigente)
+Commit ANTES de parche · Select-String DESPUÉS · Antigravity propone, usuario aplica y re-verifica EN SU PowerShell · py_compile tras editar · años hardcodeados prohibidos · git destructivo prohibido · Python se edita en archivo, nunca en PowerShell · sin && · Antigravity NO cambia modelo/config sin aprobación · extracción guarda ambos outputs · limpiar pycache tras code changes · API keys SOLO en env vars (nunca hardcodeadas) · consenso = Score BD, nunca texto LLM · Claude backend = estándar · GATEs: diffs + py_compile antes de correr.
+
+BACKLOG (opcional — NO bloquea producción)
+Regenerar techs v1 desde backup (python generate_report_v2.py <tech>)
+Modo "solo análisis" (saltar extracción si ya hay ≥5 pts)
+Borrar archivos muertos de vistas ocultas (grep imports primero, cuando estable)
+Batch mode (lista de techs → loop)
+SimilarWeb API pagada ($100+/mes) — eliminaría anchors manuales
+Docker/deploy Streamlit
+Verificar git push final
+
+COMANDOS BÁSICOS
+Pipeline:        python generate_report_v2.py <tech>
+Validación:      python test_backends.py claude <tech>
+Frontend:        python -m streamlit run app.py
+Fit manual:      cd C:\Users\roset\GLM && python persist_fit.py <tech>
+Anchors:         editar custom_anchors.json (raíz de BASS)
+Backup BD:       backup_historical_adoption.json (en git)
+
+CIERRE
+De un sistema con 20+ fixes que fallaba cada tech nueva → BASS v2.2: $0.06/tech, 5 minutos, análisis de consultoría senior, validación estadística integrada, escenarios, data lineage, frontend interactivo, BD limpida con backup.
+
+Proyecto cerrado. La lección más valiosa (punto 10): "si cada fix crea un problema nuevo, la arquitectura está mal — rediseñar, no parchear."
