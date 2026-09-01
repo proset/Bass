@@ -4,48 +4,16 @@ import pandas as pd
 import plotly.graph_objects as go
 import logging
 import google.ai.generativelanguage_v1beta as gapic
-from data.loaders import load_historical_data, load_model_parameters, load_consenso_forecast
+from data.loaders import load_historical_data, load_model_parameters
 from models.fit_models import fit_all_models, rank_and_select_best_model
 from ai.gemini_client import generate_content_with_fallback
-from models.rk4_solver import (
-    bass_classic,
-    dual_market_bass,
-    fourt_woodlock_model,
-    gompertz_model,
-    generalized_bass_model,
-    horsky_simon_model,
-    muller_yogev_model,
-    vdb_joshi_model,
-    logistic_diffusion_convergence,
-    ladron_puts_model
-)
-from ui.tab_projections import reconstruct_popt, extract_consensus_anchor_points, build_consensus_curve_from_anchors, compute_weighted_consensus_projection
+from models.analytical_projections import project_model
+from ui.tab_projections import get_consensus_model
 from ui.theme import apply_dark_theme, BRAND_COLORS, dark_table_html
 
 logger = logging.getLogger("BassTabBenchmarking")
 
-def get_model_function(m_key):
-    if m_key == "Bass_Clasico":
-        return bass_classic
-    elif m_key == "Dual_Market":
-        return dual_market_bass
-    elif m_key == "Fourt_Woodlock":
-        return fourt_woodlock_model
-    elif m_key == "Gompertz":
-        return gompertz_model
-    elif m_key == "Generalized_Bass":
-        return generalized_bass_model
-    elif m_key == "Horsky_Simon":
-        return horsky_simon_model
-    elif m_key == "Muller_Yogev":
-        return muller_yogev_model
-    elif m_key == "VdB_Joshi":
-        return vdb_joshi_model
-    elif m_key == "Logistic_Diffusion_Convergence":
-        return logistic_diffusion_convergence
-    elif m_key == "Ladron_Putsis":
-        return ladron_puts_model
-    return None
+
 
 @st.cache_data(ttl=3600)
 def get_fitted_models_cached(tech, df_hist):
@@ -102,7 +70,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
     st.markdown("#### 🔬 Configuración del Modelo de Previsión")
     modo_modelo = st.radio(
         "Elige el método de asignación de modelos de proyección:",
-        ["Consenso IA (Proyección anclada al informe)", "Modelo Ganador Estadístico (Automático)", "Modelo Común (Global para todas)", "Personalizado por Marca / Tecnología"],
+        ["Modelo de Consenso (Mejor Score BD)", "Modelo Ganador Estadístico (Automático)", "Modelo Común (Global para todas)", "Personalizado por Marca / Tecnología"],
         horizontal=True,
         key="bench_model_mode"
     )
@@ -172,56 +140,12 @@ def render_tab_benchmarking(tecnologias_disponibles):
         t_proj = np.arange(len(df_hist) + horizon_years)
         anios_proj_full = [int(primer_anio + i) for i in t_proj]
 
-        # Lógica para Consenso IA
-        if modo_modelo == "Consenso IA (Proyección anclada al informe)":
-            consensus_text = load_consenso_forecast(tech)
-            last_hist_year = int(df_hist["anio"].iloc[-1])
-            last_hist_val = float(df_hist["adopcion_acumulada"].iloc[-1])
-            consensus_anchors = [a for a in (extract_consensus_anchor_points(consensus_text) if consensus_text else []) if a['year'] > last_hist_year]
-
-            anios_fut_c, y_low_c, y_mid_c, y_high_c = build_consensus_curve_from_anchors(
-                consensus_anchors, last_hist_year, last_hist_val, anios_proj_full
-            )
-
-            if anios_fut_c is not None:
-                # Merge historical and consensus future
-                hist_years = list(df_hist["anio"].values[:-1])
-                hist_vals = list(df_hist["adopcion_acumulada"].values[:-1])
-                
-                anios_proj_c = hist_years + list(anios_fut_c)
-                y_proj_c = hist_vals + list(y_mid_c)
-                
-                brand_data[tech] = {
-                    "anios_reales": list(anios_reales),
-                    "reales": list(df_hist["adopcion_acumulada"].values),
-                    "anios_proj": anios_proj_c,
-                    "proj": y_proj_c,
-                    "modelo_usado": "Consenso IA",
-                    "params": params
-                }
-                for y in anios_reales: years_union.add(int(y))
-                for y in anios_proj_c: years_all_proj.add(int(y))
-                continue
-            else:
-                # Fallback a media matemática
-                best_key, ranked_list = rank_and_select_best_model(params)
-                if ranked_list:
-                    y_consenso = compute_weighted_consensus_projection(params, t_proj, ranked_list)
-                    if y_consenso is not None:
-                        brand_data[tech] = {
-                            "anios_reales": list(anios_reales),
-                            "reales": list(df_hist["adopcion_acumulada"].values),
-                            "anios_proj": anios_proj_full,
-                            "proj": list(y_consenso),
-                            "modelo_usado": "Consenso Matemático",
-                            "params": params
-                        }
-                        for y in anios_reales: years_union.add(int(y))
-                        for y in anios_proj_full: years_all_proj.add(int(y))
-                        continue
-
-        # Determinar qué modelo usar (si no es consenso)
-        if modo_modelo == "Modelo Ganador Estadístico (Automático)" or modo_modelo == "Consenso IA (Proyección anclada al informe)":
+        # Determinar qué modelo usar
+        if modo_modelo == "Modelo de Consenso (Mejor Score BD)":
+            m_key, _ = get_consensus_model(tech)
+            if not m_key:
+                m_key = "Bass_Clasico"
+        elif modo_modelo == "Modelo Ganador Estadístico (Automático)":
             m_key, _ = rank_and_select_best_model(params)
             if not m_key:
                 m_key = "Bass_Clasico"
@@ -230,20 +154,11 @@ def render_tab_benchmarking(tecnologias_disponibles):
         else:
             m_key = custom_models.get(tech, "Bass_Clasico")
 
-        # Recuperar coeficientes del modelo
+        # Recuperar parámetros y calcular proyección
         p = params.get(m_key, {})
-        popt = p.get("popt")
-        if popt is None:
-            popt = reconstruct_popt(m_key, p)
-            
-        if popt is None:
-            continue
-
-        model_func = get_model_function(m_key)
-        if not model_func:
-            continue
-
-        y_proj = model_func(t_proj, *popt)
+        
+        y_proj = project_model(m_key, p, t_proj)
+        y_proj = np.maximum(y_proj, df_hist["adopcion_acumulada"].iloc[-1])
         
         # Guardar en diccionario estructurado
         brand_data[tech] = {
