@@ -47,15 +47,16 @@ def project_logistic_convergence(b1, b0, k2, t0, t_array):
 def project_gbm(p, q, m, beta, t_array):
     """
     GBM: Bass con factor (1 + beta*t).
-    Solución aproximada: N(t) ≈ N_bass(t) * (1 + beta*t / (1 + beta*t_max))
+    Solución analítica exacta: N(t) = N_bass(tau(t))
+    donde tau(t) = t + (beta/2) * t^2.
     Si beta=0 → Bass estándar.
     """
-    n_bass = project_bass(p, q, m, t_array)
     if beta == 0:
-        return n_bass
-    # Factor de crecimiento adicional (aproximación estable)
-    factor = 1 + beta * t_array / (1 + abs(beta) * t_array[-1])
-    return n_bass * factor
+        return project_bass(p, q, m, t_array)
+    
+    # Transformación del tiempo exacta para x(t) = 1 + beta*t
+    tau = t_array + (beta / 2.0) * (t_array ** 2)
+    return project_bass(p, q, m, tau)
 
 def project_horsky_simon(p0, alpha, q, m, t_array):
     """
