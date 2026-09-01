@@ -15,12 +15,25 @@ from data.ingestion import (
 from data.sources import descargar_dataset_owid
 from ai.analysis import generar_analisis_cualitativo_solo, obtener_datos_y_analisis_ia, generar_consenso_pronostico_ia
 from models.fit_models import fit_all_models
+from models.fit_models import fit_all_models
 from ui.tab_projections import render_tab_projections
-from ui.tab_market import render_tab_market
-from ui.tab_scientific import render_tab_scientific
-from ui.tab_rag import render_tab_rag
+# from ui.tab_market import render_tab_market
+# from ui.tab_scientific import render_tab_scientific
+# from ui.tab_rag import render_tab_rag
 from ui.tab_benchmarking import render_tab_benchmarking
-from ui.tab_report import render_tab_report
+# from ui.tab_report import render_tab_report
+import subprocess
+import os
+
+BASS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def render_tab_informe_global(tech):
+    informe_path = os.path.join(BASS_DIR, f"informe_global_{tech}.md")
+    if os.path.exists(informe_path):
+        with open(informe_path, encoding="utf-8") as f:
+            st.markdown(f.read())
+    else:
+        st.info(f"No hay informe generado para '{tech}'. Usa el botón 'Carga Inteligente con IA' para generarlo (~5 min, $0.06).")
 
 # Configurar logging básico para el servidor
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -148,7 +161,7 @@ with st.sidebar.form("nueva_tech_form"):
     )
     
     submit_btn = st.form_submit_button("Cargar Manual/CSV")
-    submit_statista = st.form_submit_button("🤖 Carga Inteligente con IA (Web)")
+    submit_statista = st.form_submit_button("🤖 Carga Inteligente con IA (pipeline v2)")
 
 # Mostrar diálogo de sugerencia si falló la carga geográfica local
 if "insufficient_local_data" in st.session_state:
@@ -302,89 +315,19 @@ if nueva_tech:
             st.session_state.update_count += 1
             st.rerun()
         else:
-            with st.status(f"Realizando carga inteligente con IA para '{nueva_tech}'...", expanded=True) as status:
-                status.update(label="🔍 Buscando reportes de Statista y estimaciones de mercado en la web...", state="running")
-                parsed_data, analisis_text = obtener_datos_y_analisis_ia(nueva_tech_norm)
-                
-                if parsed_data:
-                    status.update(label="💾 Ingestando datos de series de tiempo e informe cualitativo...", state="running")
-                    insertar_historico_db(nueva_tech_norm, parsed_data)
-                    if analisis_text:
-                        guardar_analisis_cualitativo(nueva_tech_norm, analisis_text)
-                        
-                    df_new = load_historical_data(nueva_tech_norm)
-                    t_data = np.arange(len(df_new))
-                    n_data = df_new["adopcion_acumulada"].values
-                    
-                    status.update(label="🔬 Ajustando los 7 modelos de difusión con resolvedores RK4...", state="running")
-                    fits = fit_all_models(t_data, n_data)
-                    if fits:
-                        guardar_parametros_db(nueva_tech_norm, fits)
-                        
-                        status.update(label="🔮 Sintetizando pronóstico de consenso RAG & IA...", state="running")
-                        new_params = load_model_parameters(nueva_tech_norm)
-                        if new_params and analisis_text:
-                            consenso_text = generar_consenso_pronostico_ia(nueva_tech_norm, df_new, new_params, analisis_text)
-                            if consenso_text:
-                                guardar_consenso_forecast(nueva_tech_norm, consenso_text)
-                        
-                        status.update(label="🧬 Compilando y auditando informe global (Fase 1 + Red-Team)...", state="running")
-                        try:
-                            from data.report_compiler import compilar_informe_global
-                            compilar_informe_global(nueva_tech_norm)
-                            
-                            status.update(label=f"🎉 ¡'{nueva_tech}' cargada y verificada como PUBLICABLE!", state="complete")
-                            st.session_state.force_tech = nueva_tech_norm
-                            st.session_state.update_count += 1
-                            st.cache_data.clear()
-                            st.rerun()
-                        except Exception as ex_comp:
-                            err_str = str(ex_comp)
-                            if "MATH-14" in err_str or "demogr" in err_str.lower():
-                                # Intentar estimación por valor como fallback de segundo nivel
-                                status.update(label="📉 Activando estimador de volumen por valor y precio local...", state="running")
-                                try:
-                                    from ai.analysis import estimar_datos_por_valor_y_precio
-                                    est_datos, est_analisis = estimar_datos_por_valor_y_precio(nueva_tech)
-                                    if est_datos:
-                                        status.update(label="💾 Guardando estimaciones por volumen en la base de datos...", state="running")
-                                        # Limpiar e insertar de nuevo
-                                        eliminar_tecnologia(nueva_tech_norm)
-                                        insertar_historico_db(nueva_tech_norm, est_datos)
-                                        if est_analisis:
-                                            guardar_analisis_cualitativo(nueva_tech_norm, est_analisis)
-                                        df_new = load_historical_data(nueva_tech_norm)
-                                        t_data = np.arange(len(df_new))
-                                        n_data = df_new["adopcion_acumulada"].values
-                                        fits = fit_all_models(t_data, n_data)
-                                        if fits:
-                                            guardar_parametros_db(nueva_tech_norm, fits)
-                                            new_params = load_model_parameters(nueva_tech_norm)
-                                            if new_params and est_analisis:
-                                                consenso_text = generar_consenso_pronostico_ia(nueva_tech_norm, df_new, new_params, est_analisis)
-                                                if consenso_text:
-                                                    guardar_consenso_forecast(nueva_tech_norm, consenso_text)
-                                            compilar_informe_global(nueva_tech_norm)
-                                            status.update(label=f"🎉 ¡'{nueva_tech}' estimada y verificada correctamente!", state="complete")
-                                            st.session_state.force_tech = nueva_tech_norm
-                                            st.session_state.update_count += 1
-                                            st.cache_data.clear()
-                                            st.rerun()
-                                except Exception as ex_est:
-                                    err_str = str(ex_est)
-                                
-                                # Si falla la estimación, ir a la sugerencia global
-                                st.session_state.insufficient_local_data = {
-                                    "tech_original": nueva_tech,
-                                    "tech_global": nueva_tech.lower().split(" en ")[0].split(" de ")[0].split(" para ")[0].strip().title()
-                                }
-                                st.rerun()
-                            status.update(label=f"❌ Error de validación: {ex_comp}", state="error")
-                            eliminar_tecnologia(nueva_tech_norm)
-                    else:
-                        status.update(label="❌ Fallo en el ajuste de curvas matemáticas.", state="error")
-                else:
-                    status.update(label="❌ No se pudieron recuperar datos realistas en la web para esta tecnología.", state="error")
+            with st.spinner("Pipeline BASS v2: Extracción (Gemini) → Ajuste (GLM) → Análisis (Claude)... ~5 minutos"):
+                result = subprocess.run(
+                    ["python", "generate_report_v2.py", nueva_tech_norm],
+                    cwd=BASS_DIR, capture_output=True, text=True, timeout=900
+                )
+            if result.returncode == 0:
+                st.success(f"✅ Informe de '{nueva_tech_norm}' generado. Recargando...")
+                st.session_state.force_tech = nueva_tech_norm
+                st.session_state.update_count += 1
+                st.cache_data.clear()
+                st.rerun()
+            else:
+                st.error(f"❌ Pipeline falló. Última salida:\n{result.stderr[-500:]}")
 
 # --- Importar desde Our World in Data ---
 st.sidebar.divider()
@@ -469,46 +412,48 @@ if mostrar_owid:
 # =======================================================
 # Navegación Principal de Pestañas (Tabs)
 # =======================================================
-import os
+# import os  # Already imported
+# report_file = f"informe_global_{tecnologia_seleccionada}.md"
+# if not os.path.exists(report_file):
+#     st.warning(f"⚠️ El informe global para '{tecnologia_seleccionada}' no está compilado o auditado en el sistema.")
+#     ...
+# else:
 
-report_file = f"informe_global_{tecnologia_seleccionada}.md"
-if not os.path.exists(report_file):
-    st.warning(f"⚠️ El informe global para '{tecnologia_seleccionada}' no está compilado o auditado en el sistema.")
-    st.info("Para visualizar los gráficos, proyecciones y análisis en el frontend, primero debes compilar y auditar el informe con el Red-Team hasta que pase los criterios de calidad.")
-    
-    if st.button("🧬 Compilar y Auditar Informe (Fase 1 + Red-Team)", type="primary", use_container_width=True):
-        with st.spinner("Compilando, validando y resolviendo incoherencias semánticas (esto puede tomar un momento)..."):
-            try:
-                from data.report_compiler import compilar_informe_global
-                compilar_informe_global(tecnologia_seleccionada)
-                st.success("¡Informe compilado, auditado y verificado como PUBLICABLE con éxito!")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Fallo al compilar y validar: {e}")
-else:
-    tab1, tab_bench, tab_market, tab2, tab3, tab_report = st.tabs([
-        "📈 Proyecciones de Adopción", 
-        "📊 Benchmarking Competitivo",
-        "📊 Análisis de Mercado", 
-        "🔬 Descubrimiento Científico", 
-        "🤖 Asistente RAG",
-        "📄 Informe Global"
-    ])
+tabs = st.tabs(["📈 Proyecciones de Adopción", "📊 Comparativa de Tecnologías", "📄 Informe Global"])
 
-    with tab1:
-        render_tab_projections(tecnologia_seleccionada)
+with tabs[0]:
+    render_tab_projections(tecnologia_seleccionada)
 
-    with tab_bench:
-        render_tab_benchmarking(tecnologias_disponibles)
+with tabs[1]:
+    # Use render_tab_benchmarking for comparative
+    render_tab_benchmarking(tecnologias_disponibles)
 
-    with tab_market:
-        render_tab_market(tecnologia_seleccionada)
+with tabs[2]:
+    render_tab_informe_global(tecnologia_seleccionada)
 
-    with tab2:
-        render_tab_scientific(tecnologia_seleccionada, tecnologias_disponibles)
-
-    with tab3:
-        render_tab_rag(tecnologia_seleccionada)
-
-    with tab_report:
-        render_tab_report(tecnologia_seleccionada)
+# tab1, tab_bench, tab_market, tab2, tab3, tab_report = st.tabs([
+#     "📈 Proyecciones de Adopción", 
+#     "📊 Benchmarking Competitivo",
+#     "📊 Análisis de Mercado", 
+#     "🔬 Descubrimiento Científico", 
+#     "🤖 Asistente RAG",
+#     "📄 Informe Global"
+# ])
+# 
+# with tab1:
+#     render_tab_projections(tecnologia_seleccionada)
+# 
+# with tab_bench:
+#     render_tab_benchmarking(tecnologias_disponibles)
+# 
+# with tab_market:
+#     render_tab_market(tecnologia_seleccionada)
+# 
+# with tab2:
+#     render_tab_scientific(tecnologia_seleccionada, tecnologias_disponibles)
+# 
+# with tab3:
+#     render_tab_rag(tecnologia_seleccionada)
+# 
+# with tab_report:
+#     render_tab_report(tecnologia_seleccionada)
