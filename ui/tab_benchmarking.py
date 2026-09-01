@@ -158,7 +158,11 @@ def render_tab_benchmarking(tecnologias_disponibles):
         p = params.get(m_key, {})
         
         y_proj = project_model(m_key, p, t_proj)
-        y_proj = np.maximum(y_proj, df_hist["adopcion_acumulada"].iloc[-1])
+        
+        # Monotonicidad solo a partir del último año histórico
+        idx_future = np.where(np.array(anios_proj_full) > anios_reales[-1])[0]
+        if len(idx_future) > 0:
+            y_proj[idx_future] = np.maximum(y_proj[idx_future], df_hist["adopcion_acumulada"].iloc[-1])
         
         # Guardar en diccionario estructurado
         brand_data[tech] = {

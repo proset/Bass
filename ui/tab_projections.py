@@ -131,7 +131,11 @@ def render_tab_projections(tecnologia_seleccionada):
             continue
             
         y_proj = project_model(m_key, params[m_key], t_proj)
-        y_proj = np.maximum(y_proj, last_hist_value)  # monotonicidad
+        
+        # Monotonicidad solo a partir del último año histórico
+        idx_future = np.where(np.array(anios_proj) > ultimo_anio)[0]
+        if len(idx_future) > 0:
+            y_proj[idx_future] = np.maximum(y_proj[idx_future], last_hist_value)
         
         color = color_palette.get(m_key, "#6B7280")
         is_consensus = (m_key == consensus_key)

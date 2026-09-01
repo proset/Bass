@@ -58,9 +58,11 @@ def build_all_projections_table(params, real_series, model_labels):
     import numpy as np
     
     years = sorted(real_series.keys())
+    first_year = years[0]
     last_year = years[-1]
-    t_proj = np.arange(len(years), len(years) + 10, dtype=float)
-    proj_years = list(range(last_year + 1, last_year + 11))
+    
+    t_proj = np.arange(len(years) + 10, dtype=float)
+    proj_years = list(range(first_year, last_year + 11))
     
     # Ordenar modelos por Score (mejor primero)
     sorted_models = sorted(params.items(), key=lambda x: -float(x[1].get("score", 0)))
@@ -76,9 +78,11 @@ def build_all_projections_table(params, real_series, model_labels):
     for mk, p in sorted_models:
         try:
             y_proj = project_model(mk, p, t_proj)
-            # Monotonicidad
+            # Monotonicidad solo en proyecciones futuras
             last_val = list(real_series.values())[-1]
-            y_proj = np.maximum(y_proj, last_val)
+            idx_future = np.where(np.array(proj_years) > last_year)[0]
+            if len(idx_future) > 0:
+                y_proj[idx_future] = np.maximum(y_proj[idx_future], last_val)
             projections[mk] = y_proj
         except Exception:
             projections[mk] = None
