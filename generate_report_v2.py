@@ -620,7 +620,7 @@ def main():
             for ano, val in correcciones.items():
                 if val is not None:
                     serie[int(ano)] = float(val)
-                    print(f"[verify] Corregido {ano}: → {val}M")
+                    print(f"[verify] Corregido {ano}: -> {val}M")
                     corrigio_algo = True
             
             if corrigio_algo:
