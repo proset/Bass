@@ -158,7 +158,9 @@ FORMATO (JSON):
   "correcciones": {{
     "año": {{"valor": X, "fuente": "...", "confianza": "alta|media|baja"}}
   }}
-}}"""
+}}
+IMPORTANTE: 'valor' DEBE ser estrictamente un NÚMERO (flotante) representando MILLONES de usuarios.
+Ejemplo: si son 300,000 usuarios, valor = 0.3. Si son 1,500 millones, valor = 1500.0. NO uses texto ni rangos en 'valor'."""
     
     try:
         respuesta = generate_content_with_fallback(prompt=prompt, tools=[{"google_search": {}}])
