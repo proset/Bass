@@ -53,6 +53,77 @@ def data_quality_gate(real_series):
     ok = len(sospechosos) == 0
     return ok, sorted(set(sospechosos)), motivos
 
+def claude_judge_data(tech, real_series, sospechosos, motivos):
+    """
+    Claude juez: evalúa la serie extraída contra su conocimiento del sector.
+    Detecta lo que las reglas no pueden: valores implausibles aunque
+    formalmente consistentes (grok 2024=0.04M pasa las reglas si no hay salto).
+    Retorna: (veredicto, años_sospechosos_claude, razonamiento)
+    veredicto: "CONFIABLE" | "SOSPECHOSO" | "INSERVIBLE"
+    """
+    import anthropic, os, json
+    
+    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+    
+    serie_str = "\n".join(f"  {y}: {v}M" for y, v in sorted(real_series.items()))
+    sospechosos_str = ", ".join(str(y) for y in sospechosos) if sospechosos else "ninguno detectado por reglas"
+    motivos_str = "; ".join(motivos) if motivos else "sin hallazgos deterministas"
+    
+    response = client.messages.create(
+        model="claude-3-5-sonnet-20240620",
+        max_tokens=2000,
+        temperature=0,
+        messages=[{
+            "role": "user",
+            "content": f"""Eres un verificador de datos de adopción tecnológica. Juzga la siguiente serie extraída de la web para '{tech}' contra TU CONOCIMIENTO del sector. NO busques en la web — usa lo que sabes.
+
+SERIE EXTRAÍDA (adopción acumulada en millones):
+{serie_str}
+
+HALLAZGOS DE REGLAS DETERMINISTAS:
+  Años sospechosos: {sospechosos_str}
+  Motivos: {motivos_str}
+
+EVALÚA cada año:
+1. ¿El valor es PLAUSIBLE para esta tecnología en ese año? (compara con lo que sabes del producto: lanzamiento, crecimiento, tamaño de mercado)
+2. ¿La MÉTRICA parece consistente entre años? (MAU vs visitas vs acumulado — un salto 8x puede indicar métricas mezcladas)
+3. ¿Faltan años con datos conocidos? (si el producto existía con usuarios y el valor es 0, es un error de extracción)
+
+CASOS DE REFERENCIA de errores reales que debes detectar:
+- Un valor casi-cero en un año donde el producto tenía millones de usuarios (ej: 0.04M) → error de extracción
+- Un salto enorme compatible con mezcla de métricas (ej: MAU anual → usuarios acumulados) → inconsistencia
+- Años con 0 cuando el producto ya estaba lanzado → dato faltante
+- Producto discontinuado → la serie no debería proyectarse
+
+RESPONDE EN ESTE FORMATO EXACTO (JSON):
+{{
+  "veredicto": "CONFIABLE" | "SOSPECHOSO" | "INSERVIBLE",
+  "anos_sospechosos": [lista de años con problemas],
+  "razon_por_ano": {{"año": "explicación breve del problema detectado"}},
+  "producto_muerto": true | false,
+  "razonamiento_general": "2-3 frases sobre la calidad global de la serie"
+}}
+
+CONFIABLE = datos defendibles, seguir al fit.
+SOSPECHOSO = hay años problemáticos que necesitan re-extracción o corrección.
+INSERVIBLE = la serie no sirve (producto muerto, métrica incoherente global, años imposibles) — no intentar corregir."""
+        }]
+    )
+    
+    text = response.content[0].text.strip()
+    
+    # Limpiar markdown wrapping si existe
+    if text.startswith("```"):
+        import re
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        
+    try:
+        result = json.loads(text)
+        return result.get("veredicto", "SOSPECHOSO"), result.get("anos_sospechosos", []), result
+    except json.JSONDecodeError:
+        return "SOSPECHOSO", sospechosos, {"error": "JSON parse falló", "raw": text[:500]}
+
 def log(step, msg): 
     print(f"[{step}] {msg}")
 
