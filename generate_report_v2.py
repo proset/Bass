@@ -621,17 +621,42 @@ def main():
             # Aplicar correcciones a la serie
             corrigio_algo = False
             max_original = max([v for v in serie.values() if v > 0] + [1.0])
-            for ano, val in correcciones.items():
-                if val is not None:
-                    val_str = str(val).replace('M', '').replace('m', '').replace(',', '').strip()
-                    val_flt = float(val_str)
-                    if val_flt > max_original * 1000:
-                        val_flt = val_flt / 1000000.0
-                    serie[int(ano)] = val_flt
-                    print(f"[verify] Corregido {ano}: -> {val_flt}M")
-                    corrigio_algo = True
+            serie_pre_correccion = serie.copy()
+            
+            correcciones_ordenadas = sorted([(int(a), v) for a, v in correcciones.items() if v is not None])
+            
+            for ano, val in correcciones_ordenadas:
+                val_str = str(val).replace('M', '').replace('m', '').replace(',', '').strip()
+                val_flt = float(val_str)
+                if val_flt > max_original * 1000:
+                    val_flt = val_flt / 1000000.0
+                
+                # FIX 2: Rechazar valores que rompan monotonía
+                prev_anos = [a for a in serie.keys() if a < ano and serie[a] > 0]
+                next_anos = [a for a in serie.keys() if a > ano and serie[a] > 0]
+                
+                prev_val = serie[max(prev_anos)] if prev_anos else 0.0
+                next_val = serie[min(next_anos)] if next_anos else float('inf')
+                
+                if val_flt < prev_val or val_flt > next_val:
+                    print(f"[verify] Corrección rechazada para {ano} ({val_flt}M): rompe monotonía (prev={prev_val}, next={next_val})")
+                    continue
+                    
+                serie[ano] = val_flt
+                print(f"[verify] Corregido {ano}: -> {val_flt}M")
+                corrigio_algo = True
             
             if corrigio_algo:
+                # FIX 1: Re-ejecutar gate y revertir si se rompieron invariantes
+                ok_post, sospechosos_post, motivos_post = data_quality_gate(serie)
+                if not ok_post:
+                    print(f"[verify] La serie corregida rompe invariantes del gate: {motivos_post}")
+                    # Revertimos solo los que intentamos corregir
+                    anos_intentados = [a for a, v in correcciones_ordenadas]
+                    for ano_sos in sospechosos_post:
+                        if ano_sos in anos_intentados:
+                            print(f"[verify] Revirtiendo {ano_sos} al valor original {serie_pre_correccion[ano_sos]}M")
+                            serie[ano_sos] = serie_pre_correccion[ano_sos]
                 non_zeros = sum(1 for v in serie.values() if v > 0.0)
                 if non_zeros < 4:
                     print(f"[verify] INSERVIBLE: solo {non_zeros} puntos válidos post-corrección")

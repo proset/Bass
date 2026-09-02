@@ -215,7 +215,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 x=data["anios_reales"],
                 y=data["reales"],
                 mode='markers',
-                name=f"{tech.title} (Histórico)",
+                name=f"{tech.title()} (Histórico)",
                 marker=dict(color=color, size=8, symbol='circle')
             ))
             
@@ -224,7 +224,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 x=data["anios_proj"],
                 y=data["proj"],
                 mode='lines',
-                name=f"{tech.title} ({model_labels[data['modelo_usado']]})",
+                name=f"{tech.title()} ({model_labels[data['modelo_usado']]})",
                 line=dict(color=color, width=2.5)
             ))
             

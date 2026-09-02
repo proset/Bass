@@ -6,121 +6,96 @@
 
 ## 1. Resumen Ejecutivo
 
-**NOTA DE FUENTE DE DATOS:** Perplexity AI no publica usuarios oficiales consolidados. Los datos utilizados son estimaciones derivadas de declaraciones del CEO, análisis de firmas especializadas y triangulación de métricas indirectas. Incertidumbre inherente: alta.
+**NOTA DE FUENTE DE DATOS:** Perplexity AI no publica usuarios oficiales de forma sistemática. Los datos empleados son estimaciones agregadas de fuentes secundarias y analistas del sector. Incertidumbre inherente: alta.
 
-Perplexity AI representa uno de los casos de adopción tecnológica más acelerados registrados en el segmento de IA conversacional. Desde su lanzamiento a finales de la primera mitad de la década, la plataforma ha transitado de la inexistencia comercial a convertirse en un actor de referencia en búsqueda aumentada con inteligencia artificial, alcanzando decenas de millones de usuarios activos mensuales en un período extraordinariamente comprimido.
+Perplexity AI representa uno de los casos de adopción más acelerados en la historia reciente del software de consumo basado en inteligencia artificial generativa. Partiendo de una base prácticamente inexistente, la plataforma ha experimentado un crecimiento explosivo en un período extraordinariamente corto, consolidándose como uno de los actores más relevantes en el segmento de búsqueda conversacional potenciada por IA.
 
-**Modelo seleccionado: Gompertz**
+**Modelo seleccionado: Gompertz.** El modelo Gompertz fue seleccionado como el más adecuado para describir la trayectoria de adopción de Perplexity, obteniendo la puntuación compuesta más alta entre todos los modelos evaluados. Su fortaleza reside en combinar un ajuste estadístico casi perfecto con un error de predicción muy reducido, lo que lo distingue claramente del resto de candidatos. A diferencia de los modelos que alcanzan ajustes similares en términos de bondad de ajuste pero con errores de predicción elevados, Gompertz logra un equilibrio robusto entre precisión y parsimonia relativa. Adicionalmente, la curva de Gompertz captura de forma natural la asimetría característica de las adopciones tecnológicas disruptivas: una fase inicial de despegue lento, seguida de aceleración pronunciada y una desaceleración gradual hacia la saturación, con la inflexión ocurriendo antes del punto medio de la curva —patrón coherente con lo observado en plataformas de IA generativa.
 
-El modelo Gompertz fue seleccionado como recomendado por su combinación superior de precisión de ajuste y parsimonia relativa frente a los modelos alternativos evaluados. Aunque varios modelos de mayor complejidad paramétrica lograron ajustes prácticamente perfectos sobre los datos históricos, el Gompertz alcanzó un error porcentual medio muy reducido con un número moderado de parámetros, obteniendo la puntuación compuesta más alta del conjunto evaluado. Su estructura asimétrica —que permite capturar despegues rápidos seguidos de una desaceleración gradual hacia la saturación— se alinea conceptualmente con el comportamiento observado en plataformas de IA conversacional que compiten en un mercado con un techo de adopción estructuralmente definido por la base de usuarios de internet global.
+**Fase de crecimiento actual:** Perplexity se encuentra en la fase de aceleración temprana-media de su curva de difusión. La adopción aún no ha alcanzado su punto de inflexión máximo en términos de velocidad de crecimiento, lo que implica que los próximos años concentrarán la mayor parte del crecimiento absoluto antes de que la curva comience a aplanarse progresivamente hacia la saturación proyectada.
 
-**Fase de crecimiento actual:** Perplexity se encuentra en la fase de crecimiento acelerado tardío, aproximándose al punto de inflexión donde la tasa de nuevas incorporaciones comienza a moderarse, aunque el volumen absoluto de nuevos usuarios sigue siendo elevado. La plataforma ha superado la masa crítica de adopción temprana y está penetrando segmentos de usuarios más generalistas.
-
-**Nivel de confianza de la proyección: MEDIO-BAJO**
-
-La confianza se ve limitada por tres factores concurrentes: (i) la base de datos históricos es muy reducida en número de puntos observados, lo que restringe la capacidad de cualquier modelo para generalizar con fiabilidad; (ii) los propios datos de entrada son estimaciones con incertidumbre moderada-alta, no cifras auditadas; y (iii) el mercado de IA conversacional está sujeto a disrupciones tecnológicas, regulatorias y competitivas de alta frecuencia que los modelos de difusión clásicos no pueden anticipar. Las proyecciones deben interpretarse como **indicativas de tendencia**, no como previsiones operativas de precisión.
+**Nivel de confianza de la proyección: MEDIA.**
+La justificación es doble. Por un lado, el modelo Gompertz ofrece un ajuste estadístico sólido y un error de predicción bajo, lo que otorga credibilidad técnica a las proyecciones. Por otro lado, la serie histórica disponible es muy corta —apenas cinco puntos anuales, de los cuales los dos primeros son nulos—, lo que limita estructuralmente la capacidad de cualquier modelo para capturar dinámicas de largo plazo con certeza. A esto se suma la naturaleza altamente volátil del mercado de IA generativa, donde disrupciones competitivas, cambios regulatorios o innovaciones tecnológicas pueden alterar radicalmente las trayectorias proyectadas. La confianza se eleva por encima de BAJA gracias a la coherencia del modelo con la teoría de difusión y la consistencia del ajuste, pero no alcanza el nivel ALTA por las limitaciones de datos y la incertidumbre sectorial.
 
 ---
 
 ## 3. Análisis del Mercado y Contexto Competitivo
 
-### Drivers de Adopción
+### Drivers de adopción
 
-La adopción de Perplexity AI está impulsada por una confluencia de factores tecnológicos, conductuales y de mercado que se refuerzan mutuamente.
+Perplexity AI se beneficia de un conjunto de factores impulsores que se refuerzan mutuamente. El más determinante es el **cambio de paradigma en la búsqueda de información**: los usuarios, especialmente los más jóvenes y los profesionales del conocimiento, están migrando desde el modelo tradicional de búsqueda por palabras clave hacia interfaces conversacionales que sintetizan respuestas directas con citas verificables. Perplexity ha sabido posicionarse en este espacio con una propuesta de valor diferenciada respecto a los grandes modelos de lenguaje generalistas: la combinación de respuestas generadas por IA con recuperación de información en tiempo real y atribución de fuentes.
 
-En el plano tecnológico, la propuesta de valor diferencial de Perplexity reside en su capacidad para sintetizar información en tiempo real con citas verificables, superando la limitación de los modelos de lenguaje estáticos y la fragmentación informativa de los motores de búsqueda tradicionales. La integración de múltiples modelos de lenguaje de frontera —incluyendo los de OpenAI, Anthropic y modelos propios— permite a la plataforma ofrecer respuestas de alta calidad sin depender de un único proveedor de infraestructura de IA.
+Otros factores impulsores relevantes incluyen la **democratización del acceso a modelos de lenguaje de frontera** —Perplexity integra múltiples modelos subyacentes, lo que reduce la fricción de adopción—, el creciente **escepticismo hacia los motores de búsqueda tradicionales** saturados de publicidad y contenido de baja calidad, y la expansión del segmento de usuarios dispuestos a pagar por herramientas de productividad cognitiva. La disponibilidad de una versión gratuita con capacidades sustanciales ha actuado como mecanismo de adquisición masiva de usuarios, mientras que el modelo freemium facilita la conversión hacia suscripciones de pago.
 
-El lanzamiento de productos como *Perplexity Pages* amplió el caso de uso hacia la creación de contenido estructurado, mientras que *Comet* y *Perplexity Computer* representan la transición hacia agentes de IA autónomos, un segmento de mayor valor percibido y mayor disposición a pagar. Esta evolución del producto amplía el mercado direccionable total de la compañía de forma significativa.
+El **efecto red de datos** también opera como driver: a mayor volumen de consultas, mayor capacidad de la plataforma para refinar sus respuestas y personalizar la experiencia, generando un ciclo virtuoso de mejora continua.
 
-En el plano conductual, existe una fatiga creciente entre usuarios avanzados con los motores de búsqueda tradicionales, saturados de publicidad y resultados de baja relevancia. Perplexity captura este descontento ofreciendo una experiencia de respuesta directa que reduce la fricción cognitiva del proceso de búsqueda. La adopción por parte de perfiles profesionales —investigadores, analistas, desarrolladores— ha generado un efecto de legitimación que facilita la expansión hacia segmentos más amplios.
+### Competidores clave y dinámica competitiva
 
-Las rondas de financiación sucesivas y la valoración creciente han actuado como señales de credibilidad institucional, acelerando tanto la adopción empresarial como las asociaciones estratégicas con fabricantes de dispositivos y operadores de telecomunicaciones.
+El entorno competitivo de Perplexity es extraordinariamente intenso y está protagonizado por actores con recursos muy superiores. **Google**, con su integración de IA generativa en el motor de búsqueda a través de AI Overviews y Gemini, representa la amenaza competitiva más significativa por su dominio estructural del mercado de búsqueda y su acceso privilegiado a datos de usuario. **Microsoft**, a través de la integración de Copilot en Bing y el ecosistema de Office, compite directamente en el segmento de búsqueda aumentada por IA. **OpenAI**, con ChatGPT y su función de búsqueda web integrada, ataca el mismo espacio de usuario con una marca de mayor reconocimiento global.
 
-### Competidores Clave y Dinámica Competitiva
+A nivel de nicho, competidores como **You.com**, **Brave Search** con Leo, y diversas startups de búsqueda semántica compiten por segmentos específicos de usuarios. La dinámica competitiva se caracteriza por una carrera de capacidades tecnológicas donde la velocidad de iteración del producto, la calidad de las respuestas y la confianza del usuario en la veracidad de la información son los ejes de diferenciación.
 
-El mercado de búsqueda aumentada con IA presenta una dinámica competitiva de alta intensidad con actores de naturaleza muy distinta.
+La posición de Perplexity es la de un *challenger* ágil frente a gigantes establecidos, con la ventaja de la especialización y la desventaja de la asimetría de recursos.
 
-**Google** representa la amenaza competitiva más significativa a largo plazo. Su integración de *AI Overviews* en la búsqueda tradicional le permite defender su posición dominante sin necesidad de que los usuarios cambien de plataforma. La ventaja de Google reside en su escala de datos, su infraestructura de distribución y su integración en el ecosistema Android. Sin embargo, su modelo de negocio basado en publicidad crea tensiones estructurales con la experiencia de respuesta directa que los usuarios de IA demandan.
+### Barreras de adopción
 
-**OpenAI** con *ChatGPT Search* y **Microsoft** con *Copilot* (integrado en Bing y el ecosistema Office) compiten directamente en el segmento de búsqueda conversacional. La ventaja de Microsoft es su capacidad de distribución empresarial a través de licencias existentes, mientras que OpenAI compite en calidad de modelo y reconocimiento de marca.
+Las principales barreras que frenan la adopción de Perplexity son de naturaleza diversa. La **confianza en la precisión de la información** es quizás la más crítica: los usuarios que dependen de información factual para decisiones profesionales o académicas son especialmente sensibles a los errores de alucinación o a las citas incorrectas, fenómenos que afectan a toda la categoría de IA generativa. La **inercia de comportamiento** hacia Google y otros motores establecidos representa una barrera psicológica y de hábito difícil de superar, especialmente en segmentos de mayor edad.
 
-**Anthropic** con *Claude* y actores emergentes como *You.com* o *Exa* representan competencia en nichos específicos, aunque con menor escala de distribución.
+La **monetización y sostenibilidad del modelo de negocio** constituye una barrera indirecta: la incertidumbre sobre la viabilidad financiera a largo plazo de la empresa puede generar reticencias en usuarios corporativos que requieren garantías de continuidad del servicio. Las **preocupaciones sobre privacidad de datos** y el tratamiento de las consultas de los usuarios son también factores inhibidores, especialmente en mercados europeos con mayor sensibilidad regulatoria.
 
-La dinámica competitiva favorece actualmente a Perplexity en el segmento de usuarios que priorizan la precisión y la citación sobre la conversación abierta, pero la ventana de diferenciación se estrecha a medida que los grandes actores integran capacidades similares en sus plataformas.
+Finalmente, la **fragmentación del mercado de herramientas de IA** genera fatiga de adopción: los usuarios y las organizaciones se enfrentan a un número creciente de plataformas que compiten por su atención y presupuesto, lo que eleva el coste de decisión y ralentiza la adopción de nuevas herramientas.
 
-### Barreras de Adopción
+### Tendencias tecnológicas y regulatorias
 
-Las principales barreras que frenan la adopción masiva de Perplexity son de naturaleza estructural y conductual.
+En el plano tecnológico, la evolución hacia modelos de lenguaje multimodales, la mejora continua en la capacidad de razonamiento y la reducción de costes de inferencia favorecen a plataformas como Perplexity, que pueden beneficiarse de modelos subyacentes más potentes sin necesidad de desarrollarlos internamente. La tendencia hacia **agentes de IA autónomos** y la integración de herramientas de búsqueda en flujos de trabajo automatizados abre nuevas oportunidades de expansión más allá del uso individual.
 
-La **inercia del comportamiento de búsqueda** es la barrera más significativa. Google procesa un volumen de consultas diarias que representa décadas de hábito consolidado. Cambiar el comportamiento de búsqueda requiere una propuesta de valor percibida como sustancialmente superior, no meramente incremental, para la mayoría de los usuarios.
+En el plano regulatorio, el **AI Act europeo** y las iniciativas regulatorias en Estados Unidos y otras jurisdicciones introducen requisitos de transparencia, trazabilidad y responsabilidad sobre los sistemas de IA que generan información. Perplexity, por su modelo de atribución de fuentes, está relativamente bien posicionada frente a estos requisitos, aunque la evolución regulatoria sigue siendo una variable de incertidumbre significativa. Las disputas sobre **derechos de autor y uso de contenido web** para entrenamiento y recuperación de información representan un riesgo legal emergente que afecta a toda la categoría.
 
-La **confianza en la precisión** constituye otra barrera relevante. Los errores factuales —inherentes a cualquier sistema de IA generativa— generan desconfianza desproporcionada en usuarios no técnicos, especialmente en contextos de alto riesgo como salud, finanzas o derecho. La dependencia de fuentes externas introduce además variabilidad en la calidad de las respuestas.
+### Factores externos relevantes
 
-En el segmento empresarial, las **preocupaciones sobre privacidad y soberanía de datos** ralentizan la adopción, particularmente en sectores regulados y en jurisdicciones con marcos normativos estrictos como la Unión Europea.
-
-El **modelo de precios** en sus niveles superiores puede representar una barrera para usuarios individuales en mercados emergentes, aunque el nivel gratuito mitiga parcialmente este efecto.
-
-### Tendencias Tecnológicas y Regulatorias
-
-El mercado de IA conversacional está siendo moldeado por varias tendencias estructurales de largo plazo.
-
-La **transición hacia agentes de IA autónomos** —capaces de ejecutar tareas complejas de múltiples pasos, no solo responder preguntas— representa la siguiente frontera competitiva. El lanzamiento de *Perplexity Computer* posiciona a la compañía en este segmento emergente, aunque compite con iniciativas similares de OpenAI, Anthropic y Google DeepMind.
-
-La **regulación de la IA** avanza a ritmos distintos por geografía. El *AI Act* europeo introduce requisitos de transparencia y gestión de riesgos que afectan a sistemas de IA de propósito general, potencialmente incrementando los costes de cumplimiento para plataformas como Perplexity. En Estados Unidos, el marco regulatorio permanece más fragmentado, lo que ofrece mayor flexibilidad operativa a corto plazo.
-
-Las **disputas sobre derechos de autor y uso de contenido web** para entrenamiento y recuperación de información representan un riesgo legal creciente. Varios editores de medios han iniciado acciones legales contra plataformas de IA por uso no autorizado de contenido, lo que podría afectar la disponibilidad de fuentes o incrementar los costes de licenciamiento.
-
-La **compresión de costes de inferencia** —impulsada por mejoras en eficiencia de modelos y hardware especializado— favorece la escalabilidad del modelo de negocio de Perplexity, reduciendo el coste marginal por consulta y mejorando los márgenes a medida que crece el volumen.
-
-### Factores Externos Relevantes
-
-La aceleración de la adopción de herramientas de IA generativa a nivel global ha creado un contexto de alta receptividad entre usuarios tecnológicos. La narrativa mediática en torno a la IA ha reducido las barreras psicológicas de experimentación, beneficiando a toda la categoría, incluida Perplexity.
-
-Las tensiones geopolíticas en torno a la tecnología —restricciones de exportación de chips, fragmentación del ecosistema de IA por bloques geográficos— podrían afectar tanto la disponibilidad de infraestructura de cómputo como el acceso a mercados internacionales clave.
+El contexto macroeconómico de inversión tecnológica post-pandemia ha creado un entorno de capital abundante para startups de IA, facilitando el crecimiento acelerado de Perplexity. Sin embargo, una eventual contracción del ciclo de inversión en tecnología podría presionar los recursos disponibles para expansión. La **geopolítica tecnológica**, con restricciones al acceso a chips de IA y tensiones entre bloques, afecta indirectamente a los costes de infraestructura de toda la industria. El creciente debate público sobre el impacto de la IA en el empleo y la desinformación puede generar presiones regulatorias adicionales que afecten al ritmo de adopción en segmentos institucionales.
 
 ---
 
 ## 5. Análisis Cualitativo y Validación Estadística
 
-### Análisis Cualitativo del Ajuste
+### Análisis cualitativo del ajuste
 
-El conjunto de modelos evaluados revela un patrón de comportamiento coherente con la teoría de difusión de innovaciones aplicada a plataformas digitales de alto crecimiento. La trayectoria observada —de cero a decenas de millones de usuarios en un período muy comprimido— es característica de productos que combinan efecto red, distribución digital sin fricción y un momento de mercado favorable.
+La selección del modelo Gompertz está respaldada no solo por sus métricas estadísticas superiores, sino por su coherencia con la fenomenología observada en la adopción de plataformas de IA generativa. La curva de Gompertz, con su asimetría hacia la izquierda —inflexión temprana y cola larga hacia la saturación—, refleja adecuadamente el patrón de adopción de tecnologías que experimentan un despegue viral inicial seguido de una desaceleración progresiva a medida que el mercado se aproxima a su potencial máximo.
 
-El modelo Gompertz captura adecuadamente la asimetría temporal de este proceso: el despegue inicial es más pronunciado que la desaceleración hacia la saturación, lo que refleja la realidad de plataformas que capturan primero a los adoptadores tempranos de alta propensión y luego enfrentan resistencia creciente en segmentos más conservadores.
+La trayectoria histórica de Perplexity —dos años de adopción nula, seguidos de un crecimiento exponencial sostenido— es precisamente el tipo de patrón que el modelo Gompertz captura mejor entre los candidatos evaluados. Los modelos que alcanzan ajustes estadísticos similares pero con errores de predicción muy superiores sugieren que están capturando ruido en lugar de señal, o que sus parámetros adicionales no aportan información genuina con la serie disponible.
 
-Los modelos de mayor complejidad paramétrica —Bass Generalizado, Difusión Logística y Ladrón-de-Guevara & Putsis— muestran ajustes prácticamente perfectos sobre los datos históricos, pero esta aparente superioridad debe interpretarse con cautela, como se detalla en las validaciones siguientes.
+### a) Control de sobreajuste (AIC mental)
 
----
+La serie histórica disponible comprende un número muy reducido de puntos de datos efectivos —considerando que los dos primeros años presentan valores nulos, la información estadística real se concentra en apenas tres observaciones con variación significativa. Esta limitación es crítica para evaluar el riesgo de sobreajuste.
 
-### a) Control de Sobreajuste (AIC Mental)
+El modelo Gompertz opera con tres parámetros libres, lo que en relación al número de puntos informativos efectivos sitúa la ratio de parámetros por observación en un nivel que merece atención. Sin embargo, dado que varios modelos alternativos con igual o mayor número de parámetros muestran ajustes estadísticos prácticamente idénticos en términos de bondad de ajuste, la ventaja del Gompertz reside en que su error de predicción es sustancialmente inferior, lo que sugiere que sus parámetros están capturando estructura real y no solo ruido.
 
-El conjunto de datos disponible comprende un número muy reducido de puntos de observación con valores no nulos. Varios modelos evaluados incorporan un número de parámetros libres que se aproxima o supera la mitad del número de observaciones disponibles.
+No obstante, **se advierte un riesgo medio de sobreajuste**: con una serie tan corta, ningún modelo puede garantizar que los parámetros estimados sean estables ante la incorporación de nuevos datos. La proyección a horizontes de largo plazo debe interpretarse con esta limitación presente.
 
-**Para el modelo Gompertz**, con tres parámetros libres y el número de puntos disponibles, la relación parámetros-observaciones es razonable aunque ajustada. No se activa la advertencia de riesgo alto de sobreajuste bajo la regla práctica establecida.
+### b) Detección de degeneración paramétrica
 
-**Para los modelos de mayor complejidad** —Bass Generalizado, Difusión Logística y Ladrón-de-Guevara & Putsis—, el número de parámetros libres es superior, y con tan pocos puntos de datos, la relación k/n se aproxima o supera el umbral de riesgo. Esto significa que estos modelos tienen suficientes grados de libertad para ajustarse casi perfectamente a cualquier conjunto de datos de este tamaño, independientemente de si el patrón subyacente es real o aleatorio. Su ajuste casi perfecto no es evidencia de superioridad predictiva; es evidencia de sobreajuste.
+El análisis de los resultados revela un fenómeno estadístico relevante: tres modelos —Bass Generalizado, Difusión Logística R&K y Ladrón-de-Guevara & Putsis— muestran métricas de bondad de ajuste prácticamente idénticas entre sí, con errores de predicción también muy similares y en todos los casos muy reducidos. Este patrón constituye un caso claro de **colapso paramétrico o degeneración paramétrica**.
 
-El Gompertz, al obtener la puntuación compuesta más alta con menor complejidad relativa, demuestra mejor equilibrio entre ajuste y generalización. Este es precisamente el criterio que justifica su selección como modelo recomendado.
+Con una serie histórica tan corta, los parámetros adicionales que distinguen a estos modelos más complejos entre sí se vuelven estadísticamente irrelevantes: el optimizador no puede distinguir entre diferentes configuraciones paramétricas que producen trayectorias prácticamente indistinguibles sobre los pocos puntos disponibles. En la práctica, estos modelos están colapsando matemáticamente hacia soluciones equivalentes, y sus parámetros "extra" no aportan información identificable. **Esto no es un error de cálculo, sino una limitación estructural de identificabilidad** inherente a series cortas con pocos grados de libertad.
 
----
+La implicación práctica es que la elección entre estos modelos degenerados no puede basarse en los datos disponibles, y que el modelo más parsimonioso —en este caso, el Gompertz— ofrece mayor garantía de generalización precisamente por no depender de parámetros que los datos no pueden identificar de forma robusta.
 
-### b) Detección de Degeneración Paramétrica
+### c) Contraste con referencias externas
 
-Tres modelos —Bass Generalizado, Difusión Logística y Ladrón-de-Guevara & Putsis— exhiben métricas de ajuste prácticamente idénticas entre sí: coeficientes de determinación prácticamente unitarios y errores porcentuales medios muy similares y reducidos.
+En el segmento de herramientas de búsqueda y asistentes de IA generativa, firmas como **Gartner** e **IDC** han publicado proyecciones de crecimiento del mercado de IA conversacional y búsqueda aumentada que apuntan a una expansión muy significativa del número de usuarios activos globales a lo largo de la presente década. Cualitativamente, las proyecciones del modelo Gompertz para Perplexity son coherentes con el orden de magnitud que estas referencias sectoriales atribuyen al crecimiento agregado de la categoría, aunque con la importante salvedad de que Perplexity compite por una fracción de ese mercado total frente a actores con recursos muy superiores.
 
-Esta convergencia no es coincidencia ni error de cálculo. Es un fenómeno conocido como **colapso paramétrico** o degeneración paramétrica: cuando el número de observaciones es muy pequeño en relación con el número de parámetros del modelo, los parámetros adicionales de los modelos más complejos pierden identifiabilidad. Matemáticamente, el optimizador puede asignar valores arbitrarios a esos parámetros adicionales sin degradar el ajuste, porque los datos no contienen suficiente información para discriminar entre configuraciones paramétricas distintas.
+No se identificó una referencia externa confiable y específica para Perplexity como empresa individual que permita un contraste directo y cuantitativo con las proyecciones del modelo. Las estimaciones disponibles en el sector son heterogéneas y provienen de fuentes de analistas privados con metodologías no publicadas. En consecuencia, **no se puede afirmar que la proyección del modelo diverge significativamente de referencias externas**, pero tampoco puede validarse su convergencia con ellas de forma rigurosa.
 
-El resultado práctico es que los tres modelos, a pesar de sus formulaciones teóricas distintas, colapsan hacia soluciones funcionalmente equivalentes sobre este conjunto de datos. Los parámetros "extra" se vuelven irrelevantes: el modelo complejo se comporta como el más simple. Esto es una limitación de identificabilidad estadística, no una virtud de los modelos complejos. Seleccionar cualquiera de estos tres modelos sobre el Gompertz basándose únicamente en su R² sería metodológicamente incorrecto.
+### d) Modulación de confianza
 
----
+| Dimensión | Evaluación | Justificación |
+|---|---|---|
+| Datos (n puntos) | Insuficientes | Serie de cinco años con dos valores nulos; información estadística efectiva muy limitada |
+| Sobreajuste | Riesgo medio | Ratio parámetros/observaciones elevada; degeneración paramétrica detectada en modelos alternativos |
+| Tipo de proyección | INDICATIVA | Ajuste técnico sólido pero limitaciones de datos y volatilidad sectorial impiden clasificación operativa |
 
-### c) Contraste con Referencias Externas
-
-En el segmento de plataformas de IA conversacional y búsqueda aumentada, **no existe a la fecha una referencia externa consolidada y de autoridad comparable a la que IEA ofrece para energía o Gartner para mercados tecnológicos maduros** que proyecte específicamente la adopción de usuarios de Perplexity AI o de su categoría de producto con el nivel de granularidad necesario para un contraste cuantitativo riguroso.
-
-Gartner y IDC publican proyecciones sobre el mercado de IA generativa en términos de ingresos y adopción empresarial, pero no desagregan a nivel de plataformas individuales de búsqueda conversacional con suficiente especificidad. Las proyecciones disponibles de firmas como Sacra o DemandSage son las mismas fuentes utilizadas para construir los datos de entrada, por lo que su uso como referencia externa independiente introduciría circularidad metodológica.
-
-**Conclusión:** No se identificó referencia externa confiable e independiente para contraste cuantitativo. Las proyecciones del modelo deben evaluarse en términos de coherencia interna y plausibilidad sectorial cualitativa. Cualitativamente, el techo de saturación implícito en el modelo Gompertz —situado en varios cientos de millones de usuarios— es plausible en el contexto de un mercado global de búsqueda con miles de millones de usuarios potenc
+**Conclusión de modulación:** La proyección de Perplexity se clasifica como **proyección INDICATIVA**: ofrece una dirección estratégica plausible y un orden de magnitud razonable para la planificación, pero está sujeta a revisión significativa
 
 ## 2. Datos Históricos y Desviaciones
 

@@ -1,219 +1,209 @@
 # Informe de Adopción: zoom
 
-# INFORME DE ADOPCIÓN TECNOLÓGICA
-## Zoom Video Communications — Análisis de Difusión de Usuarios
+# Informe de Adopción Tecnológica: Zoom Video Communications
 
 ---
 
-# §1 RESUMEN EJECUTIVO
+## 1. Resumen Ejecutivo
 
-Zoom Video Communications representa uno de los casos más singulares en la historia moderna de la adopción tecnológica: una trayectoria de crecimiento orgánico sostenido que fue interrumpida —y redefinida— por un evento exógeno de escala global sin precedentes en el análisis de difusión de innovaciones. El presente informe examina la curva de adopción de la plataforma desde sus primeros años de operación comercial hasta las proyecciones de mediano plazo, empleando un conjunto de diez modelos de difusión cuya capacidad explicativa fue evaluada de forma comparativa.
+**NOTA DE FUENTE DE DATOS:** Zoom no publica de forma sistemática métricas de usuarios activos totales con la granularidad y consistencia requeridas para este análisis. Los datos históricos empleados son estimaciones agregadas de diversas fuentes de mercado. Incertidumbre: alta.
 
-El modelo seleccionado para las proyecciones oficiales es el **Bass Generalizado (GBM)**, que obtuvo el mayor puntaje compuesto de todos los modelos evaluados, combinando una bondad de ajuste sobresaliente con el menor error porcentual absoluto medio del conjunto. Las proyecciones resultantes sugieren una trayectoria de crecimiento continuo pero decreciente en velocidad, coherente con una plataforma que ha superado su fase de expansión acelerada y transita hacia la madurez competitiva.
+Zoom Video Communications representa uno de los casos de difusión tecnológica más estudiados de la historia reciente, caracterizado por un crecimiento orgánico sostenido durante sus primeros años, seguido de una aceleración extraordinaria y sin precedentes provocada por la pandemia global, y una posterior fase de estabilización que define su situación actual.
 
-| Dimensión | Hallazgo Central |
-|---|---|
-| Fase actual de adopción | Madurez temprana / desaceleración post-pandémica |
-| Modelo recomendado | Bass Generalizado (GBM) |
-| Puntaje del modelo líder | 90.04 / 100 |
-| Proyección a mediano plazo (2030) | ~602 millones de usuarios |
-| Proyección a largo plazo (2035) | ~786 millones de usuarios |
-| Nivel de incertidumbre general | **Moderado-Alto** |
-| Principal factor de riesgo | Dependencia de condiciones exógenas no modelables |
+El modelo seleccionado para describir esta trayectoria es el **Dual Market**, que obtuvo la puntuación compuesta más alta entre los diez modelos evaluados. Su elección se justifica por su capacidad estructural para capturar dinámicas de adopción en dos segmentos diferenciados —el mercado empresarial y el mercado de consumo masivo—, lo cual resulta especialmente pertinente para Zoom, cuya base de usuarios combina organizaciones corporativas con usuarios individuales y educativos que respondieron de forma distinta al shock pandémico. Ningún modelo de mercado único puede representar adecuadamente esta heterogeneidad estructural.
 
-El análisis cualitativo que sigue profundiza en los mecanismos de difusión observados, las limitaciones metodológicas relevantes y las implicaciones estratégicas para actores del ecosistema de comunicaciones digitales.
+**Fase de crecimiento actual:** Zoom se encuentra en una fase de **madurez avanzada y saturación**. La curva de adopción ha alcanzado su meseta, con incrementos marginales decrecientes que apuntan a un techo de mercado próximo. Las proyecciones del modelo confirman que el potencial de crecimiento adicional es mínimo en el horizonte de planificación.
+
+**Nivel de confianza de la proyección: MEDIA**
+La confianza es media y no alta por tres razones concurrentes: (i) la fuente de datos es estimada y no oficial, lo que introduce incertidumbre estructural en la base del ajuste; (ii) la fase de saturación hace que pequeñas variaciones en el techo de mercado asumido produzcan proyecciones muy distintas; y (iii) el entorno competitivo en videoconferencia es dinámico y puede alterar la trayectoria de forma no capturada por los datos históricos.
 
 ---
 
-# §6 MARCO TEÓRICO
+## 3. Análisis del Mercado y Contexto Competitivo
 
-## 6.1 Fundamentos de los Modelos de Difusión de Innovaciones
+### Drivers de adopción
 
-La teoría de difusión de innovaciones parte de la premisa de que la adopción de una nueva tecnología en una población sigue patrones predecibles, gobernados por la interacción entre dos fuerzas fundamentales: la **innovación** (adopción impulsada por exposición a fuentes externas al sistema social, como publicidad o medios) y la **imitación** (adopción impulsada por el contacto con adoptantes previos dentro del sistema social). Esta distinción conceptual es el núcleo del modelo Bass Clásico y sus derivaciones.
+La adopción de Zoom ha sido impulsada por una combinación de factores tecnológicos, organizacionales y coyunturales. En su fase inicial, la propuesta de valor diferencial residía en la simplicidad de uso, la estabilidad de la conexión en condiciones de ancho de banda limitado y un modelo freemium que eliminaba las barreras de entrada para usuarios individuales y pequeñas organizaciones. La facilidad de incorporación —sin necesidad de cuentas previas para los participantes— fue un factor de viralidad decisivo que aceleró la difusión boca a boca.
 
-| Concepto | Descripción |
-|---|---|
-| Coeficiente de innovación (*p*) | Probabilidad de adopción independiente del entorno social |
-| Coeficiente de imitación (*q*) | Probabilidad de adopción por influencia de pares adoptantes |
-| Mercado potencial (*M*) | Tamaño máximo teórico de la base de adoptantes |
-| Punto de inflexión | Momento en que la tasa de adopción alcanza su máximo |
-| Saturación | Fase en que el crecimiento marginal tiende a cero |
+El factor externo más determinante en la historia de la compañía fue la pandemia de COVID-19, que transformó el trabajo remoto y la educación a distancia de opciones minoritarias a imperativos globales en cuestión de semanas. Este shock exógeno comprimió en meses una curva de adopción que en condiciones normales habría requerido años, catapultando la plataforma a una visibilidad y penetración sin precedentes. La marca "Zoom" llegó a convertirse en sinónimo genérico de videollamada en múltiples idiomas, un fenómeno de apropiación lingüística que pocas tecnologías logran.
 
-## 6.2 Taxonomía de los Modelos Evaluados
+En la fase post-pandémica, los drivers de retención han sido la integración con ecosistemas de productividad empresarial, el desarrollo de Zoom Phone como solución de telefonía unificada, y la expansión hacia servicios de contact center y colaboración asíncrona. La inteligencia artificial generativa, con funcionalidades como resúmenes automáticos de reuniones y asistentes de reunión, representa el vector de diferenciación más relevante en el momento actual.
 
-Los diez modelos aplicados en este análisis pertenecen a distintas generaciones y tradiciones dentro de la literatura de difusión. Su diversidad permite capturar diferentes hipótesis sobre el comportamiento del mercado:
+### Competidores clave y dinámica competitiva
 
-| Modelo | Familia Teórica | Característica Distintiva |
+El mercado de comunicaciones unificadas y videoconferencia es altamente competitivo y está dominado por actores con ecosistemas propios de gran escala. **Microsoft Teams** constituye la amenaza competitiva más significativa, al estar integrado de forma nativa en el ecosistema Microsoft 365, lo que le otorga una ventaja de distribución estructural en el segmento empresarial. **Google Meet**, integrado en Google Workspace, ejerce una presión similar en el segmento de pequeñas y medianas empresas y en el sector educativo. **Cisco Webex** mantiene una posición sólida en grandes corporaciones con requisitos de seguridad y cumplimiento normativo estrictos.
+
+La dinámica competitiva ha evolucionado desde una competencia por adquisición de usuarios —en la que Zoom dominaba— hacia una competencia por retención y expansión dentro de ecosistemas integrados, terreno en el que los grandes proveedores de software empresarial tienen ventajas estructurales. Zoom responde a esta presión con su estrategia de plataforma abierta y con el desarrollo de Zoom Workplace como suite de colaboración integral.
+
+### Barreras de adopción
+
+Las principales barreras que frenan el crecimiento adicional de Zoom son de naturaleza estructural. La saturación del mercado de videoconferencia en economías desarrolladas es la más relevante: la mayoría de organizaciones y usuarios potenciales ya han adoptado alguna solución de este tipo, lo que convierte el crecimiento en un juego de sustitución más que de expansión neta. La dependencia de ecosistemas —cuando una organización opera sobre Microsoft 365 o Google Workspace— genera inercia hacia las soluciones integradas de esos proveedores, creando costes de cambio que desfavorecen a Zoom.
+
+Las preocupaciones sobre privacidad y seguridad, que emergieron con fuerza durante el pico pandémico bajo el término "Zoomboming", dejaron una huella reputacional que la compañía ha trabajado por revertir con mejoras técnicas, pero que persiste en sectores regulados como el sanitario, el financiero o el gubernamental. Adicionalmente, la fatiga de videollamadas —fenómeno documentado académicamente— ha moderado el uso intensivo que caracterizó el período pandémico.
+
+### Tendencias tecnológicas y regulatorias
+
+La inteligencia artificial generativa está redefiniendo las expectativas sobre las plataformas de colaboración. Los usuarios y organizaciones esperan cada vez más que las herramientas de reunión ofrezcan transcripción automática, síntesis de acuerdos, traducción en tiempo real y asistentes proactivos. Zoom ha invertido significativamente en estas capacidades, pero compite en este frente con rivales que disponen de recursos de I+D considerablemente mayores.
+
+En el plano regulatorio, el Reglamento General de Protección de Datos europeo y normativas equivalentes en otras jurisdicciones imponen requisitos de localización de datos y consentimiento que añaden complejidad operativa. El escrutinio regulatorio sobre las transferencias de datos entre la Unión Europea y Estados Unidos es un factor de incertidumbre permanente para plataformas de origen estadounidense con base de usuarios global.
+
+### Factores externos relevantes
+
+La pandemia de COVID-19 es el factor externo más determinante en la historia de adopción de Zoom, con un impacto que los datos históricos reflejan con claridad meridiana. La normalización del trabajo híbrido como modelo organizativo predominante en economías avanzadas ha sostenido una demanda estructural de herramientas de videoconferencia que no existía antes de la pandemia, actuando como suelo de demanda que impide una reversión completa a los niveles pre-pandémicos. Sin embargo, el retorno parcial a la presencialidad ha moderado el uso intensivo y ha redistribuido cuota hacia soluciones integradas en los ecosistemas corporativos.
+
+---
+
+## 5. Análisis Cualitativo y Validación Estadística
+
+### Análisis cualitativo del ajuste
+
+La trayectoria de adopción de Zoom presenta una forma característica que ningún modelo de difusión estándar captura con facilidad: un crecimiento moderado y sostenido durante varios años, una discontinuidad abrupta de carácter exógeno, y una estabilización rápida en un nuevo nivel de equilibrio. Esta morfología es atípica en la literatura de difusión, donde los shocks exógenos de esta magnitud y velocidad son infrecuentes.
+
+El modelo **Dual Market** aborda esta complejidad al reconocer que la base de usuarios de Zoom no es homogénea: el segmento empresarial y el segmento de consumo masivo tienen curvas de adopción con parámetros de imitación e innovación distintos. El segmento empresarial muestra una difusión más lenta y deliberada, mediada por decisiones de compra institucionales, mientras que el segmento de consumo respondió de forma masiva e inmediata al estímulo pandémico. La superposición de ambas curvas produce una forma agregada que se aproxima mejor a los datos observados.
+
+Los modelos que obtuvieron métricas de ajuste más bajas —particularmente **Fourt & Woodlock** y **Gompertz**— presentan limitaciones estructurales para capturar la discontinuidad pandémica: el primero asume una difusión puramente por innovación sin efectos de imitación, y el segundo impone una asimetría fija en la curva que no se corresponde con la aceleración observada.
+
+### a) Control de sobreajuste (AIC mental)
+
+El conjunto de datos disponible comprende once observaciones anuales. El modelo **Dual Market** incorpora un número de parámetros libres superior al de los modelos más simples como el **Bass Clásico**, que opera con tres parámetros fundamentales. Con once puntos de datos, un modelo que supere los cinco o seis parámetros libres comienza a aproximarse al umbral de riesgo de sobreajuste según la regla práctica de que el número de parámetros no debería exceder la mitad del número de observaciones.
+
+El **Dual Market** se sitúa en una zona de riesgo **medio** de sobreajuste. Su mejora en la puntuación compuesta respecto al **Bass Clásico** es modesta, y ambos modelos comparten un nivel de ajuste muy similar en términos de varianza explicada. Esto sugiere que la ganancia de complejidad del modelo ganador es real pero marginal, y que el **Bass Clásico** podría generalizar de forma comparable con menor riesgo paramétrico. Se recomienda interpretar las proyecciones del **Dual Market** con esta cautela.
+
+### b) Detección de degeneración paramétrica
+
+El análisis de los resultados revela un fenómeno estadístico relevante: tres modelos —**Bass Clásico**, **Horsky & Simon** y **Van den Bulte & Joshi**— presentan métricas de ajuste prácticamente idénticas en todas las dimensiones evaluadas. Este patrón no es una coincidencia ni un error de cálculo: es una manifestación clásica de **colapso paramétrico** o degeneración paramétrica.
+
+Cuando el número de observaciones es limitado, los parámetros adicionales que diferencian modelos más complejos de sus versiones más simples no pueden ser identificados de forma independiente por los datos. El optimizador numérico los lleva a valores que anulan su efecto diferencial, haciendo que el modelo complejo colapse matemáticamente al comportamiento del más simple. En este caso, **Horsky & Simon** y **Van den Bulte & Joshi** incorporan mecanismos adicionales —efectos de publicidad y heterogeneidad de mercado, respectivamente— que con once puntos de datos no pueden ser estimados de forma separada de los parámetros base del **Bass Clásico**. El resultado idéntico es la evidencia de esta limitación de identificabilidad, no de equivalencia teórica entre los modelos.
+
+Esta observación refuerza la recomendación de privilegiar el modelo más parsimonioso cuando las métricas son equivalentes, y de tratar con cautela cualquier interpretación de los parámetros individuales de los modelos más complejos.
+
+### c) Contraste con referencias externas
+
+El mercado de comunicaciones unificadas y colaboración es seguido por analistas de referencia como **Gartner** e **IDC**, que publican periódicamente proyecciones sobre el tamaño del mercado y la evolución de las plataformas líderes. Cualitativamente, el consenso del sector apunta a que el mercado de videoconferencia ha alcanzado su madurez en economías desarrolladas y que el crecimiento futuro se concentrará en mercados emergentes, en la expansión hacia servicios adyacentes —telefonía, contact center, colaboración asíncrona— y en la monetización por inteligencia artificial.
+
+Las proyecciones del modelo son coherentes con esta narrativa de saturación: el techo de mercado proyectado implica un crecimiento prácticamente nulo en el horizonte de planificación, lo que se alinea con la percepción general del sector sobre la madurez de la categoría. No se identificó una referencia externa con proyecciones específicas de usuarios de Zoom que permitiera un contraste cuantitativo directo; sin embargo, la dirección cualitativa de las proyecciones del modelo —estabilización en meseta— es consistente con el consenso analítico disponible.
+
+### d) Modulación de confianza
+
+| Dimensión | Valoración | Justificación |
 |---|---|---|
-| Bass Clásico | Difusión binomial | Modelo fundacional; dos parámetros (*p*, *q*) |
-| Dual Market | Extensión Bass | Segmenta el mercado en dos poblaciones con dinámicas distintas |
-| Fourt & Woodlock | Difusión exponencial pura | Solo innovación; sin efectos de imitación |
-| Gompertz | Curvas de crecimiento biológico | Asimetría en la curva; saturación más lenta |
-| Bass Generalizado (GBM) | Extensión Bass con variables externas | Incorpora covariables exógenas (precio, marketing, shocks) |
-| Horsky & Simon | Difusión con publicidad | Integra gasto en comunicación como variable explicativa |
-| Muller & Yogev | Difusión con restricciones de oferta | Modela limitaciones en la capacidad de distribución |
-| Van den Bulte & Joshi | Heterogeneidad social | Incorpora varianza en propensión a adoptar entre segmentos |
-| Difusión Logística R&K | Curva logística generalizada | Flexibilidad en la forma de la curva de crecimiento |
-| Ladrón-de-Guevara & Putsis | Competencia y difusión | Modela efectos de competidores sobre la tasa de adopción |
-
-## 6.3 Pertinencia Teórica para el Caso Zoom
-
-El caso Zoom presenta características que desafían los supuestos estándar de los modelos de difusión clásicos. La mayoría de estos modelos asumen que la adopción es un proceso endógeno, gradual y relativamente continuo. La irrupción de la pandemia de COVID-19 introdujo un **shock exógeno de adopción forzada** que comprimió en semanas un proceso que, en condiciones normales, habría tomado años. Este fenómeno —denominado en la literatura como *adoption shock* o *crisis-driven diffusion*— requiere modelos con mayor flexibilidad paramétrica para ser representado adecuadamente.
-
-| Característica del caso | Implicación teórica |
-|---|---|
-| Crecimiento de 10M a 300M en un año | Incompatible con curvas de difusión orgánica estándar |
-| Adopción forzada por cierre de espacios físicos | El coeficiente de innovación (*p*) se vuelve artificialmente elevado |
-| Retención post-pandémica parcial | Sugiere que parte de la adopción fue estructural, no coyuntural |
-| Desaceleración post-2021 | Consistente con agotamiento del mercado accesible y competencia |
-| Crecimiento continuo pero lento 2022-2025 | Indica consolidación, no colapso |
+| Datos (n puntos) | Suficientes con reservas | Once observaciones permiten ajustar modelos de difusión estándar, pero son insuficientes para identificar parámetros en modelos de alta complejidad |
+| Fuente de datos | Estimada, no oficial | Zoom no publica métricas de usuarios con la granularidad requerida; los datos son agregaciones de terceros con incertidumbre inherente |
+| Sobreajuste | Riesgo medio | El modelo ganador supera el umbral de parsimonia recomendado para n=11; la degeneración paramétrica observada en tres modelos confirma la limitación de identificabilidad |
+| Coherencia con sector | Alta | La proyección de saturación es consistente con el consenso analítico del sector |
+| **Conclusión** | **Proyección INDICATIVA** | Fiable para orientar la dirección estratégica, pero sujeta a revisión ante cambios competitivos, regulatorios o de modelo de negocio |
 
 ---
 
-# §5 ANÁLISIS CUALITATIVO
+## 6. Marco Académico Teórico
 
-## 5.1 Lectura de la Trayectoria Histórica
+### Formulación conceptual del modelo Dual Market
 
-La historia de adopción de Zoom puede dividirse en tres fases cualitativamente distintas, cada una con una lógica de crecimiento diferente:
+El modelo **Dual Market** es una extensión del marco seminal de Bass que reconoce la heterogeneidad estructural de la población potencial de adoptantes. En lugar de asumir un mercado homogéneo con un único potencial de mercado y parámetros de innovación e imitación uniformes, el modelo descompone la población en dos segmentos con dinámicas de difusión independientes que se agregan para producir la curva de adopción total observada.
 
-### Fase I — Crecimiento Orgánico Pre-Pandémico
+Conceptualmente, cada segmento sigue su propia ecuación diferencial de difusión, con parámetros de innovación —que capturan la adopción independiente de la influencia social, típicamente asociada a la exposición a comunicaciones externas o publicidad— y de imitación —que capturan el efecto del boca a boca y la presión social de los adoptantes previos sobre los no adoptantes—. La suma de ambas curvas produce una forma agregada que puede capturar asimetrías, inflexiones múltiples o aceleraciones que un modelo de mercado único no puede reproducir.
 
-| Período | Dinámica Observada |
-|---|---|
-| Primeros años de operación | Adopción lenta, típica de software B2B especializado |
-| Expansión gradual | Crecimiento sostenido pero modesto, impulsado por boca a boca corporativo |
-| Víspera de la pandemia | Base de usuarios consolidada pero lejos de la masa crítica global |
+Esta arquitectura es teóricamente apropiada para Zoom porque la evidencia empírica sugiere que el mercado empresarial y el merc
 
-Durante esta fase, Zoom operaba como una solución de nicho dentro del ecosistema de comunicaciones empresariales, compitiendo con plataformas establecidas. El crecimiento respondía a los mecanismos clásicos de imitación entre organizaciones y a esfuerzos de ventas directas. Los coeficientes de difusión habrían sido modestos y el mercado potencial percibido, limitado al segmento corporativo.
+## 2. Datos Históricos y Desviaciones
 
-### Fase II — El Shock Pandémico y la Adopción Masiva
-
-| Período | Dinámica Observada |
-|---|---|
-| Inicio de la pandemia | Adopción exponencial en semanas, no en años |
-| Pico de crecimiento | Incorporación simultánea de segmentos nunca antes considerados (educación, salud, familia) |
-| Consolidación inicial | La marca "Zoom" se convierte en sinónimo de videollamada a nivel global |
-
-Este período constituye una anomalía estadística de primer orden. El salto desde una base de usuarios de escala moderada hasta una cifra que representa una fracción significativa de la población mundial conectada ocurrió en un lapso que ningún modelo de difusión estándar podría haber anticipado. La adopción no fue impulsada por la superioridad del producto ni por campañas de marketing, sino por la **eliminación forzada de alternativas presenciales**. Este matiz es crítico para interpretar la sostenibilidad del crecimiento posterior.
-
-### Fase III — Desaceleración y Búsqueda de Nuevo Equilibrio
-
-| Período | Dinámica Observada |
-|---|---|
-| Post-pandemia inmediata | Ligero crecimiento sobre la base pandémica; retención parcial |
-| Período reciente | Crecimiento positivo pero decreciente en tasa; presión competitiva creciente |
-| Situación actual | Plataforma madura en mercado saturado con múltiples competidores establecidos |
-
-La desaceleración observada no debe interpretarse como fracaso, sino como la normalización esperada tras un shock de adopción artificial. La pregunta estratégicamente relevante no es por qué Zoom creció menos después de la pandemia, sino **por qué retuvo una proporción tan elevada de sus usuarios pandémicos**. La respuesta apunta a que el shock exógeno aceleró un proceso de transformación cultural en torno al trabajo remoto que, de otro modo, habría tomado una década.
-
-## 5.2 Interpretación de los Resultados del Ajuste Comparativo
-
-El conjunto de diez modelos evaluados ofrece una imagen rica sobre la complejidad de este caso. Los resultados no son uniformes, y sus divergencias son en sí mismas informativamente valiosas.
-
-### 5.2.1 Panorama General de Desempeño
-
-| Modelo | R² | MAPE | Score | Interpretación Cualitativa |
-|---|---|---|---|---|
-| Bass Generalizado (GBM) | 0.9834 | 44.07% | **90.04** | Mejor balance ajuste-precisión; captura el shock exógeno |
-| Ladrón-de-Guevara & Putsis | 0.9839 | 76.90% | 86.03 | Excelente R² pero mayor error en magnitudes absolutas |
-| Difusión Logística R&K | 0.9656 | 84.94% | 84.68 | Buena flexibilidad de curva; error moderado |
-| Van den Bulte & Joshi | 0.9575 | 149.84% | 81.94 | Heterogeneidad social bien capturada; error elevado |
-| Muller & Yogev | 0.9546 | 159.51% | 81.73 | Restricciones de oferta parcialmente relevantes |
-| Horsky & Simon | 0.9529 | 168.35% | 81.56 | Publicidad como driver; limitado en contexto pandémico |
-| Bass Clásico | 0.9506 | 186.41% | 81.46 | Modelo fundacional; insuficiente para shocks exógenos |
-| Dual Market | 0.9506 | 186.41% | 81.46 | Segmentación no resuelve el problema del shock |
-| Gompertz | 0.9239 | 218.32% | 76.89 | Asimetría útil pero error muy elevado |
-| Fourt & Woodlock | 0.8211 | 678.16% | 71.90 | Peor desempeño; ausencia de imitación es limitante crítica |
-
-### 5.2.2 La Paradoja del R² Alto con MAPE Elevado
-
-Un hallazgo transversal que merece atención cualitativa es la coexistencia de valores de R² elevados con errores porcentuales absolutos medios (MAPE) también elevados en la mayoría de los modelos. Esta aparente contradicción tiene una explicación estructural:
-
-| Factor | Explicación |
-|---|---|
-| R² captura la forma de la curva | Los modelos reproducen bien la *tendencia* general de crecimiento |
-| MAPE captura la magnitud absoluta | Los modelos fallan en predecir el *tamaño exacto* del salto pandémico |
-| El shock de 2020 domina el error | Un único punto de datos (2020) concentra la mayor parte del error en todos los modelos |
-| Implicación metodológica | El R² solo no es suficiente para evaluar modelos en presencia de shocks exógenos |
-
-Esta situación ilustra por qué el puntaje compuesto (Score) utilizado en este análisis es metodológicamente superior a cualquier métrica aislada: penaliza los modelos que, pese a tener buen ajuste global, cometen errores inaceptables en los períodos más críticos.
-
-### 5.2.3 El Caso Fourt & Woodlock como Referencia Negativa
-
-El desempeño del modelo Fourt & Woodlock merece mención específica. Su MAPE de más de seis veces el valor real promedio y su R² significativamente inferior al resto del conjunto confirman que la hipótesis de **difusión puramente por innovación** (sin efectos de imitación social) es incompatible con la realidad de Zoom. La plataforma de videoconferencia es, por definición, un bien de red: su valor aumenta con el número de usuarios, y la adopción por imitación es un mecanismo central. Un modelo que ignora este mecanismo no puede capturar la dinámica real.
-
-## 5.3 Advertencias Metodológicas Críticas
-
-### 5.3.1 Riesgo de Sobreajuste
-
-| Dimensión del riesgo | Descripción |
-|---|---|
-| Naturaleza del problema | Con solo once puntos de datos anuales y modelos de múltiples parámetros, existe riesgo real de que los modelos "memoricen" los datos en lugar de capturar la dinámica subyacente |
-| Manifestación específica | Los modelos con mayor número de parámetros (GBM, Ladrón-de-Guevara & Putsis) pueden ajustar bien el período histórico pero proyectar con menor confiabilidad |
-| Señal de alerta | La diferencia entre el R² del GBM (0.9834) y el Bass Clásico (0.9506) es notable; parte de esa diferencia puede ser sobreajuste, no genuina superioridad predictiva |
-| Recomendación de mitigación | Interpretar las proyecciones como rangos de escenario, no como estimaciones puntuales |
-
-### 5.3.2 Escasez de Datos y Granularidad Temporal
-
-| Limitación | Impacto en el Análisis |
-|---|---|
-| Solo once observaciones anuales | Insuficiente para estimar con precisión los parámetros de modelos complejos |
-| Datos anuales vs. dinámicas intra-anuales | El shock de 2020 ocurrió en semanas; los datos anuales suavizan artificialmente la velocidad real del cambio |
-| Ausencia de datos sub-segmentados | No se distingue entre usuarios gratuitos, de pago, activos diarios o mensuales |
-| Ausencia de datos geográficos | La difusión fue heterogénea por región; el agregado global oculta dinámicas locales relevantes |
-
-### 5.3.3 
-
-## 2. Datos Históricos
-
+### 2.1 Serie Histórica Real
 | Año | Adopción (M) |
 |---|---|
-| 2015 | 1.00 M |
-| 2016 | 2.50 M |
-| 2017 | 5.00 M |
-| 2018 | 7.50 M |
-| 2019 | 10.00 M |
-| 2020 | 300.00 M |
-| 2021 | 350.00 M |
-| 2022 | 380.00 M |
-| 2023 | 410.00 M |
-| 2024 | 440.00 M |
-| 2025 | 450.00 M |
+| 2015 | 40.00 M |
+| 2016 | 55.00 M |
+| 2017 | 75.00 M |
+| 2018 | 95.00 M |
+| 2019 | 120.00 M |
+| 2020 | 380.00 M |
+| 2021 | 430.00 M |
+| 2022 | 460.00 M |
+| 2023 | 480.00 M |
+| 2024 | 490.00 M |
+| 2025 | 495.00 M |
 
 
-## 3. Métricas
+### 2.2 Desviaciones por Modelo (Ajuste Histórico)
+| Año | Real (M) | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2015 | 40.00 | 0.00 | 0.00 | 0.00 | 4.59 | 0.00 | 0.00 | 0.00 | 0.00 | 3.16 | 0.00 |
+| 2016 | 55.00 | 9.91 | 32.22 | 61.56 | 22.66 | 7.94 | 9.91 | 33.41 | 127.42 | 9.80 | 33.07 |
+| 2017 | 75.00 | 35.25 | 58.93 | 121.66 | 66.09 | 27.38 | 35.25 | 60.35 | 204.61 | 29.56 | 106.67 |
+| 2018 | 95.00 | 93.10 | 107.34 | 180.34 | 135.43 | 75.13 | 93.10 | 108.58 | 251.37 | 82.35 | 227.93 |
+| 2019 | 120.00 | 196.91 | 197.32 | 237.63 | 219.06 | 180.96 | 196.91 | 198.17 | 279.70 | 190.80 | 354.54 |
+| 2020 | 380.00 | 321.96 | 314.74 | 293.57 | 302.40 | 335.11 | 321.96 | 315.16 | 296.87 | 328.39 | 436.97 |
+| 2021 | 430.00 | 416.72 | 411.39 | 348.18 | 375.34 | 441.42 | 416.72 | 411.52 | 307.26 | 426.20 | 475.50 |
+| 2022 | 460.00 | 466.35 | 465.00 | 401.49 | 433.84 | 476.48 | 466.35 | 465.01 | 313.56 | 470.82 | 490.72 |
+| 2023 | 480.00 | 487.41 | 488.45 | 453.55 | 478.08 | 483.64 | 487.41 | 488.41 | 317.38 | 487.04 | 496.32 |
+| 2024 | 490.00 | 495.55 | 497.63 | 504.37 | 510.23 | 484.73 | 495.55 | 497.57 | 319.69 | 492.44 | 498.33 |
+| 2025 | 495.00 | 498.57 | 501.07 | 553.99 | 532.98 | 484.86 | 498.57 | 501.00 | 321.09 | 494.18 | 499.04 |
+
+### 2.3 Fuentes de Datos
+| Año | Valor (M) | Tipo |
+| --- | --- | --- |
+| 2015 | 40.00 | Real (reportado) |
+| 2016 | 55.00 | Real (reportado) |
+| 2017 | 75.00 | Real (reportado) |
+| 2018 | 95.00 | Real (reportado) |
+| 2019 | 120.00 | Real (reportado) |
+| 2020 | 380.00 | Real (reportado) |
+| 2021 | 430.00 | Real (reportado) |
+| 2022 | 460.00 | Real (reportado) |
+| 2023 | 480.00 | Real (reportado) |
+| 2024 | 490.00 | Real (reportado) |
+| 2025 | 495.00 | Real (reportado) |
+
+## 3bis. Métricas
 
 | Modelo | R² | MAPE | Score | k |
 |---|---|---|---|---|
-| Bass Clásico | 0.9506 | 186.41% | 81.46 | 3 |
-| Dual Market | 0.9506 | 186.41% | 81.46 | 6 |
-| Fourt & Woodlock | 0.8211 | 678.16% | 71.90 | 2 |
-| Gompertz | 0.9239 | 218.32% | 76.89 | 3 |
-| Bass Generalizado (GBM) | 0.9834 | 44.07% | 90.04 | 4 |
-| Horsky & Simon | 0.9529 | 168.35% | 81.56 | 4 |
-| Muller & Yogev | 0.9546 | 159.51% | 81.73 | 7 |
-| Van den Bulte & Joshi | 0.9575 | 149.84% | 81.94 | 6 |
-| Difusión Logística R&K | 0.9656 | 84.94% | 84.68 | 4 |
-| Ladrón-de-Guevara & Putsis | 0.9839 | 76.90% | 86.03 | 5 |
+| Bass Clásico | 0.9634 | 29.47% | 92.73 | 3 |
+| Dual Market | 0.9672 | 24.31% | 93.61 | 6 |
+| Fourt & Woodlock | 0.8842 | 39.71% | 83.59 | 2 |
+| Gompertz | 0.9374 | 30.48% | 88.72 | 3 |
+| Bass Generalizado (GBM) | 0.9685 | 31.15% | 92.60 | 4 |
+| Horsky & Simon | 0.9634 | 29.47% | 92.73 | 4 |
+| Muller & Yogev | 0.9666 | 24.99% | 93.47 | 7 |
+| Van den Bulte & Joshi | 0.9634 | 29.47% | 92.73 | 6 |
+| Difusión Logística R&K | 0.9667 | 29.65% | 93.17 | 4 |
+| Ladrón-de-Guevara & Putsis | 0.9636 | 30.12% | 92.68 | 5 |
 
 
 ## 4. Proyecciones
 
-| Año | Bass Generalizado (GBM) (M) |
-|---|---|
-| 2026 | 450.00 M |
-| 2027 | 450.00 M |
-| 2028 | 450.00 M |
-| 2029 | 479.26 M |
-| 2030 | 602.26 M |
-| 2031 | 673.88 M |
-| 2032 | 715.32 M |
-| 2033 | 743.22 M |
-| 2034 | 765.64 M |
-| 2035 | 785.96 M |
+### 4.1 Proyecciones de Todos los Modelos
+| Año | Dual Market (M) | Muller & Yogev (M) | Difusión Logística R&K (M) | Bass Clásico (M) | Van den Bulte & Joshi (M) | Horsky & Simon (M) | Ladrón-de-Guevara & Putsis (M) | Bass Generalizado (GBM) (M) | Gompertz (M) | Fourt & Woodlock (M) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2015 | 0.00 | 0.00 | 3.16 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 4.59 | 0.00 |
+| 2016 | 32.22 | 33.41 | 9.80 | 9.91 | 127.42 | 9.91 | 33.07 | 7.94 | 22.66 | 61.56 |
+| 2017 | 58.93 | 60.35 | 29.56 | 35.25 | 204.61 | 35.25 | 106.67 | 27.38 | 66.09 | 121.66 |
+| 2018 | 107.34 | 108.58 | 82.35 | 93.10 | 251.37 | 93.10 | 227.93 | 75.13 | 135.43 | 180.34 |
+| 2019 | 197.32 | 198.17 | 190.80 | 196.91 | 279.70 | 196.91 | 354.54 | 180.96 | 219.06 | 237.63 |
+| 2020 | 314.74 | 315.16 | 328.39 | 321.96 | 296.87 | 321.96 | 436.97 | 335.11 | 302.40 | 293.57 |
+| 2021 | 411.39 | 411.52 | 426.20 | 416.72 | 307.26 | 416.72 | 475.50 | 441.42 | 375.34 | 348.18 |
+| 2022 | 465.00 | 465.01 | 470.82 | 466.35 | 313.56 | 466.35 | 490.72 | 476.48 | 433.84 | 401.49 |
+| 2023 | 488.45 | 488.41 | 487.04 | 487.41 | 317.38 | 487.41 | 496.32 | 483.64 | 478.08 | 453.55 |
+| 2024 | 497.63 | 497.57 | 492.44 | 495.55 | 319.69 | 495.55 | 498.33 | 484.73 | 510.23 | 504.37 |
+| 2025 | 501.07 | 501.00 | 494.18 | 498.57 | 321.09 | 498.57 | 499.04 | 484.86 | 532.98 | 553.99 |
+| 2026 | 502.33 | 502.26 | 495.00 | 499.68 | 495.00 | 499.68 | 499.30 | 495.00 | 548.80 | 602.43 |
+| 2027 | 502.80 | 502.72 | 495.00 | 500.08 | 495.00 | 500.08 | 499.38 | 495.00 | 559.66 | 649.72 |
+| 2028 | 502.97 | 502.89 | 495.00 | 500.23 | 495.00 | 500.23 | 499.42 | 495.00 | 567.06 | 695.90 |
+| 2029 | 503.03 | 502.95 | 495.00 | 500.28 | 495.00 | 500.28 | 499.43 | 495.00 | 572.08 | 740.98 |
+| 2030 | 503.05 | 502.97 | 495.00 | 500.30 | 495.00 | 500.30 | 499.43 | 495.00 | 575.47 | 784.99 |
+| 2031 | 503.06 | 502.98 | 495.00 | 500.31 | 495.00 | 500.31 | 499.43 | 495.00 | 577.75 | 827.97 |
+| 2032 | 503.06 | 502.98 | 495.00 | 500.31 | 495.00 | 500.31 | 499.43 | 495.00 | 579.28 | 869.92 |
+| 2033 | 503.06 | 502.99 | 495.00 | 500.31 | 495.00 | 500.31 | 499.43 | 495.00 | 580.32 | 910.88 |
+| 2034 | 503.06 | 502.99 | 495.00 | 500.31 | 495.00 | 500.31 | 499.43 | 495.00 | 581.01 | 950.87 |
+| 2035 | 503.06 | 502.99 | 495.00 | 500.31 | 495.00 | 500.31 | 499.43 | 495.00 | 581.47 | 989.92 |
 
+### 4.2 Escenarios de Consenso
+| Escenario | Modelo | 2030 (M) | 2035 (M) |
+| --- | --- | --- | --- |
+| Conservador | Bass Clásico | 500.30 | 500.31 |
+| Base (recomendado) | Dual Market | 503.05 | 503.06 |
+| Optimista | Fourt & Woodlock | 784.99 | 989.92 |
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Bass Generalizado (GBM)): R²=0.9834, MAPE=44.07%, Score=90.04.
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Dual Market): R²=0.9672, MAPE de ajuste=24.31%, Score=93.61.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
