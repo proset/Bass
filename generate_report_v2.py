@@ -127,6 +127,97 @@ INSERVIBLE = la serie no sirve (producto muerto, métrica incoherente global, a�
 def log(step, msg): 
     print(f"[{step}] {msg}")
 
+def reextract_directed(tech, anos_sospechosos, razon_por_ano):
+    """
+    Re-extracción quirúrgica: solo los años que el juez marcó.
+    Búsqueda dirigida por año con instrucciones específicas del problema.
+    Retorna: dict {año: nuevo_valor} o None si no mejoró.
+    """
+    from ai.gemini_client import generate_content_with_fallback
+    import json
+    
+    anos_str = ", ".join(str(a) for a in anos_sospechosos)
+    razones_str = "\n".join(f"  {a}: {r}" for a, r in razon_por_ano.items())
+    
+    prompt = f"""Busca datos de adopción de '{tech}' ESPECÍFICAMENTE para los años: {anos_str}.
+
+PROBLEMAS DETECTADOS EN LA EXTRACCIÓN ANTERIOR:
+{razones_str}
+
+INSTRUCCIONES DE BÚSQUEDAD DIRIGIDA:
+1. Busca el MAU o usuarios activos de esta tecnología para CADA año listado.
+2. Para productos web: "MAU {tech} {año}", "dominio traffic {año}"
+3. Para apps: "app downloads/users {año} SensorTower"
+4. Para APIs/empresas: "empresa users {año} earnings"
+5. CITA LA FUENTE de cada valor.
+6. Si el producto NO EXISTÍA ese año, responde 0.
+7. Si no encuentras el dato, responde null (NO inventes).
+
+FORMATO (JSON):
+{{
+  "correcciones": {{
+    "año": {{"valor": X, "fuente": "...", "confianza": "alta|media|baja"}}
+  }}
+}}"""
+    
+    try:
+        respuesta = generate_content_with_fallback(prompt=prompt, tools=[{"google_search": {}}])
+        text = respuesta.text.strip()
+        
+        if text.startswith("```"):
+            import re
+            text = re.sub(r'^```(?:json)?\s*', '', text)
+            text = re.sub(r'\s*```$', '', text)
+            
+        data = json.loads(text)
+        correcciones = {}
+        for y_str, info in data.get("correcciones", {}).items():
+            val = info.get("valor")
+            correcciones[y_str] = val
+        return correcciones
+    except Exception as e:
+        print(f"[verify] Error en re-extracción: {e}")
+        return None
+
+def generar_informe_insuficiente(tech, serie, detalle):
+    """Informe honesto cuando los datos no sirven. Producto válido, no error."""
+    serie_str = "\n".join(f"| {y} | {v:.2f} M |" for y, v in sorted(serie.items()))
+    razon = detalle.get("razonamiento_general", "Los datos disponibles no permiten un ajuste fiable.")
+    muerto = detalle.get("producto_muerto", False)
+    contexto_muerto = "\n\n**PRODUCTO DISCONTINUADO:** esta tecnología ya no existe en el mercado. Este informe documenta su trayectoria histórica y el motivo por el que no se proyecta." if muerto else ""
+    
+    informe = f"""# Informe de Adopción: {tech}
+
+## DATOS INSUFICIENTES PARA PROYECCIÓN
+
+Este informe no incluye proyecciones de adopción porque la calidad de los datos disponibles no permite un ajuste fiable.{contexto_muerto}
+
+### Serie disponible
+| Año | Adopción (M) |
+|---|---|
+{serie_str}
+
+### Motivo
+{razon}
+
+### Qué haría falta
+- Serie histórica más larga (mínimo 4-6 puntos con datos verificados)
+- Métrica consistente entre años (MAU, usuarios, unidades — sin mezclar)
+- Si la empresa no publica datos: añadir valores verificados a custom_anchors.json
+
+### Cuándo reintentar
+Re-ejecuta el pipeline cuando dispongas de más historial o anchors verificados: los productos jóvenes acumulan un punto de datos por año.
+"""
+    with open(f"informe_global_{tech}.md", "w", encoding="utf-8") as f:
+        f.write(informe)
+
+def persistir_serie_corregida(tech, serie):
+    from data.ingestion import insertar_historico_db
+    datos = []
+    for a, v in sorted(serie.items()):
+        datos.append({"anio": a, "usuarios_millones": v})
+    insertar_historico_db(tech, datos)
+
 def build_deviation_table(params, real_series, model_labels):
     """Desviación de cada modelo por año (histórico)."""
     from models.analytical_projections import project_model
@@ -498,8 +589,50 @@ def main():
     print(f"\n{'='*60}\n  BASS v2 FINAL: Gemini ext + GLM fit + Claude ana: '{tech}'\n{'='*60}\n")
     
     log("1/3", "Extracción con Gemini...")
+    from data.loaders import load_historical_data
     extract(tech)
     
+    # FASE 1.5: CASCADA DE VERIFICACIÓN (v2.3)
+    df_hist = load_historical_data(tech)
+    serie = {int(row["anio"]): float(row["adopcion_acumulada"]) for _, row in df_hist.iterrows()}
+    
+    ok, sospechosos, motivos = data_quality_gate(serie)
+    veredicto, anos_claude, detalle = claude_judge_data(tech, serie, sospechosos, motivos)
+    
+    print(f"[verify] Gate determinista: {'OK' if ok else 'SOSPECHOSO'} ({len(sospechosos)} años)")
+    print(f"[verify] Claude juez: {veredicto}")
+    if detalle.get("razonamiento_general"):
+        print(f"[verify] Claude: {detalle['razonamiento_general'][:200]}")
+        
+    if veredicto == "INSERVIBLE" or detalle.get("producto_muerto"):
+        generar_informe_insuficiente(tech, serie, detalle)
+        print("[verify] INSERVIBLE — informe de datos insuficientes generado")
+        sys.exit(0)
+        
+    anos_problema = sorted(set(sospechosos) | set(anos_claude))
+    
+    if veredicto == "SOSPECHOSO" and anos_problema:
+        print(f"[verify] Re-extracción dirigida para: {anos_problema}")
+        correcciones = reextract_directed(tech, anos_problema, detalle.get("razon_por_ano", {}))
+        if correcciones:
+            # Aplicar correcciones a la serie
+            corrigio_algo = False
+            for ano, val in correcciones.items():
+                if val is not None:
+                    serie[int(ano)] = float(val)
+                    print(f"[verify] Corregido {ano}: → {val}M")
+                    corrigio_algo = True
+            
+            if corrigio_algo:
+                # Re-juzgar la serie corregida (una sola vez)
+                veredicto2, _, detalle2 = claude_judge_data(tech, serie, [], [])
+                print(f"[verify] Segunda evaluación: {veredicto2}")
+                if veredicto2 == "INSERVIBLE":
+                    generar_informe_insuficiente(tech, serie, detalle2)
+                    sys.exit(0)
+                # Persistir la serie corregida en BD
+                persistir_serie_corregida(tech, serie)
+                
     log("2/3", "Verificando y ajustando con GLM...")
     verify_and_fit(tech)
     
