@@ -86,7 +86,7 @@ HALLAZGOS DE REGLAS DETERMINISTAS:
 
 EVALÚA cada año:
 1. ¿El valor es PLAUSIBLE para esta tecnología en ese año? (compara con lo que sabes del producto: lanzamiento, crecimiento, tamaño de mercado)
-2. ¿La MÉTRICA parece consistente entre años? (MAU vs visitas vs acumulado — un salto 8x puede indicar métricas mezcladas)
+2. ¿La MÉTRICA parece consistente entre años? (TEN EN CUENTA: crecimientos explosivos de 5x a 10x en un año son NORMALES y legítimos en adopción digital inicial de productos como ChatGPT o Instagram. SOLO marca un salto como SOSPECHOSO si es incompatible con el mercado direccionable total, o si indica una obvia mezcla de métricas —por ejemplo, pasar de MAU a usuarios acumulados históricos—).
 3. ¿Faltan años con datos conocidos? (si el producto existía con usuarios y el valor es 0, es un error de extracción)
 
 CASOS DE REFERENCIA de errores reales que debes detectar:
@@ -620,14 +620,25 @@ def main():
         if correcciones:
             # Aplicar correcciones a la serie
             corrigio_algo = False
+            max_original = max([v for v in serie.values() if v > 0] + [1.0])
             for ano, val in correcciones.items():
                 if val is not None:
                     val_str = str(val).replace('M', '').replace('m', '').replace(',', '').strip()
-                    serie[int(ano)] = float(val_str)
-                    print(f"[verify] Corregido {ano}: -> {val_str}M")
+                    val_flt = float(val_str)
+                    if val_flt > max_original * 1000:
+                        val_flt = val_flt / 1000000.0
+                    serie[int(ano)] = val_flt
+                    print(f"[verify] Corregido {ano}: -> {val_flt}M")
                     corrigio_algo = True
             
             if corrigio_algo:
+                non_zeros = sum(1 for v in serie.values() if v > 0.0)
+                if non_zeros < 4:
+                    print(f"[verify] INSERVIBLE: solo {non_zeros} puntos válidos post-corrección")
+                    detalle2 = {"razonamiento_general": f"Tras la re-extracción dirigida, la serie sigue teniendo puntos insuficientes ({non_zeros} válidos). Se requieren mínimo 4 para proyectar fiablemente."}
+                    generar_informe_insuficiente(tech, serie, detalle2)
+                    sys.exit(0)
+                    
                 # Re-juzgar la serie corregida (una sola vez)
                 veredicto2, _, detalle2 = claude_judge_data(tech, serie, [], [])
                 print(f"[verify] Segunda evaluación: {veredicto2}")
