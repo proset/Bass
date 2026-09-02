@@ -146,9 +146,9 @@ PROBLEMAS DETECTADOS EN LA EXTRACCIÓN ANTERIOR:
 
 INSTRUCCIONES DE BÚSQUEDAD DIRIGIDA:
 1. Busca el MAU o usuarios activos de esta tecnología para CADA año listado.
-2. Para productos web: "MAU {tech} {año}", "dominio traffic {año}"
-3. Para apps: "app downloads/users {año} SensorTower"
-4. Para APIs/empresas: "empresa users {año} earnings"
+2. Para productos web: "MAU {tech} {{año}}", "dominio traffic {{año}}"
+3. Para apps: "app downloads/users {{año}} SensorTower"
+4. Para APIs/empresas: "empresa users {{año}} earnings"
 5. CITA LA FUENTE de cada valor.
 6. Si el producto NO EXISTÍA ese año, responde 0.
 7. Si no encuentras el dato, responde null (NO inventes).
