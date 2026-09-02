@@ -650,13 +650,13 @@ def main():
                 # FIX 1: Re-ejecutar gate y revertir si se rompieron invariantes
                 ok_post, sospechosos_post, motivos_post = data_quality_gate(serie)
                 if not ok_post:
-                    print(f"[verify] La serie corregida rompe invariantes del gate: {motivos_post}")
-                    # Revertimos solo los que intentamos corregir
+                    motivos_post_safe = [str(m).replace('→', '->') for m in motivos_post]
+                    print(f"[verify] La serie corregida rompe invariantes del gate: {motivos_post_safe}")
+                    # Revertimos todas las correcciones intentadas (ya que el salto puede ser culpa del año anterior o actual)
                     anos_intentados = [a for a, v in correcciones_ordenadas]
-                    for ano_sos in sospechosos_post:
-                        if ano_sos in anos_intentados:
-                            print(f"[verify] Revirtiendo {ano_sos} al valor original {serie_pre_correccion[ano_sos]}M")
-                            serie[ano_sos] = serie_pre_correccion[ano_sos]
+                    for a in anos_intentados:
+                        print(f"[verify] Revirtiendo {a} al valor original {serie_pre_correccion[a]}M")
+                        serie[a] = serie_pre_correccion[a]
                 non_zeros = sum(1 for v in serie.values() if v > 0.0)
                 if non_zeros < 4:
                     print(f"[verify] INSERVIBLE: solo {non_zeros} puntos válidos post-corrección")
