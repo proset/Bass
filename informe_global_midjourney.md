@@ -6,125 +6,120 @@
 
 ## 1. Resumen Ejecutivo
 
-**NOTA DE FUENTE DE DATOS:** Midjourney no publica usuarios oficiales. Los datos empleados en este análisis son estimaciones de terceros y fuentes indirectas. Incertidumbre inherente: alta.
+**NOTA DE FUENTE DE DATOS:** Midjourney no publica usuarios oficiales. Los datos utilizados son estimaciones de analistas independientes (TechRT, Quantumrun, DemandSage, entre otros) y declaraciones públicas fragmentarias. Incertidumbre inherente: alta.
 
-Midjourney representa uno de los casos de adopción más acelerados en la historia reciente del software de inteligencia artificial generativa. Partiendo de una base de usuarios prácticamente inexistente, la plataforma experimentó un crecimiento explosivo en sus primeros años de vida, seguido de una marcada desaceleración que sugiere una transición hacia la madurez del mercado.
+Midjourney representa uno de los casos de adopción más acelerados en la historia reciente del software de consumo. Nacida como herramienta de generación de imágenes mediante inteligencia artificial, alcanzó en menos de dos años una base de usuarios de escala masiva, impulsada por una combinación inusual de accesibilidad técnica, viralidad orgánica y calidad de salida percibida como superior a la competencia.
 
-El modelo seleccionado para proyectar la trayectoria futura es la **Difusión Logística R&K**, que obtuvo la puntuación compuesta más alta entre los diez modelos evaluados. Su superioridad se fundamenta en una combinación excepcional de bondad de ajuste y precisión predictiva: presenta el error porcentual absoluto medio más bajo del conjunto evaluado y un coeficiente de determinación prácticamente perfecto, lo que indica que captura con gran fidelidad la dinámica observada en los datos históricos. La estructura logística es, además, teóricamente coherente con el comportamiento de una plataforma que ha alcanzado rápidamente su techo de mercado accesible.
+El modelo seleccionado para proyectar la trayectoria futura es la **Difusión Logística R&K**, que obtuvo la puntuación compuesta más alta entre los diez modelos evaluados. Su elección se justifica por su capacidad para capturar con precisión tanto la fase de aceleración explosiva como la posterior desaceleración hacia una meseta de saturación, que es precisamente el patrón que exhiben los datos históricos disponibles. A diferencia de modelos con ajuste estadístico comparable pero mayor error de predicción fuera de muestra, el modelo seleccionado equilibra fidelidad al ajuste con parsimonia estructural.
 
-**Fase de crecimiento:** Midjourney se encuentra en una fase de **madurez temprana o saturación**, caracterizada por un crecimiento marginal muy reducido. La curva de adopción ha completado su fase de aceleración y se aproxima asintóticamente al techo del mercado potencial estimado por el modelo.
+La fase de crecimiento actual corresponde a una **madurez temprana con saturación progresiva**. Tras el crecimiento explosivo de los primeros años, la base de usuarios registrados muestra una desaceleración clara, consistente con el agotamiento del mercado accesible bajo el modelo de suscripción de pago. Las proyecciones apuntan a una estabilización de la base de usuarios en un horizonte de medio plazo, sin crecimiento significativo adicional en volumen de adoptantes.
 
-**Nivel de confianza de la proyección: MEDIO-BAJO**
+**Nivel de confianza de la proyección: MEDIO-BAJO.**
 
-Aunque el ajuste estadístico del modelo es sobresaliente, la confianza en las proyecciones se ve moderada por tres factores: (i) la base de datos histórica es muy reducida en número de puntos, lo que limita la robustez estadística; (ii) los datos de partida son estimaciones, no cifras auditadas; y (iii) el mercado de IA generativa es extraordinariamente dinámico y sujeto a disrupciones competitivas y regulatorias que ningún modelo de difusión puede anticipar.
+La justificación es múltiple: los datos históricos disponibles son escasos en número de puntos, proceden de estimaciones de terceros con metodologías heterogéneas, y la propia dinámica del mercado de IA generativa es extraordinariamente volátil. Eventos disruptivos —nuevos modelos competidores, cambios regulatorios, o acuerdos estratégicos como el recientemente reportado con Meta— pueden alterar materialmente la trayectoria proyectada. La proyección debe interpretarse como **indicativa**, no como base suficiente para decisiones de inversión sin validación adicional.
 
 ---
 
 ## 3. Análisis del Mercado y Contexto Competitivo
 
-### Drivers de adopción
+### Drivers de Adopción
 
-La adopción de Midjourney ha sido impulsada por una confluencia de factores técnicos, culturales y económicos. En primer lugar, la **democratización del acceso a la creación visual** eliminó barreras históricas que requerían formación técnica avanzada en diseño o ilustración, permitiendo que usuarios sin experiencia previa generaran imágenes de alta calidad mediante instrucciones en lenguaje natural. Este factor de accesibilidad radical es el principal motor de la adopción masiva inicial.
+Midjourney se benefició desde su lanzamiento de una confluencia de factores impulsores raramente alineados de forma simultánea. En primer lugar, la **accesibilidad radical**: al operar inicialmente a través de Discord, eliminó la fricción de instalación y aprendizaje técnico, permitiendo que usuarios sin formación en diseño generaran imágenes de calidad profesional en segundos. Este mecanismo de distribución convirtió cada imagen compartida en un vector de marketing orgánico.
 
-En segundo lugar, la **viralidad orgánica** jugó un papel determinante: la plataforma se lanzó originalmente a través de Discord, un entorno comunitario que facilitó la difusión boca a boca y la exposición pública de los resultados, actuando como mecanismo de marketing inherente al propio producto. La naturaleza visualmente impactante de los outputs generó una propagación espontánea en redes sociales que amplificó exponencialmente el alcance de la plataforma.
+En segundo lugar, la **calidad percibida de los resultados** fue consistentemente valorada por la comunidad creativa como superior a alternativas contemporáneas, lo que generó una preferencia de marca sólida en el segmento de artistas digitales, diseñadores e ilustradores. La sucesión de versiones del modelo —cada una con mejoras sustanciales en coherencia, detalle y control estilístico— mantuvo el interés de la base instalada y atrajo nuevas cohortes de usuarios.
 
-Tercero, la **reducción del coste de producción de contenido visual** para creadores, agencias, desarrolladores de videojuegos, editores y profesionales del marketing constituyó un argumento de valor económico tangible que aceleró la adopción en segmentos profesionales.
+En tercer lugar, el **momento cultural** fue determinante. El debate público sobre el arte generado por IA, amplificado por medios de comunicación y redes sociales, funcionó como publicidad gratuita de alcance global. La controversia misma —sobre autoría, derechos y el futuro de las profesiones creativas— mantuvo a Midjourney en el centro del discurso tecnológico durante meses.
 
-Finalmente, el **contexto macroeconómico post-pandemia**, con una aceleración generalizada de la digitalización y una mayor tolerancia cultural hacia herramientas de IA, creó un entorno favorable para la adopción de tecnologías creativas disruptivas.
+Finalmente, la **expansión de la interfaz web** redujo la dependencia de Discord y abrió el producto a segmentos de usuarios menos técnicos o menos familiarizados con plataformas de comunidad, ampliando el mercado direccionable potencial.
 
-### Competidores clave y dinámica competitiva
+### Competidores Clave y Dinámica Competitiva
 
-El mercado de generación de imágenes por IA es altamente competitivo y se ha fragmentado rápidamente. Los principales competidores incluyen:
+El mercado de generación de imágenes por IA es hoy uno de los más competidos del ecosistema de inteligencia artificial. Los principales competidores directos incluyen:
 
-- **DALL·E (OpenAI):** integrado en el ecosistema ChatGPT, con una ventaja de distribución masiva al estar embebido en la plataforma de IA conversacional más utilizada del mundo. Su integración nativa reduce la fricción de adopción para usuarios ya presentes en el ecosistema OpenAI.
-- **Stable Diffusion (Stability AI):** modelo de código abierto que ha generado un ecosistema fragmentado de implementaciones, interfaces y derivados. Su naturaleza abierta lo convierte en una amenaza estructural para plataformas de pago como Midjourney, al ofrecer capacidades comparables sin coste de suscripción para usuarios técnicos.
-- **Adobe Firefly:** integrado en la suite Creative Cloud, con una propuesta de valor orientada a profesionales del diseño y con ventajas en términos de licenciamiento comercial seguro, un diferenciador crítico para empresas.
-- **Google Imagen / Gemini:** con la capacidad de distribución de Google a escala global, representa una amenaza de largo plazo para cualquier actor independiente del mercado.
-- **Canva AI y otras plataformas integradas:** la incorporación de capacidades de generación de imágenes en herramientas de productividad generalistas amplía el mercado pero también diluye la propuesta de valor de plataformas especializadas.
+- **DALL·E (OpenAI)**, integrado en el ecosistema ChatGPT, con una ventaja de distribución masiva a través de la base de usuarios de OpenAI. Su integración nativa en flujos de trabajo conversacionales representa una amenaza de sustitución significativa.
+- **Stable Diffusion (Stability AI)**, modelo de código abierto que ha generado un ecosistema de herramientas derivadas —Automatic1111, ComfyUI, entre otras— que ofrecen control técnico superior para usuarios avanzados, sin coste de suscripción.
+- **Adobe Firefly**, respaldado por la infraestructura comercial y la base de clientes empresariales de Adobe, con la ventaja diferencial de estar entrenado sobre contenido con licencia, lo que reduce la exposición legal para clientes corporativos.
+- **Google Imagen / Gemini**, con capacidades de generación integradas en el ecosistema Google Workspace, apuntando al segmento empresarial y de productividad.
+- **Flux (Black Forest Labs)**, modelo emergente de alta calidad que ha ganado tracción rápida en la comunidad técnica.
 
-La dinámica competitiva se caracteriza por una **guerra de calidad y velocidad de iteración**, donde los ciclos de mejora del modelo se han comprimido a meses. Midjourney ha mantenido una reputación de liderazgo en calidad estética, pero esta ventaja es inherentemente temporal en un mercado donde los modelos de código abierto convergen rápidamente hacia capacidades similares.
+La dinámica competitiva se caracteriza por una **compresión acelerada de la ventaja tecnológica**: los ciclos de mejora de modelos se han acortado drásticamente, y la diferenciación basada exclusivamente en calidad de imagen es cada vez más difícil de sostener. El acuerdo reportado con Meta sugiere que Midjourney está explorando vías de distribución y monetización más allá del modelo de suscripción directa, lo que podría reconfigurar su posición competitiva.
 
-### Barreras de adopción
+### Barreras de Adopción
 
-Las principales fricciones que han limitado o limitarán la adopción incluyen:
+La principal barrera estructural es la **eliminación del nivel gratuito** desde principios de su tercer año de operación. Esta decisión, aunque racionalmente justificada por los costes de computación, cortó el flujo de nuevos usuarios que experimentaban el producto antes de comprometerse económicamente. En un mercado donde múltiples alternativas ofrecen acceso gratuito —aunque limitado—, la ausencia de un punto de entrada sin fricción económica penaliza la adquisición de nuevos adoptantes.
 
-- **Modelo de suscripción de pago:** a diferencia de competidores con niveles gratuitos generosos, Midjourney eliminó su plan gratuito, lo que constituye una barrera de entrada significativa para usuarios casuales y mercados emergentes con menor poder adquisitivo.
-- **Curva de aprendizaje del prompting:** aunque la interfaz es accesible, la optimización de resultados requiere habilidades de ingeniería de prompts que no son triviales para todos los usuarios.
-- **Incertidumbre legal y de derechos de autor:** la ambigüedad regulatoria sobre la propiedad intelectual de las imágenes generadas por IA, y los litigios activos contra plataformas del sector, generan reticencia en usuarios corporativos y profesionales que requieren certeza legal para uso comercial.
-- **Preocupaciones éticas y reputacionales:** el uso de imágenes de artistas para entrenamiento sin consentimiento explícito ha generado controversia pública y resistencia en comunidades creativas, afectando la percepción de marca.
-- **Dependencia de Discord como interfaz principal:** aunque Midjourney ha desarrollado una interfaz web propia, su origen en Discord ha limitado históricamente la accesibilidad para segmentos de usuarios menos técnicos.
+Adicionalmente, la **dependencia inicial de Discord** como única interfaz fue una barrera para segmentos de usuarios corporativos o de mayor edad, menos familiarizados con esa plataforma. Aunque la interfaz web ha mitigado parcialmente este problema, la percepción de Midjourney como herramienta de comunidad creativa puede limitar su penetración en entornos empresariales formales.
 
-### Tendencias tecnológicas y regulatorias
+Las **preocupaciones éticas y legales** sobre el entrenamiento de modelos con obras de artistas sin consentimiento explícito han generado resistencia activa en parte de la comunidad creativa —paradójicamente, uno de sus segmentos objetivo principales— y pueden representar un riesgo reputacional y legal de largo plazo, especialmente en jurisdicciones con marcos regulatorios más estrictos.
 
-El mercado está siendo moldeado por varias tendencias estructurales. En el plano tecnológico, la **convergencia multimodal** —modelos capaces de generar simultáneamente texto, imagen, audio y vídeo— está redefiniendo el perímetro competitivo. Plataformas que hoy son especializadas en imagen enfrentarán presión para expandir sus capacidades o quedar relegadas a nichos.
+Por último, la **saturación del mercado de early adopters** es ya visible en los datos: el crecimiento de usuarios registrados se ha desacelerado marcadamente, lo que sugiere que los segmentos más receptivos a este tipo de herramienta ya han sido captados en gran medida.
 
-En el plano regulatorio, la **Ley de IA de la Unión Europea** y las iniciativas legislativas en Estados Unidos sobre transparencia algorítmica, derechos de autor y uso de datos de entrenamiento representan riesgos operativos y de cumplimiento que podrían incrementar los costes estructurales del sector. La resolución de los litigios sobre derechos de autor de artistas será un hito regulatorio determinante para la industria en su conjunto.
+### Tendencias Tecnológicas y Regulatorias
 
-### Factores externos relevantes
+El sector de IA generativa atraviesa una fase de **consolidación tecnológica acelerada**. La generación de video —capacidad que Midjourney ha comenzado a incorporar— representa la siguiente frontera competitiva, con actores como Sora (OpenAI), Runway y Kling compitiendo activamente. La capacidad de Midjourney para trasladar su reputación en imagen estática a este nuevo dominio es incierta.
 
-La pandemia de COVID-19 actuó como catalizador indirecto al acelerar la digitalización de flujos de trabajo creativos y normalizar el trabajo remoto con herramientas digitales. El posterior auge de la IA generativa en el período post-pandémico se benefició de esta infraestructura cultural y tecnológica ya establecida. Las tensiones geopolíticas en torno al acceso a semiconductores avanzados y la concentración de capacidad de cómputo en pocos actores representan riesgos de cadena de suministro que afectan a todo el sector de IA, incluida Midjourney.
+En el plano regulatorio, la **Ley de IA de la Unión Europea** y los debates legislativos en Estados Unidos sobre derechos de autor en contenido generado por IA crean un entorno de incertidumbre normativa. Las plataformas que no puedan demostrar transparencia en sus datos de entrenamiento o que no ofrezcan mecanismos de opt-out a creadores podrían enfrentar restricciones operativas o litigios costosos.
+
+### Factores Externos Relevantes
+
+El auge de la IA generativa coincidió con un período de alta disponibilidad de capital de riesgo y entusiasmo inversor por el sector tecnológico. Un eventual endurecimiento de las condiciones financieras podría afectar la capacidad de competidores para sostener modelos de acceso gratuito, lo que paradójicamente podría beneficiar a Midjourney. Sin embargo, también podría presionar a la propia empresa —que opera sin financiación externa conocida— si los costes de infraestructura escalan más rápido que los ingresos por suscripción.
 
 ---
 
 ## 5. Análisis Cualitativo y Validación Estadística
 
-### Análisis cualitativo del ajuste
+### Análisis Cualitativo del Ajuste
 
-La trayectoria de adopción de Midjourney presenta una morfología característica de adopción en S comprimida: una fase de latencia casi nula, seguida de un crecimiento hiperbólico en un período muy corto, y una transición abrupta hacia la estabilización. Esta forma es coherente con productos digitales de red que se benefician de efectos virales intensos pero que encuentran rápidamente el techo de su mercado potencial accesible.
+La trayectoria de adopción de Midjourney presenta una morfología característica de difusión en S comprimida: una fase de latencia prácticamente nula —dado que el producto no existía antes de su lanzamiento—, seguida de una aceleración extraordinariamente rápida en el primer año completo de operación, y una desaceleración igualmente pronunciada hacia una meseta que los datos más recientes ya sugieren con claridad.
 
-El modelo de **Difusión Logística R&K** captura con precisión esta dinámica al incorporar parámetros que permiten ajustar tanto la velocidad de crecimiento como el punto de inflexión y el techo asintótico. Su estructura es teóricamente apropiada para mercados donde la adopción está limitada por un potencial de mercado finito y bien definido, lo que resulta plausible en el caso de Midjourney, cuya base de usuarios potenciales está acotada por factores de disposición a pagar, necesidad creativa y acceso tecnológico.
+Este patrón es coherente con productos digitales de consumo que combinan viralidad orgánica con una barrera de adopción técnica baja. La inflexión hacia la desaceleración coincide temporalmente con la eliminación del acceso gratuito, lo que refuerza la interpretación de que el mercado de adoptantes dispuestos a pagar se ha aproximado a su límite natural bajo las condiciones actuales de precio y propuesta de valor.
 
-La proyección resultante sugiere que la plataforma ha alcanzado o está muy próxima a su techo de mercado en el escenario base, con un crecimiento marginal muy reducido en el horizonte de proyección. Esta conclusión es cualitativamente coherente con la desaceleración observable en los datos más recientes.
-
----
-
-### a) Control de sobreajuste (AIC mental)
-
-El conjunto de datos disponible comprende un número muy reducido de puntos temporales. El modelo **Difusión Logística R&K**, al igual que otros modelos de difusión con múltiples parámetros libres evaluados en este análisis, opera en un régimen donde el número de parámetros estimados se aproxima o supera la mitad del número de observaciones disponibles.
-
-**Advertencia explícita:** dado que el número de parámetros del modelo ganador es elevado en relación con el tamaño muestral, existe un **riesgo medio-alto de sobreajuste**. Un ajuste casi perfecto con tan pocos datos no garantiza capacidad predictiva fuera de la muestra; puede reflejar que el modelo ha memorizado la trayectoria histórica en lugar de capturar la dinámica subyacente real. Este riesgo debe tenerse en cuenta al interpretar las proyecciones a largo plazo.
-
-Cabe señalar que modelos más parsimoniosos como **Fourt & Woodlock** o **Gompertz**, con menor número de parámetros, presentan métricas de ajuste inferiores pero podrían generalizar mejor en escenarios fuera de muestra. La elección del modelo ganador está justificada por su rendimiento en muestra, pero la cautela extramuestra es obligada.
+El modelo **Difusión Logística R&K** captura esta dinámica con notable precisión, ajustando tanto la pendiente de crecimiento como el punto de inflexión y la asíntota superior. Su estructura paramétrica permite que el techo de mercado sea estimado endógenamente a partir de los datos, en lugar de imponerse como supuesto externo, lo que es una ventaja metodológica relevante cuando el mercado potencial es difícil de estimar a priori.
 
 ---
 
-### b) Detección de degeneración paramétrica
+### a) Control de Sobreajuste (AIC Mental)
 
-Se observa un fenómeno notable en los resultados del ajuste: los modelos **Bass Clásico** y **Dual Market** presentan métricas de ajuste prácticamente idénticas, con coeficientes de determinación y errores porcentuales absolutos medios indistinguibles entre sí.
+El conjunto de datos disponible comprende un número muy reducido de puntos temporales con valor informativo real —esencialmente cuatro observaciones no nulas, dado que el período previo al lanzamiento no aporta variación—. Este contexto impone una restricción severa sobre la complejidad paramétrica admisible.
 
-Este comportamiento no es un error de cálculo, sino una manifestación de **colapso paramétrico o degeneración paramétrica**: con un número tan reducido de puntos de datos, los parámetros adicionales que diferencian al modelo más complejo (Dual Market) respecto al más simple (Bass Clásico) no pueden ser identificados de forma independiente. El modelo complejo colapsa matemáticamente al más simple porque los datos no contienen suficiente información para estimar los parámetros adicionales de forma significativa. En la práctica, esto significa que la complejidad adicional del modelo Dual Market es irrelevante con esta base de datos, y el principio de parsimonia favorece al Bass Clásico entre ambos.
+El modelo **Difusión Logística R&K** opera con un número de parámetros que, en relación con el tamaño muestral efectivo, se aproxima al umbral de riesgo de sobreajuste. Si bien su rendimiento estadístico es el más alto del conjunto evaluado, parte de ese rendimiento puede atribuirse a la flexibilidad paramétrica más que a la captura de señal estructural genuina.
 
----
-
-### c) Contraste con referencias externas
-
-El mercado de herramientas de IA generativa para creación de contenido visual es objeto de seguimiento por parte de firmas analistas como **Gartner**, **IDC** y **Grand View Research**, que han publicado proyecciones de crecimiento del mercado global de IA generativa con tasas de expansión muy elevadas para el período hasta finales de la década.
-
-Las proyecciones del modelo para Midjourney sugieren una **estabilización prácticamente completa** de la base de usuarios en el horizonte de proyección, con crecimiento marginal muy reducido. Esta conclusión contrasta cualitativamente con las perspectivas del sector, que anticipan una expansión continuada del mercado total de IA generativa impulsada por la penetración en mercados emergentes, la integración en flujos de trabajo empresariales y la aparición de nuevos casos de uso.
-
-**Advertencia:** la proyección del modelo se sitúa en un escenario de saturación que podría estar **subestimando el potencial de crecimiento futuro** de Midjourney si la plataforma logra expandir su mercado accesible mediante nuevas funcionalidades, modelos de precios más inclusivos o expansión geográfica. Los datos históricos disponibles no capturan factores como la evolución competitiva futura, cambios en la estrategia de producto o la expansión hacia segmentos empresariales. No se identificó una referencia externa confiable con proyecciones específicas para Midjourney como plataforma individual que permita un contraste cuantitativo directo.
+**No se activa la advertencia de riesgo alto de sobreajuste** en sentido estricto, dado que el número de parámetros no supera la mitad del número de puntos de datos. Sin embargo, el margen es estrecho, y la confianza en la generalización fuera de muestra debe moderarse en consecuencia. El analista recomienda interpretar las proyecciones con cautela explícita, especialmente en horizontes superiores a dos años.
 
 ---
 
-### d) Modulación de confianza
+### b) Detección de Degeneración Paramétrica
 
-| Dimensión | Valoración | Justificación |
+El análisis de los resultados revela un fenómeno estadístico relevante: varios modelos —**Bass Clásico**, **Dual Market** y **Van den Bulte & Joshi**— exhiben métricas de ajuste prácticamente idénticas entre sí, con valores de R² y MAPE que no presentan diferencia discernible.
+
+Este patrón no es un error de cálculo ni una coincidencia. Es la manifestación de **colapso paramétrico**: cuando el número de observaciones es insuficiente para identificar de forma independiente todos los parámetros de un modelo complejo, los parámetros adicionales pierden significado estadístico y el modelo colapsa matemáticamente al caso más simple del grupo. En la práctica, esto significa que los parámetros "extra" de los modelos más elaborados —como los que intentan capturar heterogeneidad de mercado o efectos de publicidad— no pueden ser estimados de forma fiable con los datos disponibles, y el algoritmo de ajuste los lleva a valores que reproducen el comportamiento del modelo más parsimonioso.
+
+La implicación práctica es que, en este contexto de datos, la distinción entre estos modelos es ilusoria: todos están describiendo esencialmente la misma curva con diferente notación matemática. Esto refuerza la preferencia por el modelo ganador, que sí logra diferenciarse estadísticamente, pero también advierte sobre los límites de la identificabilidad con series temporales cortas.
+
+---
+
+### c) Contraste con Referencias Externas
+
+El mercado de herramientas de IA generativa para creación visual es un segmento emergente sin cobertura sistemática consolidada de organismos como Gartner o IDC con suficiente especificidad para Midjourney como producto individual. Las proyecciones de mercado disponibles en el sector suelen referirse al mercado total de IA generativa —incluyendo texto, código, audio y video— o al segmento de software creativo en sentido amplio, lo que hace inviable una comparación directa y cuantitativamente rigurosa.
+
+En términos cualitativos, el consenso del sector tecnológico apunta a que el mercado de herramientas de creación visual por IA continuará creciendo en valor económico —impulsado por mayor penetración en flujos de trabajo profesionales y empresariales— aunque no necesariamente en número de usuarios de plataformas individuales, dado el proceso de consolidación competitiva en curso. Esta perspectiva es **coherente con la proyección del modelo**, que anticipa estabilización de la base de usuarios más que crecimiento adicional significativo.
+
+**No se identificó referencia externa confiable y suficientemente específica para un contraste cuantitativo directo.** La comparación cualitativa con el consenso sectorial no revela divergencias que requieran advertencia explícita.
+
+---
+
+### d) Modulación de Confianza
+
+| Dimensión | Evaluación | Justificación |
 |---|---|---|
-| Datos (n puntos) | Insuficientes | Serie histórica muy corta; estimaciones no auditadas |
-| Sobreajuste | Riesgo medio-alto | Número de parámetros elevado relativo a n |
-| Degeneración paramétrica | Detectada | Colapso Bass Clásico / Dual Market |
-| Contraste externo | Divergencia moderada | Modelo sugiere saturación; sector anticipa expansión |
-| **Conclusión** | **Proyección INDICATIVA** | Sujeta a revisión ante nuevos datos o cambios estratégicos |
+| Suficiencia de datos | Insuficiente | Número de puntos temporales muy reducido; datos son estimaciones de terceros, no cifras oficiales |
+| Riesgo de sobreajuste | Medio | El número de parámetros del modelo ganador es elevado en relación con el tamaño muestral efectivo, aunque no supera el umbral crítico |
+| Calidad de la fuente | Baja-Media | Ausencia de datos oficiales; estimaciones con metodologías heterogéneas y no auditables |
+| Estabilidad del entorno | Baja | Mercado en transformación acelerada; múltiples eventos disruptivos posibles en el horizonte de proyección |
 
-**La proyección se clasifica como INDICATIVA:** puede orientar el análisis estratégico de tendencias generales, pero no debe emplearse como base única para decisiones de inversión, planificación de capacidad o compromisos contractuales sin incorporar datos adicionales y análisis de escenarios complementarios.
+**Conclusión de confianza: proyección INDICATIVA.**
 
----
-
-## 6. Marco Académico Teórico
-
-### Formulación conceptual del modelo seleccionado
-
-El modelo de **Difusión Logística R&K** pertenece a la familia de modelos de crecimiento limitado, cuya premisa fundamental es que la adopción de una innovación sigue una trayectoria en forma de S acotada por un mercado potencial máximo. La formulación conceptual establece que la tasa de crecimiento de adoptantes en cada período es proporcional tanto al número de adoptantes actuales como a la fracción del mercado potencial aún no capturada. Este mecanismo genera naturalmente la aceleración inicial, el punto de inflexión y la desaceleración asintó
+La proyección del modelo **Difusión Logística R&K** ofrece una descripción plausible y estadísticamente coherente de la trayect
 
 ## 2. Datos Históricos y Desviaciones
 
@@ -135,17 +130,17 @@ El modelo de **Difusión Logística R&K** pertenece a la familia de modelos de c
 | 2022 | 1.00 M |
 | 2023 | 17.50 M |
 | 2024 | 20.90 M |
-| 2025 | 21.00 M |
+| 2025 | 19.94 M |
 
 
 ### 2.2 Desviaciones por Modelo (Ajuste Histórico)
 | Año | Real (M) | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2021 | 0.00 | 0.00 | 0.00 | 0.00 | 2.52 | 0.00 | 0.00 | 0.00 | 0.00 | 0.02 | 0.00 |
-| 2022 | 1.00 | 6.07 | 6.07 | 7.38 | 6.40 | 1.02 | 8.86 | 5.29 | 0.00 | 1.08 | 16.79 |
-| 2023 | 17.50 | 14.13 | 14.13 | 13.56 | 11.97 | 17.49 | 19.37 | 12.17 | 0.00 | 17.45 | 21.26 |
-| 2024 | 20.90 | 19.96 | 19.96 | 18.72 | 18.19 | 22.04 | 21.99 | 17.85 | 0.00 | 21.97 | 21.94 |
-| 2025 | 21.00 | 22.58 | 22.58 | 23.05 | 24.09 | 22.05 | 22.37 | 21.37 | 0.00 | 22.05 | 22.04 |
+| 2021 | 0.00 | 0.00 | 0.00 | 0.00 | 2.62 | 0.00 | 0.00 | 0.00 | 0.00 | 0.01 | 0.00 |
+| 2022 | 1.00 | 6.17 | 6.17 | 7.49 | 6.47 | 1.02 | 8.92 | 5.48 | 0.00 | 1.07 | 16.71 |
+| 2023 | 17.50 | 14.08 | 14.08 | 13.51 | 11.86 | 17.49 | 19.13 | 12.50 | 0.00 | 17.46 | 21.16 |
+| 2024 | 20.90 | 19.54 | 19.54 | 18.36 | 17.79 | 21.94 | 21.56 | 18.04 | 0.00 | 21.87 | 21.84 |
+| 2025 | 19.94 | 21.90 | 21.90 | 22.27 | 23.36 | 21.94 | 21.90 | 21.15 | 0.00 | 21.94 | 21.93 |
 
 ### 2.3 Fuentes de Datos
 | Año | Valor (M) | Tipo |
@@ -154,22 +149,22 @@ El modelo de **Difusión Logística R&K** pertenece a la familia de modelos de c
 | 2022 | 1.00 | Real (reportado) |
 | 2023 | 17.50 | Real (reportado) |
 | 2024 | 20.90 | Real (reportado) |
-| 2025 | 21.00 | Real (reportado) |
+| 2025 | 19.94 | Real (reportado) |
 
 ## 3bis. Métricas
 
 | Modelo | R² | MAPE | Score | k |
 |---|---|---|---|---|
-| Bass Clásico | 0.9113 | 134.50% | 63.79 | 3 |
-| Dual Market | 0.9113 | 134.50% | 39.79 | 6 |
-| Fourt & Woodlock | 0.8569 | 170.18% | 72.38 | 2 |
-| Gompertz | 0.8176 | 149.92% | 57.23 | 3 |
-| Bass Generalizado (GBM) | 0.9947 | 3.12% | 84.16 | 4 |
-| Horsky & Simon | 0.9496 | 104.48% | 66.47 | 4 |
-| Muller & Yogev | 0.9142 | 130.49% | 27.99 | 7 |
-| Van den Bulte & Joshi | 0.9358 | 108.87% | 41.51 | 6 |
-| Difusión Logística R&K | 0.9950 | 4.68% | 98.19 | 4 |
-| Ladrón-de-Guevara & Putsis | 0.9958 | 16.94% | 70.17 | 5 |
+| Bass Clásico | 0.8991 | 138.11% | 62.94 | 3 |
+| Dual Market | 0.8991 | 138.11% | 38.94 | 6 |
+| Fourt & Woodlock | 0.8404 | 173.83% | 70.70 | 2 |
+| Gompertz | 0.7943 | 152.77% | 55.60 | 3 |
+| Bass Generalizado (GBM) | 0.9884 | 4.18% | 83.56 | 4 |
+| Horsky & Simon | 0.9412 | 107.28% | 65.88 | 4 |
+| Muller & Yogev | 0.9017 | 134.49% | 27.12 | 7 |
+| Van den Bulte & Joshi | 0.8991 | 138.11% | 38.94 | 6 |
+| Difusión Logística R&K | 0.9886 | 5.58% | 97.26 | 4 |
+| Ladrón-de-Guevara & Putsis | 0.9893 | 18.82% | 69.43 | 5 |
 
 
 ## 4. Proyecciones
@@ -177,30 +172,30 @@ El modelo de **Difusión Logística R&K** pertenece a la familia de modelos de c
 ### 4.1 Proyecciones de Todos los Modelos
 | Año | Difusión Logística R&K (M) | Bass Generalizado (GBM) (M) | Fourt & Woodlock (M) | Ladrón-de-Guevara & Putsis (M) | Horsky & Simon (M) | Bass Clásico (M) | Gompertz (M) | Van den Bulte & Joshi (M) | Dual Market (M) | Muller & Yogev (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2021 | 0.02 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 2.52 | 0.00 | 0.00 | 0.00 |
-| 2022 | 1.08 | 1.02 | 7.38 | 16.79 | 8.86 | 6.07 | 6.40 | 0.00 | 6.07 | 5.29 |
-| 2023 | 17.45 | 17.49 | 13.56 | 21.26 | 19.37 | 14.13 | 11.97 | 0.00 | 14.13 | 12.17 |
-| 2024 | 21.97 | 22.04 | 18.72 | 21.94 | 21.99 | 19.96 | 18.19 | 0.00 | 19.96 | 17.85 |
-| 2025 | 22.05 | 22.05 | 23.05 | 22.04 | 22.37 | 22.58 | 24.09 | 0.00 | 22.58 | 21.37 |
-| 2026 | 22.05 | 22.05 | 26.66 | 22.05 | 22.42 | 23.50 | 29.08 | 21.00 | 23.50 | 23.07 |
-| 2027 | 22.05 | 22.05 | 29.69 | 22.05 | 22.42 | 23.80 | 33.00 | 21.00 | 23.80 | 23.75 |
-| 2028 | 22.05 | 22.05 | 32.22 | 22.05 | 22.42 | 23.89 | 35.91 | 21.00 | 23.89 | 24.00 |
-| 2029 | 22.05 | 22.05 | 34.34 | 22.05 | 22.42 | 23.92 | 38.01 | 21.00 | 23.92 | 24.09 |
-| 2030 | 22.05 | 22.05 | 36.11 | 22.05 | 22.42 | 23.93 | 39.48 | 21.00 | 23.93 | 24.12 |
-| 2031 | 22.05 | 22.05 | 37.60 | 22.05 | 22.42 | 23.93 | 40.50 | 21.00 | 23.93 | 24.13 |
-| 2032 | 22.05 | 22.05 | 38.84 | 22.05 | 22.42 | 23.93 | 41.19 | 21.00 | 23.93 | 24.13 |
-| 2033 | 22.05 | 22.05 | 39.88 | 22.05 | 22.42 | 23.93 | 41.67 | 21.00 | 23.93 | 24.13 |
-| 2034 | 22.05 | 22.05 | 40.75 | 22.05 | 22.42 | 23.93 | 41.99 | 21.00 | 23.93 | 24.13 |
-| 2035 | 22.05 | 22.05 | 41.47 | 22.05 | 22.42 | 23.93 | 42.21 | 21.00 | 23.93 | 24.13 |
+| 2021 | 0.01 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 2.62 | 0.00 | 0.00 | 0.00 |
+| 2022 | 1.07 | 1.02 | 7.49 | 16.71 | 8.92 | 6.17 | 6.47 | 0.00 | 6.17 | 5.48 |
+| 2023 | 17.46 | 17.49 | 13.51 | 21.16 | 19.13 | 14.08 | 11.86 | 0.00 | 14.08 | 12.50 |
+| 2024 | 21.87 | 21.94 | 18.36 | 21.84 | 21.56 | 19.54 | 17.79 | 0.00 | 19.54 | 18.04 |
+| 2025 | 21.94 | 21.94 | 22.27 | 21.93 | 21.90 | 21.90 | 23.36 | 0.00 | 21.90 | 21.15 |
+| 2026 | 21.94 | 21.94 | 25.41 | 21.94 | 21.94 | 22.72 | 28.04 | 19.94 | 22.72 | 22.50 |
+| 2027 | 21.94 | 21.95 | 27.94 | 21.94 | 21.94 | 22.98 | 31.69 | 19.94 | 22.98 | 23.00 |
+| 2028 | 21.94 | 21.95 | 29.98 | 21.94 | 21.94 | 23.06 | 34.40 | 19.94 | 23.06 | 23.18 |
+| 2029 | 21.94 | 21.95 | 31.62 | 21.94 | 21.94 | 23.08 | 36.34 | 19.94 | 23.08 | 23.24 |
+| 2030 | 21.94 | 21.95 | 32.93 | 21.94 | 21.94 | 23.09 | 37.70 | 19.94 | 23.09 | 23.26 |
+| 2031 | 21.94 | 21.95 | 34.00 | 21.94 | 21.94 | 23.09 | 38.65 | 19.94 | 23.09 | 23.26 |
+| 2032 | 21.95 | 21.95 | 34.85 | 21.94 | 21.94 | 23.09 | 39.29 | 19.94 | 23.09 | 23.26 |
+| 2033 | 21.95 | 21.95 | 35.54 | 21.94 | 21.94 | 23.09 | 39.73 | 19.94 | 23.09 | 23.26 |
+| 2034 | 21.95 | 21.95 | 36.09 | 21.94 | 21.94 | 23.09 | 40.03 | 19.94 | 23.09 | 23.27 |
+| 2035 | 21.95 | 21.95 | 36.54 | 21.94 | 21.95 | 23.09 | 40.23 | 19.94 | 23.09 | 23.27 |
 
 ### 4.2 Escenarios de Consenso
 | Escenario | Modelo | 2030 (M) | 2035 (M) |
 | --- | --- | --- | --- |
-| Conservador | Bass Clásico | 23.93 | 23.93 |
-| Base (recomendado) | Difusión Logística R&K | 22.05 | 22.05 |
-| Optimista | Gompertz | 39.48 | 42.21 |
+| Conservador | Bass Clásico | 23.09 | 23.09 |
+| Base (recomendado) | Difusión Logística R&K | 21.94 | 21.95 |
+| Optimista | Gompertz | 37.70 | 40.23 |
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Difusión Logística R&K): R²=0.9950, MAPE de ajuste=4.68%, Score=98.19.
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Difusión Logística R&K): R²=0.9886, MAPE de ajuste=5.58%, Score=97.26.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
