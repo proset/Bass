@@ -70,7 +70,7 @@ def claude_judge_data(tech, real_series, sospechosos, motivos):
     motivos_str = "; ".join(motivos) if motivos else "sin hallazgos deterministas"
     
     response = client.messages.create(
-        model="claude-3-5-sonnet-20240620",
+        model="claude-sonnet-4-6",
         max_tokens=2000,
         temperature=0,
         messages=[{
