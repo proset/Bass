@@ -36,7 +36,7 @@ def data_quality_gate(real_series):
             ratio = curr / prev
             if ratio > 10:
                 sospechosos.append(years[i])
-                motivos.append(f"Salto {ratio:.0f}x en {years[i]} ({prev}→{curr})")
+                motivos.append(f"Salto {ratio:.0f}x en {years[i]} ({prev}->{curr})")
                 
     # Regla 3: valor no-cero seguido de cero (adopción no puede "des-aparecer")
     for i in range(1, len(values)):

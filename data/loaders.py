@@ -9,6 +9,10 @@ TECH_ALIASES = {
     'metaquest': 'meta quest',
     'quest': 'meta quest',
     'oculus': 'meta quest',
+    'tiktok': 'tik tok',
+    'ar smart glasses': 'ar smartglasses',
+    'smart glasses': 'ar smartglasses',
+    'smartglasses': 'ar smartglasses',
 }
 
 def normalize_tech_name(tech):
