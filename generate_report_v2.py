@@ -602,7 +602,8 @@ def main():
     print(f"[verify] Gate determinista: {'OK' if ok else 'SOSPECHOSO'} ({len(sospechosos)} años)")
     print(f"[verify] Claude juez: {veredicto}")
     if detalle.get("razonamiento_general"):
-        print(f"[verify] Claude: {detalle['razonamiento_general'][:200]}")
+        razonamiento = detalle['razonamiento_general'][:200].replace('→', '->')
+        print(f"[verify] Claude: {razonamiento}")
         
     if veredicto == "INSERVIBLE" or detalle.get("producto_muerto"):
         generar_informe_insuficiente(tech, serie, detalle)
@@ -619,8 +620,9 @@ def main():
             corrigio_algo = False
             for ano, val in correcciones.items():
                 if val is not None:
-                    serie[int(ano)] = float(val)
-                    print(f"[verify] Corregido {ano}: -> {val}M")
+                    val_str = str(val).replace('M', '').replace('m', '').replace(',', '').strip()
+                    serie[int(ano)] = float(val_str)
+                    print(f"[verify] Corregido {ano}: -> {val_str}M")
                     corrigio_algo = True
             
             if corrigio_algo:
