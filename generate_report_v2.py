@@ -12,6 +12,47 @@ BASS_DIR = r"C:\Users\roset\Bass"
 GLM_DIR = r"C:\Users\roset\GLM"
 sys.path.insert(0, BASS_DIR)
 
+def data_quality_gate(real_series):
+    """
+    Gate determinista de calidad de datos. Retorna (ok, sospechosos, motivos).
+    Reglas baratas que se comprueban ANTES de llamar a Claude.
+    """
+    import numpy as np
+    years = sorted(real_series.keys())
+    values = [real_series[y] for y in years]
+    sospechosos = []
+    motivos = []
+    
+    # Regla 1: puntos no-cero insuficientes ( Early Stage mínimo)
+    non_zero = [v for v in values if v > 0]
+    if len(non_zero) < 4:
+        motivos.append(f"Solo {len(non_zero)} puntos no-cero (mínimo 4)")
+        # No es fatal para el gate: Claude decidirá. Pero se marca.
+        
+    # Regla 2: saltos absurdos (>10x entre años consecutivos, ambos no-cero)
+    for i in range(1, len(values)):
+        prev, curr = values[i-1], values[i]
+        if prev > 0 and curr > 0:
+            ratio = curr / prev
+            if ratio > 10:
+                sospechosos.append(years[i])
+                motivos.append(f"Salto {ratio:.0f}x en {years[i]} ({prev}→{curr})")
+                
+    # Regla 3: valor no-cero seguido de cero (adopción no puede "des-aparecer")
+    for i in range(1, len(values)):
+        if values[i-1] > 0 and values[i] == 0:
+            sospechosos.append(years[i])
+            motivos.append(f"Adopción cayó a 0 en {years[i]} tras {values[i-1]}M en {years[i-1]}")
+            
+    # Regla 4: no-monotonía (decrecimiento)
+    for i in range(1, len(values)):
+        if values[i] < values[i-1]:
+            sospechosos.append(years[i])
+            motivos.append(f"Serie decrece en {years[i]}")
+            
+    ok = len(sospechosos) == 0
+    return ok, sorted(set(sospechosos)), motivos
+
 def log(step, msg): 
     print(f"[{step}] {msg}")
 
