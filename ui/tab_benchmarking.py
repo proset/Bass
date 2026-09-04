@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import logging
 import google.ai.generativelanguage_v1beta as gapic
-from data.loaders import load_historical_data, load_model_parameters
+from data.loaders import load_historical_data, load_model_parameters, normalize_tech_name
 from models.fit_models import fit_all_models, rank_and_select_best_model
 from ai.gemini_client import generate_content_with_fallback
 from models.analytical_projections import project_model
@@ -20,6 +20,19 @@ def get_fitted_models_cached(tech, df_hist):
     t_data = np.arange(len(df_hist))
     n_data = df_hist["adopcion_acumulada"].values
     return fit_all_models(t_data, n_data)
+
+def validar_comparabilidad(techs):
+    """Cada tech debe tener: serie en BD + fit persistido."""
+    validas = []
+    for tech in techs:
+        tech_norm = normalize_tech_name(tech)
+        df = load_historical_data(tech_norm)
+        params = load_model_parameters(tech_norm)
+        if len(df) >= 5 and params:
+            validas.append(tech_norm)
+        else:
+            st.warning(f"⚠️ **{tech.title()}**: sin datos o fit suficientes en BD — excluida de la comparación. Ejecuta `python generate_report_v2.py \"{tech}\"` en terminal primero.")
+    return validas
 
 def render_tab_benchmarking(tecnologias_disponibles):
     st.subheader("Benchmarking Competitivo y Multimarca")
@@ -49,6 +62,13 @@ def render_tab_benchmarking(tecnologias_disponibles):
         
     if len(techs_seleccionadas) < 2:
         st.info("💡 Por favor, selecciona al menos 2 tecnologías/marcas para activar las comparativas.")
+        return
+
+    # FASE 1: Nombres siempre reales + Validación de comparabilidad
+    techs_seleccionadas = validar_comparabilidad(techs_seleccionadas)
+    
+    if len(techs_seleccionadas) < 2:
+        st.error("❌ No hay suficientes tecnologías válidas (mínimo 2 con datos y fit en BD) para realizar la comparativa.")
         return
 
     model_labels = {
