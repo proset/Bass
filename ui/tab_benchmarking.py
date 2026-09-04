@@ -6,11 +6,12 @@ import logging
 import google.ai.generativelanguage_v1beta as gapic
 from data.loaders import load_historical_data, load_model_parameters, normalize_tech_name
 from models.fit_models import fit_all_models, rank_and_select_best_model
-from ai.gemini_client import generate_content_with_fallback
 from models.analytical_projections import project_model
 from ui.tab_projections import get_consensus_model
 from ui.theme import apply_dark_theme, BRAND_COLORS, dark_table_html
 from generate_report_v2 import data_quality_gate, claude_judge_data
+import anthropic
+import os
 
 logger = logging.getLogger("BassTabBenchmarking")
 
@@ -128,6 +129,22 @@ INSTRUCCIONES ESTRICTAS:
    ## 5. Recomendaciones Estratégicas (por tecnología, moduladas por la confianza)
 """
     return prompt
+
+def claude_benchmarking_writer(prompt):
+    """Llama a Claude para redactar el informe comparativo (mismo modelo analítico que pipeline individual)."""
+    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=4000,
+        temperature=0,
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
+    return response.content[0].text
 
 def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text):
     """Ensambla el informe final con las 4 tablas determinísticas y el texto de la IA."""
@@ -538,7 +555,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
             st.rerun()
 
     if btn_ia_bench:
-        with st.spinner("Gemini está recopilando datos de mercado y elaborando el informe comparativo..."):
+        with st.spinner("Claude está elaborando el análisis comparativo..."):
             # 1. Ejecutar cascada de evaluación para todas las tecnologías seleccionadas
             techs_data = {}
             veredictos = {}
@@ -559,11 +576,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
             prompt = build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels)
             
             try:
-                respuesta = generate_content_with_fallback(
-                    prompt=prompt,
-                    tools=None
-                )
-                ia_text = respuesta.text.strip()
+                ia_text = claude_benchmarking_writer(prompt)
                 informe_final = ensamblar_informe_benchmarking(
                     techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text
                 )
