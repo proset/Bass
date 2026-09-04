@@ -48,12 +48,14 @@ def cascada_benchmarking(tech):
     return serie, veredicto, detalle
 
 def confianza_benchmarking(veredictos):
-    """La confianza de la comparación = la MÍNIMA de las individuales."""
+    """La confianza de la comparación = la MÍNIMA de las individuales.
+    Sin veredictos → NO COMPARABLE (no hay nada que comparar)."""
+    if not veredictos:
+        return "NO COMPARABLE"
     jerarquia = {"CONFIABLE": 2, "SOSPECHOSO": 1, "INSERVIBLE": 0}
-    # Si algún veredicto no está en el dict (ej. fallback), asumir 0
-    minimo = min([jerarquia.get(v, 0) for v in veredictos.values()] + [2]) 
-    etiqueta = {2: "OPERATIVA", 1: "INDICATIVA", 0: "NO COMPARABLE"}.get(minimo, "NO COMPARABLE")
-    return etiqueta
+    minimo = min(jerarquia.get(v, 0) for v in veredictos.values())
+    etiqueta = {2: "OPERATIVA", 1: "INDICATIVA", 0: "NO COMPARABLE"}
+    return etiqueta.get(minimo, "NO COMPARABLE")
 
 def calidad_relativa(techs_data):
     """Retorna dict por tech: n_puntos, años_cubiertos, veredicto."""
@@ -67,6 +69,65 @@ def calidad_relativa(techs_data):
             "veredicto": veredicto,
         }
     return info
+
+def build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels):
+    """Prompt con honestidad estructural: confianza, asimetría, nombres reales."""
+    bloques = []
+    for tech, (serie, veredicto, detalle) in techs_data.items():
+        serie_str = ", ".join(f"{y}: {v}M" for y, v in sorted(serie.items()))
+        
+        bdata = brand_data[tech]
+        m_usado = bdata["modelo_usado"]
+        modelo_str = model_labels[m_usado]
+        
+        # Extraer métricas si existen
+        params_m = bdata["params"]
+        r2 = params_m.get("r_squared", "N/D")
+        if isinstance(r2, float): r2 = f"{r2:.4f}"
+        mape = params_m.get("mape", "N/D")
+        if isinstance(mape, float): mape = f"{mape:.4f}"
+        
+        # Proyecciones 2030 / 2035
+        proj_map = dict(zip(bdata["anios_proj"], bdata["proj"]))
+        p30 = f"{proj_map.get(2030, 0):.2f}"
+        p35 = f"{proj_map.get(2035, 0):.2f}"
+        
+        cal = calidad[tech]
+        
+        bloques.append(f"### {tech.upper()}\n"
+                       f"Serie: {serie_str}\n"
+                       f"Puntos reales (no-cero): {cal['puntos_reales']} de {len(serie)} años\n"
+                       f"Veredicto de datos: {veredicto}\n"
+                       f"Modelo recomendado: {modelo_str} (R²={r2}, MAPE={mape})\n"
+                       f"Proyecciones: 2030={p30}M, 2035={p35}M")
+                       
+    bloques_texto = "\n\n".join(bloques)
+    
+    prompt = f"""Eres un analista estratégico de adopción tecnológica. Redacta el informe de benchmarking comparativo entre las tecnologías listadas abajo.
+
+DATOS DE LAS TECNOLOGÍAS:
+{bloques_texto}
+
+CONFIANZA GLOBAL DE ESTA COMPARACIÓN: {confianza_comp}
+(La confianza de una comparación es la MÍNIMA de las confianzas individuales.)
+
+INSTRUCCIONES ESTRICTAS:
+1. Usa SIEMPRE los nombres reales de las tecnologías. NUNCA "Marca A", "Marca B" ni equivalentes.
+2. NO escribas cifras en la prosa narrativa (solo en el contexto de análisis conceptual). Las cifras exactas de series y proyecciones van en las tablas que se generan aparte.
+3. ASIMETRÍA DE CALIDAD: si una tecnología tiene notablemente menos puntos de datos o un veredicto más débil que la otra, DEBES señalarlo explícitamente: "las proyecciones de [tech] se basan en [n] puntos y deben tratarse con cautela mayor que las de [tech2] ([m] puntos)".
+4. MODULA LAS CONCLUSIONES por la confianza global:
+   - OPERATIVA: conclusiones firmes permitidas
+   - INDICATIVA: conclusiones siempre condicionadas ("si las tendencias actuales se mantienen", "proyección sujeta a revisión")
+   - NO COMPARABLE: (no llegará aquí — se bloquea antes)
+5. NUNCA declares "líder indiscutible" o conclusiones definitivas de largo plazo basándote en la proyección de una tech con datos débiles. Las conclusiones competitivas deben reflejar la calidad relativa de cada fuente.
+6. Estructura del informe:
+   ## 1. Dinámica Competitiva (velocidad de adopción, fase de cada una, coeficientes p/q cuando existan para AMBAS)
+   ## 2. Cruce del Abismo (fase de adopción de cada una)
+   ## 3. Evolución Comparada (trayectorias, puntos de cruce proyectados SI la confianza lo permite — con cautela si asimétrico)
+   ## 4. Advertencias y Limitaciones (asimetría de datos, confianza global, qué fortalecería el análisis)
+   ## 5. Recomendaciones Estratégicas (por tecnología, moduladas por la confianza)
+"""
+    return prompt
 
 def render_tab_benchmarking(tecnologias_disponibles):
     st.subheader("Benchmarking Competitivo y Multimarca")
@@ -388,62 +449,25 @@ def render_tab_benchmarking(tecnologias_disponibles):
 
     if btn_ia_bench:
         with st.spinner("Gemini está recopilando datos de mercado y elaborando el informe comparativo..."):
-            # Reunir información de las marcas para pasar al prompt
-            brief_brands = []
-            for tech, data in brand_data.items():
-                params_m = data["params"]
-                m_usado = data["modelo_usado"]
-                # Intentar leer coeficientes p y q o m del modelo usado
-                info_coefs = ""
-                p_dict = params_m.get("params", params_m)
-                if m_usado in ["Bass_Clasico", "Dual_Market", "VdB_Joshi"]:
-                    info_coefs = f"Coef. Innovación (p1): {p_dict.get('param_p1', 'N/D')}, Coef. Imitación (q1): {p_dict.get('param_q1', 'N/D')}"
-                elif m_usado == "Logistic_Diffusion_Convergence":
-                    info_coefs = f"Tasa de Crecimiento (k2): {p_dict.get('param_p2', 'N/D')}, Punto Inflexión (t0): {p_dict.get('param_q1', 'N/D')}"
-                
-                # Cargar el reporte cualitativo si existe en BD
-                from data.loaders import load_qualitative_analysis
-                qualitative_txt = load_qualitative_analysis(tech) or "No hay informe cualitativo guardado."
-                
-                # Obtener proyección de hitos
-                proj_5_idx = min(len(data["anios_reales"]) + 4, len(data["proj"]) - 1)
-                proj_10_idx = min(len(data["anios_reales"]) + 9, len(data["proj"]) - 1)
-                
-                brief_brands.append(
-                    f"- **Tecnología/Marca**: {tech.upper}\n"
-                    f"  - Modelo Proyección Usado: {model_labels[m_usado]}\n"
-                    f"  - Historial (años): {data['anios_reales']}\n"
-                    f"  - Valores Reales (millones): {data['reales']}\n"
-                    f"  - Proyección a 5 años (millones): {data['proj'][proj_5_idx]:.2f}\n"
-                    f"  - Proyección a 10 años (millones): {data['proj'][proj_10_idx]:.2f}\n"
-                    f"  - Coeficientes Clave: {info_coefs}\n"
-                    f"  - Contexto Cualitativo Corto:\n{qualitative_txt[:600]}..."
-                )
-                
-            brief_text = "\n\n".join(brief_brands)
+            # 1. Ejecutar cascada de evaluación para todas las tecnologías seleccionadas
+            techs_data = {}
+            veredictos = {}
+            for tech in techs_seleccionadas:
+                serie, veredicto, detalle = cascada_benchmarking(tech)
+                techs_data[tech] = (serie, veredicto, detalle)
+                veredictos[tech] = veredicto
             
-            prompt = f"""
-ROLE: Senior Competitive Intelligence Manager & Technology Forecasting Expert
-CONTEXT: Estás realizando un análisis comparativo y de benchmarking estratégico entre marcas y tecnologías competidoras en base a modelos cuantitativos y datos cualitativos.
-
-Marcas y Tecnologías seleccionadas para la comparativa:
-{brief_text}
-
-INSTRUCCIÓN: Genera un Informe de Consenso y Benchmarking Estratégico en español. Analiza la situación competitiva de las marcas indicadas y sintetiza la comparativa.
-
-El informe debe estructurarse obligatoriamente con las siguientes secciones:
-1. **Análisis de Dinámica Competitiva**:
-   - Compara la velocidad de adopción de cada marca.
-   - Explica cuál de ellas está liderada por la innovación y gasto publicitario (alto coeficiente de innovación $p$) y cuál se beneficia más de la recomendación, viralidad o boca a boca (alto coeficiente de imitación $q$).
-2. **Diagnóstico del Cruce del Abismo**:
-   - Analiza qué marcas han cruzado con éxito el "Abismo de Moore" hacia el mercado masivo y cuáles siguen estancadas o en riesgo de contracción (efecto saddle o saddle effect).
-3. **Consenso sobre Evolución de Cuota de Mercado**:
-   - Evalúa cómo cambiará la correlación de fuerzas competitivas a 5 y 10 años en el futuro.
-4. **Recomendaciones de Marketing Estratégico**:
-   - Aporta 2 recomendaciones específicas para cada marca basadas en sus parámetros matemáticos y realidad comercial (ej. si su $p$ es bajo, potenciar branding; si su $q$ es bajo, potenciar la retención de clientes y programas de referidos).
-
-FORMATO: Markdown profesional en español. No escribas introducciones ni preámbulos informales.
-"""
+            # 2. Calcular confianza global y abortar si es INSERVIBLE
+            confianza_comp = confianza_benchmarking(veredictos)
+            if confianza_comp == "NO COMPARABLE":
+                techs_inservibles = [t for t, v in veredictos.items() if v == "INSERVIBLE"]
+                st.error(f"❌ La comparación no puede generarse: {', '.join(techs_inservibles).title()} no tiene datos comparables (veredicto INSERVIBLE).")
+                return
+                
+            # 3. Calcular métricas de calidad y construir prompt
+            calidad = calidad_relativa(techs_data)
+            prompt = build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels)
+            
             try:
                 respuesta = generate_content_with_fallback(
                     prompt=prompt,
