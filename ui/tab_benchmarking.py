@@ -129,6 +129,96 @@ INSTRUCCIONES ESTRICTAS:
 """
     return prompt
 
+def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text):
+    """Ensambla el informe final con las 4 tablas determinísticas y el texto de la IA."""
+    techs_names = [t.title() for t in techs_data.keys()]
+    titulo = f"# Informe de Consenso y Benchmarking Estratégico: {' vs '.join(techs_names)}\n"
+    titulo += f"**CONFIANZA DE LA COMPARACIÓN: {confianza_comp}**\n\n"
+    
+    # 1. Serie histórica comparada
+    all_years = set()
+    for serie, _, _ in techs_data.values():
+        all_years.update(serie.keys())
+    all_years = sorted(list(all_years))
+    
+    t1 = "### 1. Serie Histórica Comparada (Millones)\n"
+    t1 += "| Año | " + " | ".join(techs_names) + " |\n"
+    t1 += "|---|" + "|".join(["---"] * len(techs_names)) + "|\n"
+    for y in all_years:
+        row = [str(y)]
+        for tech in techs_data.keys():
+            val = techs_data[tech][0].get(y, "-")
+            row.append(str(val) if val == "-" else f"{val}")
+        t1 += "| " + " | ".join(row) + " |\n"
+    t1 += "\n"
+    
+    # 2. Modelos recomendados y métricas
+    t2 = "### 2. Modelos Recomendados y Métricas de Ajuste\n"
+    t2 += "| Tecnología | Modelo | R² | MAPE | Score | k | Puntos Reales |\n"
+    t2 += "|---|---|---|---|---|---|---|\n"
+    for tech in techs_data.keys():
+        bdata = brand_data[tech]
+        m_usado = bdata["modelo_usado"]
+        modelo_str = model_labels[m_usado]
+        p = bdata["params"]
+        
+        r2 = p.get('r_squared', 'N/D')
+        if isinstance(r2, float): r2 = f"{r2:.4f}"
+        mape = p.get('mape', 'N/D')
+        if isinstance(mape, float): mape = f"{mape:.4f}"
+        score = p.get('score', 'N/D')
+        if isinstance(score, float): score = f"{score:.2f}"
+        k = p.get('k', 'N/D')
+        pts = calidad[tech]['puntos_reales']
+        
+        t2 += f"| {tech.title()} | {modelo_str} | {r2} | {mape} | {score} | {k} | {pts} |\n"
+    t2 += "\n"
+    
+    # 3. Proyecciones comparadas
+    t3 = "### 3. Proyecciones Estratégicas (Millones)\n"
+    t3 += "| Tecnología | 2030 | 2035 | Confianza Individual |\n"
+    t3 += "|---|---|---|---|\n"
+    for tech in techs_data.keys():
+        bdata = brand_data[tech]
+        proj_map = dict(zip(bdata["anios_proj"], bdata["proj"]))
+        p30 = f"{proj_map.get(2030, 0):.2f}"
+        p35 = f"{proj_map.get(2035, 0):.2f}"
+        conf = techs_data[tech][1]
+        t3 += f"| {tech.title()} | {p30} | {p35} | {conf} |\n"
+    t3 += "\n"
+    
+    # 4. Parámetros de difusión
+    t4 = "### 4. Parámetros de Difusión\n"
+    t4 += "| Tecnología | p (Innovación) | q (Imitación) | m (Mercado Potencial) |\n"
+    t4 += "|---|---|---|---|\n"
+    for tech in techs_data.keys():
+        bdata = brand_data[tech]
+        m_usado = bdata["modelo_usado"]
+        p = bdata["params"]
+        params_dict = p.get("params", p)
+        
+        param_m = params_dict.get('param_m', 'N/D')
+        if isinstance(param_m, float): param_m = f"{param_m:.2f}"
+        
+        if m_usado in ["Bass_Clasico", "Dual_Market", "VdB_Joshi"]:
+            param_p = params_dict.get('param_p1', 'N/D')
+            if isinstance(param_p, float): param_p = f"{param_p:.2e}"
+            
+            param_q = params_dict.get('param_q1', 'N/D')
+            if isinstance(param_q, float): param_q = f"{param_q:.4f}"
+        else:
+            param_p = "N/D — parametrización distinta"
+            param_q = "N/D — parametrización distinta"
+            if param_m == 'N/D' and 'param_k' in params_dict: # Example of another parameter
+                 param_m = "N/D — parametrización distinta"
+                 
+        t4 += f"| {tech.title()} | {param_p} | {param_q} | {param_m} |\n"
+    t4 += "\n"
+    
+    # Ensamblado Final
+    informe = titulo + t1 + t2 + t3 + t4 + "---\n### 5. Análisis de Inteligencia Competitiva (IA)\n\n" + ia_text
+    return informe
+
 def render_tab_benchmarking(tecnologias_disponibles):
     st.subheader("Benchmarking Competitivo y Multimarca")
     st.markdown("Compara las trayectorias de adopción de múltiples marcas o tecnologías en un solo panel interactivo y genera análisis estratégicos de cuota de mercado mediante IA.")
@@ -473,7 +563,11 @@ def render_tab_benchmarking(tecnologias_disponibles):
                     prompt=prompt,
                     tools=None
                 )
-                st.session_state.bench_ia_report[selected_key] = respuesta.text.strip()
+                ia_text = respuesta.text.strip()
+                informe_final = ensamblar_informe_benchmarking(
+                    techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text
+                )
+                st.session_state.bench_ia_report[selected_key] = informe_final
             except Exception as e:
                 logger.error(f"Error generando informe comparativo de IA: {e}")
                 st.error(f"❌ Error al procesar tu consulta con la IA: {e}")
@@ -481,5 +575,13 @@ def render_tab_benchmarking(tecnologias_disponibles):
     # Mostrar informe RAG comparativo
     if selected_key in st.session_state.bench_ia_report:
         st.markdown("---")
-        st.markdown("### Informe de Consenso y Benchmarking Estratégico")
         st.markdown(st.session_state.bench_ia_report[selected_key])
+        
+        # Botón de descarga
+        st.download_button(
+            label="Descargar Informe de Benchmarking (Markdown)",
+            data=st.session_state.bench_ia_report[selected_key],
+            file_name=f"benchmarking_{selected_key}.md",
+            mime="text/markdown",
+            use_container_width=True
+        )
