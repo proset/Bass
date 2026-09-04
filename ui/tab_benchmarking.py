@@ -10,6 +10,7 @@ from ai.gemini_client import generate_content_with_fallback
 from models.analytical_projections import project_model
 from ui.tab_projections import get_consensus_model
 from ui.theme import apply_dark_theme, BRAND_COLORS, dark_table_html
+from generate_report_v2 import data_quality_gate, claude_judge_data
 
 logger = logging.getLogger("BassTabBenchmarking")
 
@@ -31,8 +32,41 @@ def validar_comparabilidad(techs):
         if len(df) >= 5 and params:
             validas.append(tech_norm)
         else:
-            st.warning(f"⚠️ **{tech.title()}**: sin datos o fit suficientes en BD — excluida de la comparación. Ejecuta `python generate_report_v2.py \"{tech}\"` en terminal primero.")
+            st.warning(f"⚠️ **{tech_norm.title()}**: sin datos o fit suficientes en BD — excluida de la comparación. Ejecuta `python generate_report_v2.py \"{tech_norm}\"` en terminal primero.")
     return validas
+
+@st.cache_data(ttl=3600)
+def cascada_benchmarking(tech):
+    """Ejecuta la cascada v2.3 sobre la serie de una tech y retorna (serie_validada, confianza, detalle)."""
+    df_hist = load_historical_data(tech)
+    if df_hist.empty:
+        return {}, "INSERVIBLE", "No hay datos en BD"
+    serie = {int(row["anio"]): float(row["adopcion_acumulada"]) for _, row in df_hist.iterrows()}
+    
+    ok, sospechosos, motivos = data_quality_gate(serie)
+    veredicto, anos_claude, detalle = claude_judge_data(tech, serie, sospechosos, motivos)
+    return serie, veredicto, detalle
+
+def confianza_benchmarking(veredictos):
+    """La confianza de la comparación = la MÍNIMA de las individuales."""
+    jerarquia = {"CONFIABLE": 2, "SOSPECHOSO": 1, "INSERVIBLE": 0}
+    # Si algún veredicto no está en el dict (ej. fallback), asumir 0
+    minimo = min([jerarquia.get(v, 0) for v in veredictos.values()] + [2]) 
+    etiqueta = {2: "OPERATIVA", 1: "INDICATIVA", 0: "NO COMPARABLE"}.get(minimo, "NO COMPARABLE")
+    return etiqueta
+
+def calidad_relativa(techs_data):
+    """Retorna dict por tech: n_puntos, años_cubiertos, veredicto."""
+    info = {}
+    for tech, (serie, veredicto, detalle) in techs_data.items():
+        pts_reales = sum(1 for v in serie.values() if v > 0)
+        rango = f"{min(serie.keys())}-{max(serie.keys())}" if serie else "N/D"
+        info[tech] = {
+            "puntos_reales": pts_reales,
+            "rango": rango,
+            "veredicto": veredicto,
+        }
+    return info
 
 def render_tab_benchmarking(tecnologias_disponibles):
     st.subheader("Benchmarking Competitivo y Multimarca")
