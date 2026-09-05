@@ -790,7 +790,7 @@ def main():
     veredicto_actual = locals().get('veredicto2', veredicto)
     
     if pts_reales < 6 and veredicto_actual != "INSERVIBLE":
-        print(f"[analogia] Young tech: {pts_reales} pts reales → PROYECCIÓN POR ANALOGÍA")
+        print(f"[analogia] Young tech: {pts_reales} pts reales -> PROYECCIÓN POR ANALOGÍA")
         
         # 1. Claude clasifica
         clasif = claude_classify_youngtech(tech, serie)
