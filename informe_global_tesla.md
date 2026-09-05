@@ -1,126 +1,118 @@
 # Informe de Adopción: tesla
 
-# Informe de Adopción Tecnológica — Tesla
+# Informe de Adopción Tecnológica — Tesla (Vehículos Eléctricos)
 
 ---
 
 ## 1. Resumen Ejecutivo
 
-Tesla representa uno de los casos más documentados y estadísticamente robustos de difusión tecnológica en la historia reciente de la industria automotriz. Partiendo de un nicho de lujo con volúmenes marginales, la compañía escaló hasta convertirse en el referente global del vehículo eléctrico, atravesando fases de crecimiento explosivo antes de enfrentar, por primera vez, una contracción sostenida en sus entregas anuales.
+Tesla es una empresa pública que reporta entregas de vehículos en sus informes trimestrales y anuales, por lo que los datos históricos utilizados corresponden a cifras de ventas/entregas acumuladas globales, con un nivel de trazabilidad razonable.
 
-**Modelo seleccionado: Difusión Logística R&K**
+La serie histórica analizada muestra una trayectoria de adopción sostenida y acelerada durante la mayor parte de la ventana temporal, con una desaceleración visible en los años más recientes. Este patrón es consistente con una tecnología que ha superado la fase de adopción temprana y se encuentra transitando hacia la madurez del mercado, aunque sin haber alcanzado aún su techo de saturación.
 
-El modelo de Difusión Logística R&K fue seleccionado como el más adecuado para representar la trayectoria de adopción de Tesla. Su elección se fundamenta en que obtiene la puntuación compuesta más alta entre todos los modelos evaluados, combinando un ajuste prácticamente perfecto a los datos históricos con el error de predicción más bajo del conjunto —notablemente inferior al del resto de candidatos—. A diferencia de los modelos de Bass y sus variantes, la formulación logística R&K captura con mayor precisión la desaceleración observada en la fase reciente, donde el mercado comienza a mostrar señales de saturación relativa en los segmentos de adopción temprana.
+**Modelo seleccionado: Difusión Logística R&K.** Este modelo fue elegido por obtener la puntuación compuesta más alta entre los diez modelos evaluados, combinando un ajuste prácticamente perfecto a los datos históricos con el error de predicción más bajo del conjunto. A diferencia de modelos más complejos que presentan métricas similares pero requieren mayor número de parámetros, el modelo seleccionado logra ese rendimiento con una estructura parsimoniosa, lo que reduce el riesgo de sobreajuste y mejora la capacidad de generalización hacia el futuro.
 
-**Fase de crecimiento actual**
+**Fase de crecimiento:** La adopción de vehículos eléctricos Tesla se encuentra en una fase de crecimiento tardío / transición hacia la madurez. El ritmo de expansión se ha moderado respecto a los años de mayor aceleración, y las proyecciones apuntan a una estabilización progresiva del parque acumulado en el horizonte de mediano plazo.
 
-Tesla se encuentra en una **fase de madurez temprana** dentro de la curva de difusión. Tras el hipercrecimiento sostenido de varios años consecutivos, la empresa ha entrado en un período de estabilización donde el crecimiento marginal se reduce progresivamente. Las proyecciones del modelo indican que el mercado accesible de Tesla se aproxima a su techo estructural en el horizonte de la próxima década, con incrementos cada vez más modestos entre el mediano y el largo plazo.
-
-**Nivel de confianza de la proyección: MEDIO-ALTO**
-
-La confianza es elevada para el corto y mediano plazo, respaldada por la calidad del ajuste histórico y la coherencia del modelo con la dinámica observada. Sin embargo, se modera a nivel medio en el horizonte largo plazo por la presencia de factores disruptivos externos —competencia china, evolución regulatoria, posibles nuevas plataformas de producto— que los datos históricos no pueden anticipar. Se desarrolla una valoración detallada en la Sección 5.
+**Nivel de confianza de la proyección: MEDIO-ALTO.** El ajuste histórico es excelente y el modelo seleccionado es robusto. Sin embargo, el horizonte de proyección es largo, el mercado de vehículos eléctricos está sujeto a disrupciones regulatorias, tecnológicas y competitivas de alta intensidad, y el techo de saturación implícito en el modelo puede estar subestimado si los mercados emergentes aceleran su adopción más allá de lo que los datos históricos capturan. Estas consideraciones moderan la confianza desde ALTA hacia MEDIO-ALTA.
 
 ---
 
 ## 3. Análisis del Mercado y Contexto Competitivo
 
-### Drivers de adopción
+### Drivers de Adopción
 
-La adopción masiva de vehículos Tesla ha sido impulsada por una confluencia de factores tecnológicos, económicos y culturales que se han reforzado mutuamente a lo largo del tiempo.
+La adopción de vehículos eléctricos Tesla ha sido impulsada por una combinación de factores tecnológicos, económicos y regulatorios que se han reforzado mutuamente a lo largo de la última década.
 
-En el plano tecnológico, Tesla estableció una ventaja de primera entrada al combinar autonomía de batería superior, software de actualización remota (OTA) y una red de supercargadores propietaria que eliminó la principal barrera psicológica del usuario: la ansiedad por la autonomía. La integración vertical —desde la celda de batería hasta el software de conducción autónoma (FSD)— le permitió iterar más rápido que competidores con cadenas de suministro fragmentadas.
+En el plano tecnológico, la mejora continua en la densidad energética de las baterías ha extendido la autonomía de los vehículos hasta niveles competitivos con los de combustión interna, eliminando una de las principales barreras psicológicas del consumidor. La red de supercargadores propietaria de Tesla ha sido un diferenciador crítico, reduciendo la fricción asociada a la recarga en viajes de larga distancia. La integración de software avanzado —incluyendo actualizaciones over-the-air y capacidades de asistencia a la conducción— ha posicionado al vehículo eléctrico como un producto tecnológico de alto valor percibido, más allá de su función de transporte.
 
-En el plano económico, el lanzamiento del Model 3 fue el punto de inflexión que democratizó el acceso al vehículo eléctrico premium, trasladando la propuesta de valor desde el segmento de lujo hacia el mercado masivo. Posteriormente, el Model Y consolidó esta transición al convertirse en el vehículo más vendido del mundo en su categoría. Los incentivos fiscales en Estados Unidos, Europa y China actuaron como catalizadores adicionales, reduciendo el coste total de propiedad percibido por el consumidor.
+En el plano económico, la reducción sostenida del coste de las baterías ha permitido a Tesla ampliar su gama hacia segmentos de precio más accesibles, ampliando el mercado potencial. Los incentivos fiscales a la compra de vehículos eléctricos en Estados Unidos, Europa y China han actuado como catalizadores de demanda en momentos clave del ciclo de adopción.
 
-En el plano cultural, la figura de Elon Musk funcionó durante años como un activo de marca extraordinario, generando cobertura mediática orgánica y una comunidad de seguidores con alto grado de fidelización. La narrativa de misión —acelerar la transición energética sostenible— dotó al producto de una dimensión aspiracional que trascendió la funcionalidad del automóvil.
+En el plano regulatorio, los mandatos de emisiones cero en California, la Unión Europea y varios mercados asiáticos han creado un entorno normativo favorable que presiona tanto a los consumidores como a los fabricantes hacia la electrificación. La prohibición progresiva de la venta de vehículos de combustión interna en múltiples jurisdicciones establece un horizonte temporal claro que acelera la transición.
 
-La expansión de las Gigafactories en Shanghái, Berlín y Texas permitió escalar la producción de forma geográficamente distribuida, reduciendo costes logísticos y tiempos de entrega en mercados clave.
+El efecto de red social y la visibilidad de marca de Tesla han jugado también un papel relevante: la empresa ha operado históricamente con una inversión publicitaria mínima, apoyándose en la prescripción entre pares y en la cobertura mediática espontánea generada por sus innovaciones y por la figura de su fundador.
 
-### Competidores clave y dinámica competitiva
+### Competidores Clave y Dinámica Competitiva
 
-El panorama competitivo ha experimentado una transformación radical. En los primeros años del período analizado, Tesla operaba prácticamente sin competencia directa en el segmento de vehículos eléctricos de largo alcance. Esta ventaja se ha erosionado de forma acelerada.
+El panorama competitivo ha experimentado una transformación radical durante el período analizado. En los primeros años de la serie, Tesla operaba en un nicho con competencia limitada. En la actualidad, el mercado de vehículos eléctricos es uno de los más dinámicos y concurridos de la industria automotriz global.
 
-**BYD** emerge como el competidor más relevante a escala global. Respaldado por una cadena de suministro integrada de baterías, precios agresivos y una presencia dominante en el mercado chino —el mayor mercado de vehículos eléctricos del mundo—, BYD ha superado a Tesla en volumen total de ventas de vehículos electrificados. Su expansión hacia Europa y mercados emergentes representa la amenaza competitiva más inmediata para Tesla.
+Los fabricantes tradicionales —Volkswagen Group, General Motors, Stellantis, Hyundai-Kia, BMW Group— han acelerado sus planes de electrificación y compiten directamente con Tesla en múltiples segmentos. La presión competitiva ha obligado a Tesla a reducir precios en varias ocasiones, comprimiendo márgenes pero defendiendo cuota de mercado.
 
-Los fabricantes tradicionales europeos —Volkswagen, BMW, Mercedes, Stellantis— han acelerado sus plataformas eléctricas nativas, aunque con resultados desiguales en términos de adopción. En el segmento premium, marcas como Rivian, Lucid y la propia gama eléctrica de BMW y Mercedes compiten directamente con los modelos de mayor margen de Tesla.
+El competidor más significativo en términos de volumen global es BYD, el fabricante chino que ha superado a Tesla en entregas totales de vehículos eléctricos en algunos trimestres recientes. BYD opera con una integración vertical profunda —incluyendo producción propia de baterías— y tiene acceso preferencial al mercado chino, que representa la mayor cuota del mercado global de vehículos eléctricos. Esta dinámica introduce una presión competitiva estructural que los modelos de difusión basados exclusivamente en datos de Tesla no capturan plenamente.
 
-En el mercado chino, además de BYD, fabricantes como NIO, Li Auto y SAIC han ganado cuota de mercado apelando a características de software y conectividad adaptadas a las preferencias locales, donde Tesla ha perdido terreno de forma notable.
+En el segmento premium, Rivian, Lucid y los modelos eléctricos de Mercedes-Benz y BMW compiten por el mismo perfil de consumidor que históricamente ha sido el núcleo de la base de clientes de Tesla.
 
-### Barreras de adopción
+La entrada de fabricantes chinos en mercados europeos y latinoamericanos —con vehículos de precio competitivo— representa una amenaza emergente para la expansión global de Tesla en el horizonte de proyección.
 
-Las barreras que frenan la adopción continua de Tesla son de naturaleza diversa y creciente.
+### Barreras de Adopción
 
-La **infraestructura de carga** sigue siendo una limitación estructural para el mercado masivo en mercados emergentes y zonas rurales, aunque Tesla ha mitigado parcialmente este problema con su red propietaria y la apertura progresiva de la misma a terceros.
+A pesar del crecimiento sostenido, persisten barreras estructurales que moderan el ritmo de adopción.
 
-El **precio de entrada**, pese a las reducciones aplicadas, continúa siendo una barrera para segmentos de renta media-baja, especialmente en un contexto de tipos de interés elevados que encarecen la financiación.
+La infraestructura de carga pública sigue siendo insuficiente en amplias regiones del mundo, especialmente en mercados emergentes y en zonas rurales de economías desarrolladas. La dependencia de carga doméstica excluye a una fracción significativa de la población urbana que no dispone de aparcamiento privado.
 
-La **percepción de marca** ha sufrido un deterioro significativo asociado a las posiciones políticas públicas de Elon Musk, particularmente en Europa y en segmentos de consumidores progresistas que históricamente constituían el núcleo de la base de clientes de Tesla. Este factor —difícilmente cuantificable pero empíricamente observable en los datos de ventas recientes— representa una barrera de naturaleza reputacional sin precedentes para la compañía.
+El precio de adquisición, aunque en descenso, sigue siendo superior al de vehículos de combustión equivalentes en la mayoría de los segmentos, lo que limita la penetración en hogares de renta media-baja. La incertidumbre sobre el valor residual de los vehículos eléctricos —vinculada a la degradación de la batería y a la velocidad de obsolescencia tecnológica— genera reticencia en segmentos sensibles al coste total de propiedad.
 
-La **eliminación o reducción de incentivos fiscales** en mercados clave, como ocurrió en Estados Unidos con la modificación de los créditos del Inflation Reduction Act, impacta directamente en la ecuación económica del comprador y ralentiza la adopción en segmentos sensibles al precio.
+La dependencia de la cadena de suministro de materias primas críticas —litio, cobalto, níquel— introduce volatilidad en costes y riesgos de disponibilidad que pueden afectar tanto a la producción como al precio final.
 
-La **competencia de precio** procedente de fabricantes chinos, capaces de ofrecer vehículos eléctricos con especificaciones competitivas a precios significativamente inferiores, presiona los márgenes de Tesla y su capacidad de respuesta en mercados emergentes.
+Finalmente, la percepción de riesgo tecnológico asociada a los sistemas de conducción autónoma —y los incidentes de seguridad que han recibido cobertura mediática— puede generar fricción en segmentos de consumidores más conservadores.
 
-### Tendencias tecnológicas y regulatorias
+### Tendencias Tecnológicas y Regulatorias
 
-La regulación europea de emisiones de CO₂ y los mandatos de electrificación progresiva en California, Reino Unido y la Unión Europea actúan como aceleradores estructurales de la demanda de vehículos eléctricos en general, beneficiando al ecosistema en su conjunto aunque no exclusivamente a Tesla.
+La próxima generación de baterías de estado sólido promete mejoras sustanciales en densidad energética, seguridad y tiempo de carga, con potencial para redefinir los parámetros de competitividad del sector. Tesla, junto con Toyota, QuantumScape y varios fabricantes chinos, está invirtiendo activamente en esta tecnología.
 
-La evolución de la conducción autónoma es un vector tecnológico crítico. Tesla ha apostado por una arquitectura basada en visión por computador y aprendizaje profundo para su sistema FSD, diferenciándose de competidores que utilizan LiDAR. La validación regulatoria de estos sistemas en distintas jurisdicciones determinará en qué medida el software puede convertirse en un diferenciador de ingresos recurrentes.
+La regulación de emisiones se está endureciendo globalmente. El Reglamento europeo que establece el fin de la venta de vehículos de combustión interna para mediados de la próxima década es el referente más claro, pero iniciativas similares avanzan en Reino Unido, Canadá y varios estados de EE.UU. Este marco regulatorio actúa como acelerador estructural de la demanda.
 
-Las baterías de estado sólido, en desarrollo por múltiples actores, podrían alterar la dinámica competitiva en la segunda mitad de la década, potencialmente erosionando ventajas acumuladas en química de baterías de iones de litio.
+La integración de los vehículos eléctricos en redes de energía inteligente —vehicle-to-grid— abre nuevas propuestas de valor que pueden reforzar la adopción en mercados con alta penetración de energías renovables.
 
-### Factores externos relevantes
+### Factores Externos Relevantes
 
-La pandemia de COVID-19 generó disrupciones en cadenas de suministro que afectaron a toda la industria, aunque Tesla logró mantener un crecimiento positivo durante ese período gracias a su modelo de venta directa y su flexibilidad operativa.
+La pandemia de COVID-19 generó disrupciones en la cadena de suministro global que afectaron la producción automotriz entre los años de mayor impacto, aunque paradójicamente aceleró el interés por la movilidad sostenible y los planes de estímulo económico post-pandemia incluyeron incentivos específicos para la electrificación del transporte.
 
-Las tensiones geopolíticas entre Estados Unidos y China representan un riesgo bidireccional: por un lado, pueden limitar el acceso de Tesla al mercado chino o encarecer sus componentes; por otro, pueden dificultar la expansión de competidores chinos en mercados occidentales, actuando como barrera protectora indirecta.
+Las tensiones geopolíticas —especialmente entre Estados Unidos y China— afectan a las cadenas de suministro de baterías y semiconductores, y pueden condicionar el acceso de Tesla al mercado chino, que es estratégicamente crítico para su volumen global.
 
-La volatilidad en los precios de las materias primas críticas —litio, cobalto, níquel— afecta directamente a los costes de producción de baterías y, por extensión, a la capacidad de Tesla para mantener su estrategia de precios competitivos.
+Las políticas de subsidios son volátiles: cambios en la administración política de los principales mercados pueden alterar el calendario de incentivos y, con ello, el ritmo de adopción a corto y medio plazo.
 
 ---
 
 ## 5. Análisis Cualitativo y Validación Estadística
 
-### Análisis cualitativo del ajuste
+### Análisis Cualitativo
 
-La trayectoria de adopción de Tesla presenta una morfología característica de las tecnologías que logran la transición del nicho al mercado masivo: una fase inicial de crecimiento lento, seguida de una aceleración exponencial sostenida durante varios años, y una desaceleración progresiva conforme el mercado accesible se aproxima a su límite estructural.
+La serie histórica de adopción de Tesla describe una curva sigmoidea característica de los procesos de difusión tecnológica: una fase inicial de crecimiento lento correspondiente a los primeros adoptantes, una fase de aceleración sostenida durante la mayor parte de la ventana temporal, y una moderación reciente que anticipa la transición hacia la madurez. Este patrón es coherente con la teoría de difusión de innovaciones y con la evolución observada en otros mercados de tecnología de consumo de alto valor.
 
-El modelo de Difusión Logística R&K captura con notable fidelidad esta forma en S asimétrica. La fase de aceleración, impulsada por el Model 3 y posteriormente por el Model Y, queda bien representada por la parte central de la curva. La desaceleración reciente —incluyendo las caídas anuales observadas— es coherente con la aproximación al punto de inflexión superior de la curva logística, donde el crecimiento marginal se reduce aunque el volumen absoluto sigue siendo elevado.
+La calidad del ajuste de los modelos de mayor rendimiento es excepcionalmente alta, lo que indica que los datos históricos siguen una trayectoria muy regular, con escasa volatilidad idiosincrática. Esto es consistente con un proceso de adopción impulsado por fuerzas estructurales estables —reducción de costes, expansión de infraestructura, presión regulatoria— más que por shocks puntuales.
 
-Los modelos de la familia Bass y sus extensiones (Generalizado, Dual Market, Van den Bulte & Joshi, Muller & Yogev) muestran ajustes históricos igualmente elevados, lo que refleja la robustez de los datos más que la superioridad intrínseca de cada formulación. La diferencia determinante del modelo ganador reside en su error de predicción fuera de muestra, que es sustancialmente inferior al del resto, sugiriendo una mejor capacidad de generalización.
+### a) Control de Sobreajuste (AIC Mental)
 
-El modelo de Fourt & Woodlock muestra un ajuste claramente inferior y un error de predicción muy elevado, lo que indica que su estructura matemática —diseñada para productos de compra repetida— no es apropiada para modelar la adopción de un bien duradero como el vehículo eléctrico.
+La serie histórica cuenta con once puntos de datos. El modelo Difusión Logística R&K opera con un número reducido de parámetros —típicamente tres en su formulación estándar: potencial de mercado, tasa de crecimiento y punto de inflexión— lo que resulta en una ratio parámetros/observaciones muy favorable. Con once observaciones y tres parámetros, el modelo ganador se sitúa muy por debajo del umbral de riesgo de sobreajuste (que se activaría si el número de parámetros superara la mitad del número de observaciones). El riesgo de sobreajuste para el modelo seleccionado es **bajo**.
 
----
+En contraste, modelos como Dual Market, Bass Generalizado o Van den Bulte & Joshi incorporan parámetros adicionales para capturar segmentación de mercado o efectos de marketing. Con once puntos de datos, estos parámetros adicionales tienen escasa capacidad de identificación empírica, lo que reduce su ventaja teórica en la práctica. El modelo seleccionado justifica su complejidad de forma adecuada.
 
-### a) Control de sobreajuste (AIC mental)
+### b) Detección de Degeneración Paramétrica
 
-El conjunto de datos disponible comprende un número de observaciones anuales moderado. Los modelos de la familia Bass y sus extensiones incorporan entre tres y cinco parámetros libres. El modelo de Difusión Logística R&K opera con un número de parámetros reducido en relación al tamaño muestral, lo que sitúa su relación complejidad-datos en un rango aceptable.
+Se observa un fenómeno notable en los resultados: varios modelos —Bass Clásico, Horsky & Simon y Ladrón-de-Guevara & Putsis— presentan métricas de ajuste prácticamente idénticas entre sí, con valores de R² y MAPE coincidentes hasta el segundo decimal. Este patrón no es un error de cálculo: es una manifestación de **colapso paramétrico**.
 
-Para los modelos con mayor número de parámetros —particularmente las extensiones de Bass con segmentación de mercado o efectos de precio—, la relación entre parámetros libres y observaciones disponibles se aproxima a umbrales donde el riesgo de sobreajuste es no trivial. Sin embargo, dado que el número de parámetros de ningún modelo evaluado supera la mitad del número de observaciones disponibles, **no se activa la advertencia de riesgo alto de sobreajuste** según la regla práctica establecida. El riesgo se califica como **medio** para los modelos más complejos y **bajo** para el modelo ganador.
+Cuando el número de observaciones es limitado, los parámetros adicionales que diferencian a los modelos más complejos de sus versiones más simples no pueden ser estimados de forma independiente con los datos disponibles. Como resultado, el optimizador numérico hace converger esos parámetros hacia valores que reproducen el comportamiento del modelo más simple, y las métricas de ajuste se igualan. En la práctica, estos modelos están resolviendo el mismo problema matemático con distintas etiquetas.
 
-La recomendación de parsimonia refuerza la elección del modelo logístico R&K: ante ajustes históricos prácticamente equivalentes entre varios modelos, el criterio de menor complejidad paramétrica favorece al modelo que generaliza mejor con menos supuestos.
+Esta degeneración es una limitación de identificabilidad inherente a series cortas, no un defecto de los modelos en sí. Su implicación práctica es que, en este contexto, la elección entre los modelos degenerados debe basarse en criterios de parsimonia y en la interpretabilidad de los parámetros, no en las métricas de ajuste.
 
----
+### c) Contraste con Referencias Externas
 
-### b) Detección de degeneración paramétrica
+La Agencia Internacional de la Energía (IEA) publica anualmente proyecciones sobre la adopción global de vehículos eléctricos en su informe *Global EV Outlook*. Según el escenario de políticas anunciadas (STEPS) y el escenario de desarrollo sostenible (SDS/NZE) de la IEA, el parque global de vehículos eléctricos ligeros podría alcanzar entre doscientos y trescientos millones de unidades para mediados de la próxima década, dependiendo del escenario de política climática considerado.
 
-Se observa un fenómeno estadísticamente relevante en los resultados del ajuste: varios modelos —Bass Clásico, Horsky & Simon y Ladrón-de-Guevara & Putsis— presentan métricas de ajuste prácticamente idénticas entre sí, con coeficientes de determinación y errores de predicción que no se distinguen en ningún decimal significativo.
+Las proyecciones del modelo analizado se refieren exclusivamente al parque acumulado de vehículos Tesla, no al mercado global. En este contexto, la comparación directa no es posible sin conocer la cuota de mercado implícita que el modelo asigna a Tesla en el horizonte de proyección. Sin embargo, si se considera que Tesla ha representado históricamente entre el tres y el cinco por ciento del mercado global de vehículos eléctricos en los años de mayor competencia, y que las proyecciones de la IEA apuntan a un mercado global de escala muy superior, el techo de saturación implícito en el modelo podría estar **subestimando** el potencial de largo plazo de Tesla, especialmente si la empresa mantiene o recupera cuota en mercados emergentes.
 
-Este patrón no constituye un error de cálculo. Es la manifestación de un fenómeno conocido como **colapso paramétrico o degeneración paramétrica**: cuando el número de observaciones es limitado en relación a la complejidad del modelo, los parámetros adicionales de las formulaciones más elaboradas pierden identificabilidad. El optimizador numérico no puede distinguir entre distintas combinaciones de parámetros que producen el mismo ajuste, y el modelo complejo colapsa matemáticamente a la solución del modelo más simple. En la práctica, esto significa que los parámetros "extra" de Horsky & Simon y Ladrón-de-Guevara & Putsis no aportan información adicional sobre la dinámica de adopción de Tesla con los datos disponibles: son parámetros fantasma que el modelo no puede estimar de forma independiente.
+Esta divergencia cualitativa sugiere que los factores que los datos históricos no capturan plenamente —expansión en mercados emergentes, nuevos modelos de precio accesible, evolución de la cuota frente a competidores chinos— son determinantes para la validez de las proyecciones en el horizonte más largo.
 
-La implicación práctica es clara: en estos casos, el modelo más parsimonioso —Bass Clásico— es preferible a sus extensiones, ya que produce el mismo ajuste con menor riesgo de sobreajuste y mayor interpretabilidad de los parámetros.
+### d) Modulación de Confianza
 
-De forma análoga, los modelos Dual Market, Van den Bulte & Joshi y Muller & Yogev muestran métricas de ajuste prácticamente indistinguibles entre sí, sugiriendo que la segmentación de mercado adicional que incorporan no es identificable con los datos anuales disponibles.
-
----
-
-### c) Contraste con referencias externas
-
-La Agencia Internacional de la Energía (IEA) publica anualmente proyecciones de adopción de vehículos eléctricos a escala global en su informe *Global EV Outlook*. Según el escenario de políticas anunciadas (STEPS) y el escenario de desarrollo sostenible (SDS/NZE) de la IEA, el parque global de vehículos eléctricos ligeros alcanzaría centenares de millones de unidades en circulación hacia mediados de la década de los treinta, con tasas de penetración que implican volúmenes de ventas anuales globales muy superiores a los que Tesla podría capturar individualmente.
-
-Las proyecciones del modelo para Tesla en el horizonte de largo plazo implican una cuota de mercado global que, comparada con las estimaciones de la IEA para el total del mercado de vehículos eléctricos, resulta **coherente con un escenario de erosión progresiva de la cuota de Tesla** a medida que el mercado total crece más rápido que las ventas individuales de la compañía. Esto es consistente con la dinámica competitiva descrita: Tesla crece en volumen absoluto pero pierde participación relativa frente a BYD y los fabricantes tradicionales electrificados.
-
-No se identifica una referencia externa específica que proyecte las ventas individuales de Tesla a largo plazo con metodología comparable
+| Dimensión | Valoración | Justificación |
+|---|---|---|
+| Suficiencia de datos (n puntos) | Suficiente para el modelo seleccionado | Once observaciones anuales con trayectoria regular permiten identificar los parámetros del modelo logístico con fiabilidad razonable |
+| Riesgo de sobreajuste | Bajo | Ratio parámetros/observaciones favorable; modelo parsimonioso con tres parámetros |
+| Horizonte de proyección | Moderado-largo | Las proyecciones a cinco y diez años en un mercado en transformación acelerada introducen incertidumbre estructural creciente |
+| Contraste externo | Divergencia cualitativa posible | El techo de saturación implícito puede estar subestimado respecto a referencias sectoriales |
+| **Conclusión** | **Proyección OPERATIVA con cautela en el horizonte largo**
 
 ## 2. Datos Históricos y Desviaciones
 
@@ -136,24 +128,24 @@ No se identifica una referencia externa específica que proyecte las ventas indi
 | 2021 | 2.28 M |
 | 2022 | 3.59 M |
 | 2023 | 5.40 M |
-| 2024 | 7.19 M |
-| 2025 | 8.83 M |
+| 2024 | 7.25 M |
+| 2025 | 9.00 M |
 
 
 ### 2.2 Desviaciones por Modelo (Ajuste Histórico)
 | Año | Real (M) | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2015 | 0.05 | 0.00 | 0.00 | 0.00 | 0.01 | 0.00 | 0.00 | 0.00 | 0.00 | 0.07 | 0.00 |
-| 2016 | 0.13 | 0.07 | 0.10 | 0.65 | 0.04 | 0.08 | 0.07 | 0.11 | 2.38 | 0.13 | 0.07 |
-| 2017 | 0.23 | 0.19 | 0.25 | 1.30 | 0.13 | 0.20 | 0.19 | 0.28 | 3.26 | 0.24 | 0.19 |
-| 2018 | 0.47 | 0.41 | 0.48 | 1.94 | 0.34 | 0.36 | 0.41 | 0.57 | 3.60 | 0.44 | 0.41 |
-| 2019 | 0.84 | 0.77 | 0.82 | 2.58 | 0.75 | 0.57 | 0.77 | 1.03 | 3.74 | 0.78 | 0.77 |
-| 2020 | 1.34 | 1.38 | 1.37 | 3.22 | 1.42 | 0.84 | 1.38 | 1.78 | 3.80 | 1.36 | 1.38 |
-| 2021 | 2.28 | 2.32 | 2.25 | 3.85 | 2.41 | 1.20 | 2.32 | 2.99 | 3.85 | 2.29 | 2.32 |
-| 2022 | 3.59 | 3.66 | 3.62 | 4.49 | 3.71 | 1.65 | 3.66 | 4.81 | 3.90 | 3.64 | 3.66 |
-| 2023 | 5.40 | 5.34 | 5.39 | 5.11 | 5.28 | 2.22 | 5.34 | 7.12 | 3.95 | 5.35 | 5.34 |
-| 2024 | 7.19 | 7.17 | 7.20 | 5.74 | 7.05 | 2.92 | 7.17 | 9.44 | 4.02 | 7.19 | 7.17 |
-| 2025 | 8.83 | 8.85 | 8.83 | 6.36 | 8.94 | 3.77 | 8.85 | 11.43 | 4.09 | 8.84 | 8.85 |
+| 2015 | 0.05 | 0.00 | 0.00 | 0.00 | 0.01 | 0.00 | 0.00 | 0.00 | 0.00 | 0.08 | 0.00 |
+| 2016 | 0.13 | 0.07 | 0.10 | 0.66 | 0.05 | 0.09 | 0.07 | 0.10 | 2.31 | 0.14 | 0.07 |
+| 2017 | 0.23 | 0.20 | 0.25 | 1.31 | 0.14 | 0.23 | 0.20 | 0.25 | 3.16 | 0.25 | 0.20 |
+| 2018 | 0.47 | 0.41 | 0.48 | 1.96 | 0.35 | 0.45 | 0.41 | 0.48 | 3.49 | 0.44 | 0.41 |
+| 2019 | 0.84 | 0.78 | 0.82 | 2.61 | 0.76 | 0.81 | 0.78 | 0.82 | 3.63 | 0.79 | 0.78 |
+| 2020 | 1.34 | 1.38 | 1.37 | 3.25 | 1.42 | 1.38 | 1.38 | 1.37 | 3.70 | 1.37 | 1.38 |
+| 2021 | 2.28 | 2.31 | 2.25 | 3.89 | 2.40 | 2.28 | 2.31 | 2.25 | 3.76 | 2.29 | 2.31 |
+| 2022 | 3.59 | 3.64 | 3.61 | 4.53 | 3.70 | 3.61 | 3.64 | 3.61 | 3.82 | 3.63 | 3.64 |
+| 2023 | 5.40 | 5.35 | 5.39 | 5.16 | 5.29 | 5.35 | 5.35 | 5.39 | 3.89 | 5.36 | 5.35 |
+| 2024 | 7.25 | 7.23 | 7.26 | 5.79 | 7.12 | 7.28 | 7.23 | 7.26 | 3.98 | 7.26 | 7.23 |
+| 2025 | 9.00 | 9.02 | 9.00 | 6.42 | 9.10 | 8.99 | 9.02 | 9.00 | 4.08 | 9.00 | 9.02 |
 
 ### 2.3 Fuentes de Datos
 | Año | Valor (M) | Tipo |
@@ -167,49 +159,60 @@ No se identifica una referencia externa específica que proyecte las ventas indi
 | 2021 | 2.28 | Real (reportado) |
 | 2022 | 3.59 | Real (reportado) |
 | 2023 | 5.40 | Real (reportado) |
-| 2024 | 7.19 | Real (reportado) |
-| 2025 | 8.83 | Real (reportado) |
+| 2024 | 7.25 | Real (reportado) |
+| 2025 | 9.00 | Real (reportado) |
 
 ## 3bis. Métricas
 
 | Modelo | R² | MAPE | Score | k |
 |---|---|---|---|---|
-| Bass Clásico | 0.9997 | 17.36% | 95.21 | 3 |
-| Dual Market | 0.9999 | 12.43% | 97.24 | 6 |
-| Fourt & Woodlock | 0.7742 | 161.69% | 62.38 | 2 |
-| Gompertz | 0.9987 | 22.66% | 94.61 | 3 |
-| Bass Generalizado (GBM) | 0.9999 | 13.27% | 96.91 | 4 |
-| Horsky & Simon | 0.9997 | 17.36% | 95.21 | 4 |
-| Muller & Yogev | 0.9999 | 12.43% | 95.87 | 7 |
-| Van den Bulte & Joshi | 0.9999 | 12.40% | 97.24 | 6 |
-| Difusión Logística R&K | 0.9999 | 6.52% | 98.06 | 4 |
-| Ladrón-de-Guevara & Putsis | 0.9997 | 17.36% | 95.21 | 5 |
+| Bass Clásico | 0.9998 | 16.82% | 95.53 | 3 |
+| Dual Market | 0.9999 | 12.41% | 97.47 | 6 |
+| Fourt & Woodlock | 0.7697 | 163.58% | 61.96 | 2 |
+| Gompertz | 0.9989 | 21.22% | 95.07 | 3 |
+| Bass Generalizado (GBM) | 0.9999 | 12.97% | 97.18 | 4 |
+| Horsky & Simon | 0.9998 | 16.82% | 95.57 | 4 |
+| Muller & Yogev | 0.9999 | 12.40% | 96.12 | 7 |
+| Van den Bulte & Joshi | 0.9999 | 12.38% | 96.21 | 6 |
+| Difusión Logística R&K | 0.9999 | 7.46% | 98.14 | 4 |
+| Ladrón-de-Guevara & Putsis | 0.9998 | 16.82% | 95.53 | 5 |
 
 
 ## 4. Proyecciones
 
 ### 4.1 Proyecciones de Todos los Modelos
-| Año | Difusión Logística R&K (M) | Van den Bulte & Joshi (M) | Dual Market (M) | Bass Generalizado (GBM) (M) | Muller & Yogev (M) | Horsky & Simon (M) | Ladrón-de-Guevara & Putsis (M) | Bass Clásico (M) | Gompertz (M) | Fourt & Woodlock (M) |
+| Año | Difusión Logística R&K (M) | Dual Market (M) | Bass Generalizado (GBM) (M) | Van den Bulte & Joshi (M) | Muller & Yogev (M) | Horsky & Simon (M) | Bass Clásico (M) | Ladrón-de-Guevara & Putsis (M) | Gompertz (M) | Fourt & Woodlock (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026 | 10.09 | 8.83 | 10.28 | 8.83 | 13.00 | 10.17 | 10.17 | 10.17 | 10.86 | 8.83 |
-| 2027 | 10.94 | 8.83 | 11.58 | 8.83 | 14.17 | 11.10 | 11.10 | 11.10 | 12.73 | 8.83 |
-| 2028 | 11.46 | 8.83 | 12.73 | 8.83 | 15.01 | 11.70 | 11.70 | 11.70 | 14.52 | 8.83 |
-| 2029 | 11.77 | 8.83 | 13.70 | 8.83 | 15.58 | 12.06 | 12.06 | 12.06 | 16.16 | 8.83 |
-| 2030 | 11.94 | 8.83 | 14.48 | 8.83 | 15.95 | 12.27 | 12.27 | 12.27 | 17.65 | 9.43 |
-| 2031 | 12.03 | 8.83 | 15.07 | 9.57 | 16.19 | 12.39 | 12.39 | 12.39 | 18.97 | 10.03 |
-| 2032 | 12.09 | 8.83 | 15.52 | 10.91 | 16.34 | 12.46 | 12.46 | 12.46 | 20.12 | 10.63 |
-| 2033 | 12.12 | 8.83 | 15.84 | 12.25 | 16.44 | 12.49 | 12.49 | 12.49 | 21.12 | 11.23 |
-| 2034 | 12.13 | 8.83 | 16.07 | 13.56 | 16.50 | 12.52 | 12.52 | 12.52 | 21.98 | 11.83 |
-| 2035 | 12.14 | 8.83 | 16.23 | 14.83 | 16.53 | 12.53 | 12.53 | 12.53 | 22.71 | 12.42 |
+| 2015 | 0.08 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.01 | 0.00 |
+| 2016 | 0.14 | 0.10 | 0.09 | 2.31 | 0.10 | 0.07 | 0.07 | 0.07 | 0.05 | 0.66 |
+| 2017 | 0.25 | 0.25 | 0.23 | 3.16 | 0.25 | 0.20 | 0.20 | 0.20 | 0.14 | 1.31 |
+| 2018 | 0.44 | 0.48 | 0.45 | 3.49 | 0.48 | 0.41 | 0.41 | 0.41 | 0.35 | 1.96 |
+| 2019 | 0.79 | 0.82 | 0.81 | 3.63 | 0.82 | 0.78 | 0.78 | 0.78 | 0.76 | 2.61 |
+| 2020 | 1.37 | 1.37 | 1.38 | 3.70 | 1.37 | 1.38 | 1.38 | 1.38 | 1.42 | 3.25 |
+| 2021 | 2.29 | 2.25 | 2.28 | 3.76 | 2.25 | 2.31 | 2.31 | 2.31 | 2.40 | 3.89 |
+| 2022 | 3.63 | 3.61 | 3.61 | 3.82 | 3.61 | 3.64 | 3.64 | 3.64 | 3.70 | 4.53 |
+| 2023 | 5.36 | 5.39 | 5.35 | 3.89 | 5.39 | 5.35 | 5.35 | 5.35 | 5.29 | 5.16 |
+| 2024 | 7.26 | 7.26 | 7.28 | 3.98 | 7.26 | 7.23 | 7.23 | 7.23 | 7.12 | 5.79 |
+| 2025 | 9.00 | 9.00 | 8.99 | 4.08 | 9.00 | 9.02 | 9.02 | 9.02 | 9.10 | 6.42 |
+| 2026 | 10.37 | 10.62 | 10.20 | 4.20 | 10.63 | 10.47 | 10.47 | 10.47 | 11.15 | 7.04 |
+| 2027 | 11.32 | 12.14 | 10.90 | 4.31 | 12.17 | 11.51 | 11.51 | 11.51 | 13.20 | 7.67 |
+| 2028 | 11.92 | 13.51 | 11.26 | 4.43 | 13.59 | 12.20 | 12.20 | 12.20 | 15.18 | 8.29 |
+| 2029 | 12.27 | 14.69 | 11.42 | 4.54 | 14.84 | 12.62 | 12.62 | 12.62 | 17.04 | 8.90 |
+| 2030 | 12.47 | 15.65 | 11.49 | 4.63 | 15.88 | 12.87 | 12.87 | 12.87 | 18.75 | 9.51 |
+| 2031 | 12.59 | 16.39 | 11.52 | 4.71 | 16.71 | 13.02 | 13.02 | 13.02 | 20.30 | 10.12 |
+| 2032 | 12.65 | 16.95 | 11.53 | 4.77 | 17.35 | 13.10 | 13.10 | 13.10 | 21.68 | 10.73 |
+| 2033 | 12.69 | 17.36 | 11.53 | 4.82 | 17.83 | 13.15 | 13.15 | 13.15 | 22.89 | 11.34 |
+| 2034 | 12.71 | 17.65 | 11.53 | 4.85 | 18.17 | 13.18 | 13.18 | 13.18 | 23.95 | 11.94 |
+| 2035 | 12.72 | 17.85 | 11.54 | 4.88 | 18.42 | 13.19 | 13.19 | 13.19 | 24.86 | 12.53 |
 
 ### 4.2 Escenarios de Consenso
 | Escenario | Modelo | 2030 (M) | 2035 (M) |
 | --- | --- | --- | --- |
-| Conservador | Bass Clásico | 12.27 | 12.53 |
-| Base (recomendado) | Difusión Logística R&K | 11.94 | 12.14 |
-| Optimista | Gompertz | 17.65 | 22.71 |
+| Conservador | Bass Clásico | 12.87 | 13.19 |
+| Base (recomendado) | Difusión Logística R&K | 12.47 | 12.72 |
+| Optimista | Gompertz | 18.75 | 24.86 |
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Difusión Logística R&K): R²=0.9999, MAPE de ajuste=6.52%, Score=98.06.
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Difusión Logística R&K): R²=0.9999, MAPE de ajuste=7.46%, Score=98.14.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
