@@ -198,7 +198,7 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
     
     # 3. Proyecciones comparadas
     t3 = "### 3. Proyecciones Estratégicas (Millones)\n"
-    t3 += "| Tecnología | 2030 | 2035 | Confianza Individual |\n"
+    t3 += "| Tecnología | 2030 | 2035 | Calidad de Datos (juez) |\n"
     t3 += "|---|---|---|---|\n"
     for tech in techs_data.keys():
         bdata = brand_data[tech]
@@ -207,7 +207,7 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
         p35 = f"{proj_map.get(2035, 0):.2f}"
         conf = techs_data[tech][1]
         t3 += f"| {tech.title()} | {p30} | {p35} | {conf} |\n"
-    t3 += "\n"
+    t3 += "\n*Nota: 'Calidad de Datos' es el veredicto del juez sobre la serie de entrada (CONFIABLE/SOSPECHOSO). La confianza de la PROYECCIÓN (OPERATIVA/INDICATIVA/TENTATIVA) está en cada informe individual.*\n\n"
     
     # 4. Parámetros de difusión
     t4 = "### 4. Parámetros de Difusión\n"
