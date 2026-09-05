@@ -41,10 +41,9 @@ def render_tab_projections(tecnologia_seleccionada):
         return
         
     import os
-    from app import BASS_DIR
     
     is_analogical = False
-    informe_path = os.path.join(BASS_DIR, f"informe_global_{tecnologia_seleccionada}.md")
+    informe_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", f"informe_global_{tecnologia_seleccionada}.md"))
     
     params = load_model_parameters(tecnologia_seleccionada)
     if not params:
