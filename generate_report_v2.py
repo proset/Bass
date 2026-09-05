@@ -709,6 +709,75 @@ Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuf
     with open(f"informe_global_{tech}.md", "w", encoding="utf-8") as f:
         f.write(md)
 
+def persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios):
+    """
+    Persiste los escenarios de la analogía en model_parameters (registro neutro) 
+    y en qualitative_analysis para ser recuperados por tab_benchmarking.
+    """
+    import json
+    import numpy as np
+    from db.connection import get_conn, release_conn
+    from data.loaders import normalize_tech_name
+    
+    tech_norm = normalize_tech_name(tech)
+    db_conn = get_conn()
+    if not db_conn:
+        print("[analogia] Error: No se pudo conectar a BD para persistir escenarios.")
+        return
+        
+    try:
+        cur = db_conn.cursor()
+        
+        # 1. model_parameters: registro neutro
+        cur.execute("DELETE FROM model_parameters WHERE LOWER(TRIM(tecnologia)) = %s AND modelo_tipo = 'Analogical_Forecast'", (tech_norm,))
+        
+        techo_base = float(prior_M.get("Base", prior_M.get("Optimista", 0)))
+        
+        # Helper para sanitizar numpy a tipos Python para JSON
+        def sanitize(obj):
+            if isinstance(obj, np.ndarray): return obj.tolist()
+            if isinstance(obj, (np.int64, np.int32)): return int(obj)
+            if isinstance(obj, (np.float64, np.float32)): return float(obj)
+            if isinstance(obj, dict): return {k: sanitize(v) for k, v in obj.items()}
+            if isinstance(obj, list): return [sanitize(v) for v in obj]
+            return obj
+            
+        params_json = sanitize({
+            "analogia": {
+                "conservador": escenarios.get("Conservador", {}),
+                "base": escenarios.get("Base", {}),
+                "optimista": escenarios.get("Optimista", {}),
+                "analogos": analogos,
+                "mercado_direccionable_M": clasif.get('mercado_direccionable_M')
+            }
+        })
+        
+        # qualitative_analysis
+        cur.execute("""
+            INSERT INTO qualitative_analysis (tecnologia, analisis)
+            VALUES (%s, %s)
+            ON CONFLICT (tecnologia) 
+            DO UPDATE SET analisis = EXCLUDED.analisis, fecha_analisis = now()
+        """, (tech_norm, json.dumps(params_json)))
+        
+        # model_parameters (No tenemos col params_json, insertamos un registro neutro y recuperaremos el JSON de qualitative_analysis)
+        cur.execute("""
+            INSERT INTO model_parameters 
+            (tecnologia, modelo_tipo, param_m1, r_cuadrado, score, n_params, mape_ajuste, mape_backtest)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (tech_norm, "Analogical_Forecast", techo_base, None, -999.0, 2, None, None))
+        
+        db_conn.commit()
+        cur.close()
+        print(f"[analogia] Escenarios persistidos en BD (modelo Analogical_Forecast)")
+    except Exception as e:
+        print(f"[analogia] Error persistiendo en BD: {e}")
+        if db_conn:
+            db_conn.rollback()
+    finally:
+        if db_conn:
+            release_conn(db_conn)
+
 def main():
     tech = sys.argv[1] if len(sys.argv) > 1 else "electric vehicles"
     print(f"\n{'='*60}\n  BASS v2 FINAL: Gemini ext + GLM fit + Claude ana: '{tech}'\n{'='*60}\n")
@@ -841,6 +910,10 @@ def main():
         # 5. Generar informe early-tech (NO continúa al fit GLM normal)
         generar_informe_analogia(tech, serie, clasif, analogos, prior_M, escenarios)
         print(f"[analogia] Informe de proyección por analogía generado")
+        
+        # 6. Persistir escenarios en BD (model_parameters y qualitative_analysis)
+        persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios)
+        
         sys.exit(0)  # terminación limpia — NO sigue al pipeline maduro
         
     log("2/3", "Verificando y ajustando con GLM...")
