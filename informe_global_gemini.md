@@ -61,5 +61,5 @@
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** Gemini es un asistente de IA conversacional de Google con crecimiento explosivo desde su lanzamiento en 2023, comparable al despliegue masivo de motores de búsqueda y redes sociales en sus fases iniciales. Su mercado direccionable abarca prácticamente todos los usuarios de internet globales (~5000M), siguiendo una curva S típica de plataformas digitales de adopción viral.
-**Análogos sugeridos por Claude:** Google Search, ChatGPT, Smartphone adoption, Facebook, Gmail
+**Justificación Claude:** Gemini es un asistente de IA conversacional de Google con crecimiento explosivo comparable al de ChatGPT y la adopción masiva de motores de búsqueda; su mercado direccionable se aproxima al total de usuarios de internet activos globales (~5000M), dado que compite por convertirse en interfaz primaria de acceso a información.
+**Análogos sugeridos por Claude:** ChatGPT, Google Search, smartphone adoption, Facebook, Gmail

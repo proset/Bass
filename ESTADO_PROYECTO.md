@@ -1,110 +1,114 @@
-ESTADO DEL PROYECTO BASS/GLM — 31/08/2026 (FINAL — BASS v2.2 production-ready)
+# ESTADO DEL PROYECTO BASS/GLM — 05/09/2026 (FINAL — v2.3 + Analogical Forecast + Benchmarking Mixto)
 
-RESUMEN EJECUTIVO
-BASS v2.2 está COMPLETO y VALIDADO. Sistema one-command que genera informes de adopción tecnológica con análisis de calidad consultoría senior, por $0.06/tech en ~5 minutos. Pipeline + frontend + BD limpios y sincronizados. Proyecto cerrado.
+## RESUMEN EJECUTIVO
+BASS está COMPLETO y validado de extremo a extremo: sistema autónomo ($0.10-0.15/análisis) que proyecta la adopción de CUALQUIER tecnología por tres rutas según sus datos (fit directo / analogía / espera honesta), compara tecnologías maduras con jóvenes en benchmarking mixto con confianza degradada, y nunca presenta ficción como proyección. El requisito original del SaaS ("dar una previsión sobre chatgpt") está cumplido: proyección por analogía con ±34% de error declarado, validada por backtest leave-one-out.
 
-ARQUITECTURA (DEFINITIVA — 3 roles)
-Gemini: BUSCADOR      ($0.02) — extracción de datos via Google Search Grounding
-GLM:    MATEMÁTICO    ($0.00) — fit de 10 modelos con curve_fit (Python, determinista)
-Claude: ESCRITOR-ANALISTA ($0.04) — claude-sonnet-4-6, temperature=0, 1 llamada
-Pipeline: python generate_report_v2.py <tech> → informe completo + validación.
+## ARQUITECTURA FINAL (3 rutas + comparación mixta)
+```text
+python generate_report_v2.py <tech>
 
-LO QUE HAY AHORA
-BD (limpiada 31/08 — 1.280 filas de basura eliminadas, backup JSON commiteado)
-Tech	Puntos	Modelos	Nota
-anthropic	11	10	Privada, anchors MAU (8/72/182M)
-electric vehicles	11	10	Dual_Market R²=0.9997
-instagram	15	10	R&K R²=0.9973, OPERATIVA
-tesla	11	10	R&K R²=0.9999, escenarios 12.5-22.7M
-zoom	11	10	GBM R²=0.9834 (spike COVID)
-Backup completo en backup_historical_adoption.json (commiteado). Las 15+ techs v1 (Netflix, Spotify, etc.) se restauran desde ahí si se necesitan.
+EXTRACCIÓN (Gemini+Grounding, $0.02)
+    ↓
+CASCADA v2.3 (gate determinista → Claude juez → re-extracción quirúrgica con retry → rollback de invariantes → veredicto)
+    ↓
+┌─ MADURO (≥6 pts reales) ──→ fit GLM: 10 modelos compiten, backtest
+│                              anti-sobreajuste, solver verificado
+│                              (Fix 40-43 + test permanente Fix 42)
+├─ YOUNG (3-5 pts) ─────────→ ANALOGICAL FORECAST (Fix 45-49):
+│                              Claude clasifica (categoría/mercado_M/ritmo)
+│                              → match por forma+ritmo vs catálogo de 191
+│                              curvas (36 explosivas: WhatsApp/Facebook/...)
+│                              → prior de techo p25/p50/p75 de los análogos
+│                              → fit logístico con m FIJADO (2 params)
+│                              → informe con ±34%/±48% declarado (backtest)
+│                              → persistido como "Analogical_Forecast" en BD
+├─ MUY JOVEN (<3 pts) ──────→ "DATOS INSUFICIENTES para analogía:
+│                              mínimo 3 puntos, reintentar con más historial"
+└─ BASURA/MUERTA ───────────→ INSERVIBLE honesto (sora, métrica rara)
+    ↓
+CLAUDE-ANALISTA (informe: 4 validaciones, confianza modulada)
+```
 
-Pipeline (generate_report_v2.py)
-[1/3] Gemini Flash + Grounding ($0.02) → datos + custom_anchors.json + contexto de mercado
-[2/3] GLM persist_fit.py ($0.00) → 10 modelos, determinista, backtest (anti-sobreajuste)
-[3/3] Claude claude-sonnet-4-6 temp=0 ($0.04) → análisis + 4 validaciones
-Python ensambla: 6 tablas determinísticas + escenarios + formulaciones
+## FRONTEND (Streamlit, 3 pestañas):
+- 📈 Proyecciones — consenso por Score BD + multiselect modelos (analíticas o RK4 verificadas)
+- 📊 Comparativa MIXTA (Fix 50) — maduras (fit) + jóvenes (analogía escenario base) EN LA MISMA comparación: métricas N/D-analogía, confianza truncada a TENTATIVA si hay analogía, asimetría explícita, prohibición de ganadores de precisión entre clases
+- 📄 Informe Global
+- Sidebar: carga inteligente + CSV + manual + eliminar (conservados)
 
-Informe generado (estructura completa)
-Sección	Genera	Contenido
-§1 Resumen Ejecutivo	Claude	+ confianza ALTA/MEDIA/BAJA + NOTA FUENTE si privada
-§3 Análisis de Mercado	Claude	drivers, competidores, barreras, tendencias (contexto Gemini + conocimiento)
-§5 Validación Estadística	Claude	4 validaciones: AIC-sobreajuste, colapso paramétrico, contraste externo (IEA/Gartner), confianza OPERATIVA/INDICATIVA/TENTATIVA
-§6 Marco Académico	Claude	Rogers aplicado al caso
-§7 Recomendación	Claude	integrada al nivel de confianza
-§2.1 Serie Histórica	Python	determinista
-§2.2 Desviaciones por Modelo	Python	todos vs real
-§2.3 Fuentes	Python	data lineage real/estimado
-§3bis Métricas	Python	R²/MAPE/Score/k todos
-§4.1 Proyecciones Todos	Python	10 modelos × 2026-2035
-§4.2 Escenarios	Python	Conservador/Base/Optimista
-📐 Formulaciones	Python	MODEL_EQUATIONS + MODEL_YEARS by id
+## EL BACKTEST QUE VALIDÓ LA ANALOGÍA (FASE 1-3 del experimento)
+| Método | MAPE 5y | MAPE 10y |
+|---|---|---|
+| C. Forma+ritmo (implementado) | 34.4% | 48.2% |
+| B. Categoría | 39.4% | 67.1% |
+| A. Persistencia | 59.6% | 83.9% |
+| D. GM(1,1) | 47.4% | 257.8% (sin techo) |
 
-Frontend (Streamlit — 3 pestañas)
-📈 Proyecciones: gráfico consenso (mejor Score de BD) + histórico + proyección dashed hasta 2035 + zona sombreada. Multiselect 10 modelos, consenso SIEMPRE visible. Verificado con Tesla.
-📊 Comparativa: multi-tech (tab_benchmarking adaptada a v2).
-📄 Informe Global: renderiza informe_global_{tech}.md.
-Sidebar: 🤖 Carga Inteligente (subprocess v2, spinner 5min, rerun/error) + CSV + Edición manual + Eliminar (todo conservado).
-Ocultadas (comentadas, no borradas): tab_market, tab_scientific, tab_rag, tab_report.
+Catálogo: 191 curvas OWID (por país) + redes sociales (MAU público) + hardware de consumo. Clasificador de ritmo calibrado (explosiva >5x año5/año2). Leave-one-out estricto. El match por forma derrotó incluso a la clasificación equivocada de Claude (anthropic clasificada "otra" aún matcheó Snapchat/WhatsApp/Facebook — la matemática es más robusta que la semántica).
 
-Validación
-python test_backends.py claude <tech>   → ESTÁNDAR (0/5 corridas con blockers en v2.x)
-python test_backends.py gemini <tech>   → secundario (FPs semánticos conocidos, documentar)
-Validación independiente (Claude replicó el fit "al decimal"): matemática correcta y reproducible. ✓
+## VALIDACIÓN COMPLETA (todas las rutas, evidencia en git)
+| Ruta | Techs validadas |
+|---|---|
+| MADURO | tesla, instagram, EV-chinos, ozempic, coches-hibridos-toyota, midjourney |
+| YOUNG→ANALOGÍA | chatgpt, gemini, anthropic, perplexity (WhatsApp/FB en análogos) |
+| MUY JOVEN | grok, claude-code ("reintentar con más historial") |
+| INSERVIBLE | sora (muerto), toyota (métrica indeterminada) |
+| MIXTO (Fix 50) | EV vs anthropic vs chatgpt: TENTATIVA, inconmensurabilidad (usuarios vs coches) detectada por Claude, sin "líder indiscutible" |
 
-HISTORIA DEL PROYECTO (aprendizajes)
-Fase	Fechas	Resultado
-BASS v1 (Groq loop)	25-28/08	20+ fixes, 70% fiabilidad, whack-a-mole — REEMPLAZADO
-Experimentos	29-30/08	Claude-todo: no reproducible (m=850↔1250). Claude-ext: N/A pre-lanzamiento, sin temp=0 en sonnet-5 — DESCARTADOS
-BASS v2	30/08	Arquitectura 3 roles, validada (Anthropic, EV, Zoom)
-v2.1	31/08	Claude-analista senior (4 validaciones en prompt) — FPs eliminados por auto-documentación
-v2.2	31/08	Informes completos (6 tablas + mercado + escenarios) + frontend + limpieza BD
+## HISTORIA (5 días, 3 arquitecturas)
+| Versión | Qué era | Fin |
+|---|---|---|
+| v1 (Groq loop) | 20+ fixes, 70% fiabilidad, whack-a-mole | Reemplazada — "si cada fix crea un problema, la arquitectura está mal" |
+| v2.2 (3 roles) | Gemini busca / GLM calcula / Claude escribe | Base vigente |
+| v2.3 | Cascada de verificación de datos | Vigente |
+| Fix 40-43 | "Dos matemáticas" cerrada: monotonicidad interna, 3 modelos más a RK4, test permanente | Vigente |
+| Fix 45-50 | Analogical Forecast + young-techs + benchmarking mixto | Vigente |
 
-Lecciones críticas (10)
-1. LLM correcto por rol: buscar ≠ calcular ≠ escribir. Gemini busca, Python calcula, Claude escribe.
-2. Groq era determinista pero incorrecto — 20+ fixes compensaban sus limitaciones. Claude es determinista Y correcto: 0 fixes.
-3. El fit SIEMPRE en Python (curve_fit), nunca en LLM — Claude-todo falló por matemática no reproducible.
-4. Privadas sin datos: SimilarWeb es JavaScript → ningún buscador lo indexa → custom_anchors.json (usuario pone MAU verificado).
-5. claude-sonnet-4-6 soporta temp=0; sonnet-5 no. Modelo correcto para determinismo.
-6. El prompt correcto convierte a Claude en analista senior: 4 validaciones espontáneas, sin código extra.
-7. El informe que documenta sus limitaciones elimina sus propios FPs (colapso explicado → reviewer no lo flaggea).
-8. Score con backtest penaliza sobreajuste implícitamente (R²=1.0 + MAPE_bt=1209% = último).
-9. Escenarios > cifra única: el rango Conservador/Optimista ES la información.
-10. Whack-a-mole = arquitectura mal: si cada fix crea un problema nuevo, rediseñar, no parchear.
+## LECCIONES CRÍTICAS (todas pagadas con evidencia)
+- LLM correcto por rol: buscar ≠ calcular ≠ escribir (Gemini/GLM/Claude).
+- El fit SIEMPRE en Python — LLM-matemática no es reproducible.
+- Aproximaciones analíticas de modelos acoplados = ficción (4 bugs de la misma familia) → solver es la verdad, analítica solo si la reproduce exactamente (test permanente lo garantiza).
+- La cascada: frescura (Gemini) × plausibilidad (Claude) cruzadas = precisión.
+- Invariantes primero: corrección que rompe la serie se revierte.
+- El floor de monotonicidad contra el dato real congela proyecciones — la monotonicidad es INTERNA del modelo.
+- Con <6 puntos el techo es matemáticamente indeterminado → la analogía (36 curvas explosivas) es la solución validada (34.4% MAPE).
+- El match por forma es más robusto que la clasificación semántica.
+- Una comparación nunca es más fuerte que su dato más débil (regla del mínimo + truncado a TENTATIVA con analogía).
+- Métricas incomparables (usuarios vs coches) → Claude declara inconmensurabilidad y se niega al ganador — el producto ES esa honestidad.
+- Errores de red en re-extracción: retry (grok quedó sin corregir por un WinError 10054 no manejado).
+- Anchors de custom_anchors.json deben aplicar como capa FINAL (la re-extracción puede pisarlos — bug abierto).
 
-COMPONENTES CLAVE
-generate_report_v2.py — pipeline one-command (v2.2)
-models/analytical_projections.py — proyecciones (5 analíticas + RK4+NaN handling)
-custom_anchors.json — anchors verificados (usuario edita JSON, no Python)
-data/loaders.py — zero-filter guard (min 5 pts)
-persist_fit.py (GLM) — TECH required (fail loud)
-backup_historical_adoption.json — backup completo pre-limpieza
+## COMPONENTES CLAVE
+- `generate_report_v2.py` — pipeline 3 rutas (cascada + analogía + fit)
+- `models/analogical_forecast.py` — match forma/ritmo, prior, fit m-fijado
+- `models/analytical_projections.py` — 5 analíticas exactas + 5 RK4 verificados
+- `tests/test_analytical_vs_solver.py` — invariante permanente (Fix 42)
+- `data/catalog/curves.json` — 191 curvas (36 explosivas)
+- `catalog_builder_v2.py` — constructor + clasificador de ritmo
+- `ui/tab_benchmarking.py` — comparativa mixta con asimetría
+- `custom_anchors.json` — datos verificados por humanos (pendiente capa final)
+- `backup_historical_adoption.json` — backup pre-limpieza
 
-FIXES VIGENTES vs ELIMINADOS
-Vigentes: 23 (MODEL_EQUATIONS), 26 (MODEL_YEARS by id), 29 (DELETE antes INSERT), 30b/30c (jerarquía + anchors JSON), zero-filter guard (ex-31), 35 (Grounding sin JSON mode), 36 (precisión .2f).
-Eliminados (compensaban Groq-loop): 20/22, 24a/24b, 25, 27/28, 33/33b, 34, 37, 38/38b.
+## BACKLOG (nada bloquea producción)
+- BUG ABIERTO: anchors pisables por re-extracción (aplicar como capa final)
+- MAPE_backtest en tabla §3bis + peso en Score (16.12% hoy invisible)
+- Ponderación del tramo reciente en la selección de ganador
+- Regla anti-marca en extracción (toyota vs coches-hibridos-toyota)
+- Fix escenarios (Conservador ≤ Base ≤ Optimista — invertidos en varios)
+- Verificación de mejora en re-extracción (instagram empeoró una vez)
+- Categorías finas del clasificador de analogía (compensado por el match)
+- Regenerar informes v1 (Netflix, Spotify...) desde backup
+- Batch mode / Docker / deploy / git push de cierre
 
-PROTOCOLO (vigente)
-Commit ANTES de parche · Select-String DESPUÉS · Antigravity propone, usuario aplica y re-verifica EN SU PowerShell · py_compile tras editar · años hardcodeados prohibidos · git destructivo prohibido · Python se edita en archivo, nunca en PowerShell · sin && · Antigravity NO cambia modelo/config sin aprobación · extracción guarda ambos outputs · limpiar pycache tras code changes · API keys SOLO en env vars (nunca hardcodeadas) · consenso = Score BD, nunca texto LLM · Claude backend = estándar · GATEs: diffs + py_compile antes de correr.
+## COMANDOS
+- Pipeline: `python generate_report_v2.py <tech>`
+- Benchmarking mixto: UI Streamlit → Comparativa (fit + analogía juntas)
+- Validación: `python test_backends.py claude <tech>`
+- Test invariante: `python tests/test_analytical_vs_solver.py`
+- Frontend: `python -m streamlit run app.py`
+- Anchors: `custom_orders.json` — editar valores verificados
+- Catálogo: `data/catalog/curves.json` (rebuild: `catalog_builder_v2.py`)
 
-BACKLOG (opcional — NO bloquea producción)
-Regenerar techs v1 desde backup (python generate_report_v2.py <tech>)
-Modo "solo análisis" (saltar extracción si ya hay ≥5 pts)
-Borrar archivos muertos de vistas ocultas (grep imports primero, cuando estable)
-Batch mode (lista de techs → loop)
-SimilarWeb API pagada ($100+/mes) — eliminaría anchors manuales
-Docker/deploy Streamlit
-Verificar git push final
+## CIERRE
+De "no puede predecir chatgpt" (invendible) a: chatgpt proyectado por analogía con 36 curvas explosivas, ±34% declarado, comparado contra techs maduras con Claude declarando la inconmensurabilidad y negándose a declarar un ganador.
 
-COMANDOS BÁSICOS
-Pipeline:        python generate_report_v2.py <tech>
-Validación:      python test_backends.py claude <tech>
-Frontend:        python -m streamlit run app.py
-Fit manual:      cd C:\Users\roset\GLM && python persist_fit.py <tech>
-Anchors:         editar custom_anchors.json (raíz de BASS)
-Backup BD:       backup_historical_adoption.json (en git)
-
-CIERRE
-De un sistema con 20+ fixes que fallaba cada tech nueva → BASS v2.2: $0.06/tech, 5 minutos, análisis de consultoría senior, validación estadística integrada, escenarios, data lineage, frontend interactivo, BD limpida con backup.
-
-Proyecto cerrado. La lección más valiosa (punto 10): "si cada fix crea un problema nuevo, la arquitectura está mal — rediseñar, no parchear."
+El producto no promete predicciones perfectas — promete: proyección estadística cuando los datos lo permiten, analogía validada cuando no, espera honesta cuando aún no hay nada, y la frontera entre las tres siempre visible. ESE es el SaaS defendible.

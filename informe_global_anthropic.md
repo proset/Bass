@@ -61,5 +61,5 @@
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** Anthropic (Claude) muestra una curva de adopción explosiva comparable al lanzamiento de ChatGPT y la masificación de motores de búsqueda, pasando de 0 a 182M usuarios en apenas 2 años. El mercado direccionable abarca prácticamente cualquier usuario de internet con necesidades de productividad, programación o información, estimado en varios miles de millones de personas.
-**Análogos sugeridos por Claude:** Google Search, iPhone, ChatGPT/OpenAI, Facebook, Zoom
+**Justificación Claude:** Anthropic (Claude) muestra una curva de adopción explosiva comparable al lanzamiento de smartphones e internet de consumo masivo, pasando de 0 a 182M usuarios en apenas 2 años. El mercado direccionable es el de trabajadores del conocimiento y consumidores digitales globales, estimado en varios miles de millones de usuarios potenciales.
+**Análogos sugeridos por Claude:** Google Search, iPhone, Facebook, ChatGPT/OpenAI, Zoom
