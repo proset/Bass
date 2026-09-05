@@ -82,12 +82,14 @@ def build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, m
         modelo_str = model_labels[m_usado]
         
         # Extraer métricas si existen
-        p_raw = bdata["params"]
-        params_m = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
-        r2 = params_m.get("r_cuadrado", "N/D")
-        if isinstance(r2, float): r2 = f"{r2:.4f}"
-        mape = params_m.get("mape_ajuste", "N/D")
-        if isinstance(mape, float): mape = f"{mape:.4f}"
+        p = bdata["params"]
+        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
+        
+        # Keys CORRECTAS (copiadas de generate_report_v2.py, que funciona):
+        r2 = p.get('r_cuadrado', pdict.get('r_cuadrado', 'N/D'))
+        if isinstance(r2, (int, float)): r2 = f"{float(r2):.4f}"
+        mape = p.get('mape_ajuste', pdict.get('mape_ajuste', 'N/D'))
+        if isinstance(mape, (int, float)): mape = f"{float(mape):.2f}%"
         
         # Proyecciones 2030 / 2035
         proj_map = dict(zip(bdata["anios_proj"], bdata["proj"]))
@@ -178,16 +180,17 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
         bdata = brand_data[tech]
         m_usado = bdata["modelo_usado"]
         modelo_str = model_labels[m_usado]
-        p_raw = bdata["params"]
-        p_dict = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
+        p = bdata["params"]
+        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
         
-        r2 = p_dict.get('r_cuadrado', 'N/D')
-        if isinstance(r2, float): r2 = f"{r2:.4f}"
-        mape = p_dict.get('mape_ajuste', 'N/D')
-        if isinstance(mape, float): mape = f"{mape:.4f}"
-        score = p_dict.get('score', 'N/D')
-        if isinstance(score, float): score = f"{score:.2f}"
-        k = p_dict.get('n_params', 'N/D')
+        # Keys CORRECTAS (copiadas de generate_report_v2.py, que funciona):
+        r2 = p.get('r_cuadrado', pdict.get('r_cuadrado', 'N/D'))
+        if isinstance(r2, (int, float)): r2 = f"{float(r2):.4f}"
+        mape = p.get('mape_ajuste', pdict.get('mape_ajuste', 'N/D'))
+        if isinstance(mape, (int, float)): mape = f"{float(mape):.2f}%"
+        score = p.get('score', pdict.get('score', 'N/D'))
+        if isinstance(score, (int, float)): score = f"{float(score):.2f}"
+        k = p.get('n_params', pdict.get('n_params', 'N/D'))
         pts = calidad[tech]['puntos_reales']
         
         t2 += f"| {tech.title()} | {modelo_str} | {r2} | {mape} | {score} | {k} | {pts} |\n"
@@ -213,22 +216,22 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
     for tech in techs_data.keys():
         bdata = brand_data[tech]
         m_usado = bdata["modelo_usado"]
-        p_raw = bdata["params"]
-        params_dict = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
+        p = bdata["params"]
+        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
         
-        param_m = params_dict.get('param_m1', 'N/D')
-        if isinstance(param_m, float): param_m = f"{param_m:.2f}"
+        param_m = pdict.get('param_m1', pdict.get('param_m', 'N/D'))
+        if isinstance(param_m, (int, float)): param_m = f"{float(param_m):.2f}"
         
         if m_usado in ["Bass_Clasico", "Dual_Market", "VdB_Joshi"]:
-            param_p = params_dict.get('param_p1', 'N/D')
-            if isinstance(param_p, float): param_p = f"{param_p:.2e}"
+            param_p = pdict.get('param_p1', 'N/D')
+            if isinstance(param_p, (int, float)): param_p = f"{float(param_p):.2e}"
             
-            param_q = params_dict.get('param_q1', 'N/D')
-            if isinstance(param_q, float): param_q = f"{param_q:.4f}"
+            param_q = pdict.get('param_q1', 'N/D')
+            if isinstance(param_q, (int, float)): param_q = f"{float(param_q):.4f}"
         else:
             param_p = "N/D — parametrización distinta"
             param_q = "N/D — parametrización distinta"
-            if param_m == 'N/D' and 'param_k' in params_dict: # Example of another parameter
+            if param_m == 'N/D' and 'param_k' in pdict: # Example of another parameter
                  param_m = "N/D — parametrización distinta"
                  
         t4 += f"| {tech.title()} | {param_p} | {param_q} | {param_m} |\n"
