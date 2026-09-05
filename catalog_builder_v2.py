@@ -73,7 +73,9 @@ def classify_rhythm(vals):
     if v2 == 0:
         return "Explosiva"
     ratio = v5 / v2
-    if ratio > 8.0:
+    
+    # Thresholds ajustados a >5x tras revisión con FB/TikTok
+    if ratio > 5.0:
         return "Explosiva"
     elif ratio >= 2.0:
         return "Media"
@@ -93,19 +95,14 @@ def get_db_series(tech_name):
     return years, vals
 
 # MAU series in Millions (approximate historical data)
-# Facebook (2004-2023)
 facebook_y = list(range(2004, 2024))
 facebook_v = [1, 5, 12, 58, 145, 360, 608, 845, 1056, 1230, 1390, 1590, 1860, 2130, 2320, 2500, 2800, 2910, 2960, 3050]
-# WhatsApp (2009-2023)
 whatsapp_y = list(range(2009, 2024))
 whatsapp_v = [1, 10, 50, 100, 400, 600, 900, 1000, 1300, 1500, 1600, 2000, 2000, 2000, 2780]
-# YouTube (2005-2023)
 youtube_y = list(range(2005, 2024))
 youtube_v = [2, 20, 50, 100, 200, 400, 800, 1000, 1000, 1100, 1300, 1500, 1500, 1800, 2000, 2290, 2560, 2560, 2700]
-# Twitter (2006-2023)
 twitter_y = list(range(2006, 2024))
 twitter_v = [0.1, 0.5, 3, 18, 54, 117, 185, 241, 288, 305, 318, 330, 321, 330, 353, 396, 368, 368]
-# Snapchat (2011-2023)
 snapchat_y = list(range(2011, 2024))
 snapchat_v = [1, 10, 30, 60, 107, 158, 178, 186, 218, 265, 319, 375, 414]
 
@@ -117,26 +114,54 @@ SOCIAL_MEDIA = {
     "Snapchat": (snapchat_y, snapchat_v, 500.0)
 }
 
+# Consumer tech series (approximate % household penetration US)
+CONSUMER_TECH = {
+    "Color_TV": (list(range(1964, 1979)), [3, 5, 8, 15, 24, 33, 43, 53, 62, 70, 74, 77, 80, 82, 85], 100.0),
+    "VCR": (list(range(1980, 1995)), [1, 2, 4, 9, 17, 28, 40, 50, 60, 68, 72, 75, 77, 79, 81], 100.0),
+    "DVD": (list(range(1999, 2011)), [5, 12, 23, 36, 50, 63, 75, 80, 83, 85, 87, 89], 100.0),
+    "Smartphones_US": (list(range(2007, 2020)), [5, 10, 17, 27, 42, 53, 65, 72, 77, 81, 83, 85, 86], 100.0),
+    "Tablets_US": (list(range(2010, 2020)), [3, 11, 23, 35, 45, 51, 54, 56, 58, 60], 100.0),
+}
+
+def print_debug_classification(name, vals, ceil):
+    v_norm = np.array(vals) / ceil
+    start_idx = next((i for i, v in enumerate(v_norm) if v > 0.01), -1)
+    if start_idx == -1 or start_idx + 4 >= len(v_norm):
+        print(f"DEBUG {name:15s}: Desconocido (Start={start_idx})")
+        return
+    v2 = v_norm[start_idx + 1]
+    v5 = v_norm[start_idx + 4]
+    ratio = v5 / v2 if v2 > 0 else float('inf')
+    cls = "Explosiva" if ratio > 5.0 else ("Media" if ratio >= 2.0 else "Gradual")
+    print(f"DEBUG {name:15s}: Año 1 (v={v_norm[start_idx]:.3f}) | Año 2 (v={v2:.3f}) | Año 5 (v={v5:.3f}) => Ratio: {ratio:5.1f}x -> {cls}")
+
 def build_catalog():
     curves = []
     
+    # Debug de las redes
+    print("\n--- DEBUG REDES SOCIALES ---")
+    for net, (_, v, ceil) in SOCIAL_MEDIA.items():
+        print_debug_classification(net, v, ceil)
+    for tech in ["instagram", "tiktok"]:
+        _, v = get_db_series(tech)
+        if v:
+            print_debug_classification(tech, v, max(v)*1.1)
+    print("----------------------------\n")
+
     # 1. OWID
     for ds in DATASETS:
         print(f"Descargando {ds['name']}...")
         try:
             r = requests.get(ds["url"], headers=headers)
             if r.status_code != 200:
-                print(f"Error {r.status_code} con {ds['name']}")
                 continue
             df = pd.read_csv(StringIO(r.text))
             df.columns = [c.capitalize() for c in df.columns]
         except Exception as e:
-            print(f"Error con {ds['name']}: {e}")
             continue
 
         valid_cols = [c for c in df.columns if c not in ("Entity", "Code", "Year")]
         if not valid_cols:
-            print(f"Sin columna de valor en {ds['name']}")
             continue
         value_col = valid_cols[0]
         
@@ -168,7 +193,7 @@ def build_catalog():
 
     # 2. SOCIAL MEDIA CAPA 2
     for net_name, (y, v, ceil) in SOCIAL_MEDIA.items():
-        vals = np.array(v) / ceil # Normalize by ceiling
+        vals = np.array(v) / ceil
         ritmo = classify_rhythm(vals)
         curves.append({
             "id": f"sm_{net_name}",
@@ -179,14 +204,14 @@ def build_catalog():
             "values": [round(float(val), 4) for val in vals],
             "fuente": "Public MAU",
             "ritmo": ritmo,
-            "values_abs": v # Keep absolute values
+            "values_abs": v
         })
 
-    # Add DB Social Media (Instagram, TikTok)
+    # Add DB Social Media
     for tech in ["instagram", "tiktok"]:
         y, v = get_db_series(tech)
         if y:
-            ceil = max(v) * 1.1 # slightly above max for normalization
+            ceil = max(v) * 1.1
             vals = np.array(v) / ceil
             ritmo = classify_rhythm(vals)
             curves.append({
@@ -201,11 +226,25 @@ def build_catalog():
                 "values_abs": v
             })
 
+    # 3. CONSUMER TECH CAPA 3
+    for tech, (y, v, ceil) in CONSUMER_TECH.items():
+        vals = np.array(v) / ceil
+        ritmo = classify_rhythm(vals)
+        curves.append({
+            "id": f"hw_{tech}",
+            "tecnologia": tech,
+            "categoria": "consumo",
+            "pais": "US",
+            "years": y,
+            "values": [round(float(val), 4) for val in vals],
+            "fuente": "Public Estimates",
+            "ritmo": ritmo
+        })
+
     os.makedirs(CATALOG_DIR, exist_ok=True)
     with open(f"{CATALOG_DIR}/curves.json", "w", encoding="utf-8") as f:
         json.dump(curves, f, indent=1)
         
-    # Resumen
     by_cat = {}
     by_ritmo = {}
     for c in curves:
