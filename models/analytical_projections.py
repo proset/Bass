@@ -142,13 +142,36 @@ def project_model(model_key, params, t_array):
     elif model_key == "Horsky_Simon":
         # horsky_simon_model(t, m, p0, q, alpha) -> reconstruct_popt = [m1, p1, q1, p2]
         # m = m1, p0 = p1, q = q1, alpha = p2
-        return project_horsky_simon(p1, p2, q1, m1, t_array)
+        from models.rk4_solver import horsky_simon_model
+        import numpy as np
+        import pandas as pd
+        y_proj = horsky_simon_model(t_array, m1, p1, q1, p2)
+        if isinstance(y_proj, pd.Series):
+             y_proj = y_proj.values
+        elif isinstance(y_proj, list):
+             y_proj = np.array(y_proj)
+        y_proj = pd.Series(y_proj).ffill().bfill().values
+        for i in range(1, len(y_proj)):
+            if y_proj[i] < y_proj[i-1]:
+                y_proj[i] = y_proj[i-1]
+        return y_proj
     
     elif model_key == "VdB_Joshi":
         # vdb_joshi_model(t, M1, p1, q1, M2, q2, w) -> reconstruct_popt = [m1, p1, q1, m2, q2, p2]
         # M1 = m1, p1 = p1, q1 = q1, M2 = m2, q2 = q2, w = p2
-        return project_vdb_joshi(m1, p1, q1, m2, 0, q2, p2, t_array) 
-        # NOTA: p2 de VdB es `w`, p2 de la DB es w. En rk4 la función no usa p2 en el 2do bass, usa solo q2. Pasamos 0 a p2 del bass2.
+        from models.rk4_solver import vdb_joshi_model
+        import numpy as np
+        import pandas as pd
+        y_proj = vdb_joshi_model(t_array, m1, p1, q1, m2, q2, p2)
+        if isinstance(y_proj, pd.Series):
+             y_proj = y_proj.values
+        elif isinstance(y_proj, list):
+             y_proj = np.array(y_proj)
+        y_proj = pd.Series(y_proj).ffill().bfill().values
+        for i in range(1, len(y_proj)):
+            if y_proj[i] < y_proj[i-1]:
+                y_proj[i] = y_proj[i-1]
+        return y_proj
     
     elif model_key == "Muller_Yogev":
         # muller_yogev_model(t, Ni, pi, qi, Nm, pm, qm, qim) -> reconstruct_popt = [m1, p1, q1, m2, p2, q2, q12]
@@ -170,7 +193,19 @@ def project_model(model_key, params, t_array):
     elif model_key == "Ladron_Putsis":
         # ladron_puts_model(t, S, alpha, beta, theta, gamma) -> reconstruct_popt = [m1, p1, q1, m2, p2]
         # S = m1, alpha = p1, beta = q1, theta = m2, gamma = p2
-        return project_ladron_putsis(m1, m2, p2, p1, q1, t_array)
+        from models.rk4_solver import ladron_puts_model
+        import numpy as np
+        import pandas as pd
+        y_proj = ladron_puts_model(t_array, m1, p1, q1, m2, p2)
+        if isinstance(y_proj, pd.Series):
+             y_proj = y_proj.values
+        elif isinstance(y_proj, list):
+             y_proj = np.array(y_proj)
+        y_proj = pd.Series(y_proj).ffill().bfill().values
+        for i in range(1, len(y_proj)):
+            if y_proj[i] < y_proj[i-1]:
+                y_proj[i] = y_proj[i-1]
+        return y_proj
     
     else:
         # Fallback: Bass simple
