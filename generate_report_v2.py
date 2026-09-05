@@ -589,6 +589,114 @@ Si la empresa es privada (no publica usuarios oficiales), incluye al inicio del 
     log("3/3", f"Reporte generado: {report_file}")
     return True
 
+def claude_classify_youngtech(tech, serie):
+    """
+    1 llamada Claude: categoría, mercado direccionable (M), 
+    ritmo observado, análogos sugeridos.
+    """
+    import anthropic, os, json
+    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+    
+    serie_str = ", ".join(f"{y}: {v}M" for y, v in sorted(serie.items()))
+    
+    response = client.messages.create(
+        model="claude-sonnet-4-6", max_tokens=1500, temperature=0,
+        messages=[{"role": "user", "content": f"""Clasifica esta tecnología joven para proyección por analogía.
+Tecnología: {tech}
+Serie (adopción acumulada, M): {serie_str}
+
+Devuelve EXCLUSIVAMENTE JSON:
+{{
+  "categoria": "conectividad|redes-sociales|consumo|ev|salud|otra",
+  "mercado_direccionable_M": <número: tamaño máximo plausible del mercado en M>,
+  "ritmo_observado": "explosiva|media|gradual",
+  "analogos_plausibles": ["lista de 3-5 tecnologías históricas comparables"],
+  "justificacion": "1-2 frases"
+}}"""}])
+    
+    text = response.content[0].text.strip()
+    if text.startswith("```"):
+        import re
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        
+    try:
+        return json.loads(text)
+    except Exception:
+        return {
+            "categoria": "otra", 
+            "mercado_direccionable_M": 1000.0, 
+            "ritmo_observado": "media", 
+            "analogos_plausibles": [], 
+            "justificacion": "Fallback conservador por fallo en JSON"
+        }
+
+def escalar_prior(prior, clasif, analogos):
+    mercado_M = float(clasif.get("mercado_direccionable_M", 1000.0))
+    return {k: v * mercado_M for k, v in prior.items()}
+
+def generar_informe_analogia(tech, serie, clasif, analogos, prior_M, escenarios):
+    K = len(analogos)
+    
+    serie_ordenada = sorted([(y, v) for y, v in serie.items() if v > 0])
+    serie_md = "\n".join(f"| {y} | {v:.2f} |" for y, v in serie_ordenada)
+    
+    analogos_md = "\n".join(f"| {a['id']} | {a['categoria']} | {a['techo']:.2f} | {a['distancia']:.4f} |" for a in analogos)
+    
+    esc_md = (
+        f"| Conservador (p25) | {prior_M['conservador']:.2f} |\n"
+        f"| Base (p50) | {prior_M['base']:.2f} |\n"
+        f"| Optimista (p75) | {prior_M['optimista']:.2f} |"
+    )
+    
+    last_year = serie_ordenada[-1][0]
+    proj_years = range(last_year + 1, 2036)
+    proj_md = ""
+    
+    # Check if we have valid projection params (could be None if fit fails)
+    for y in proj_years:
+        idx = y - serie_ordenada[0][0]
+        v_cons = escenarios['conservador']['proyeccion'][idx] if escenarios['conservador']['params'] and idx < len(escenarios['conservador']['proyeccion']) else escenarios['conservador']['techo']
+        v_base = escenarios['base']['proyeccion'][idx] if escenarios['base']['params'] and idx < len(escenarios['base']['proyeccion']) else escenarios['base']['techo']
+        v_opt = escenarios['optimista']['proyeccion'][idx] if escenarios['optimista']['params'] and idx < len(escenarios['optimista']['proyeccion']) else escenarios['optimista']['techo']
+        proj_md += f"| {y} | {v_cons:.2f} | {v_base:.2f} | {v_opt:.2f} |\n"
+        
+    md = f"""# Informe de Adopción: {tech} — PROYECCIÓN POR ANALOGÍA
+
+**CLASIFICACIÓN: {clasif.get('categoria')} | Ritmo: {clasif.get('ritmo_observado')} | Mercado direccionable: {clasif.get('mercado_direccionable_M')}M**
+
+> **CONFIANZA: PROYECCIÓN POR ANALOGÍA — error esperado ±34% (5y) / ±48% (10y) según backtest del método. Se refina con cada año de datos nuevos.**
+
+## Serie disponible (datos insuficientes para ajuste directo)
+| Año | Adopción (M) |
+|---|---|
+{serie_md}
+
+## Análogos identificados (top-{K} por forma)
+| Análogo | Categoría | Techo histórico | Distancia |
+|---|---|---|---|
+{analogos_md}
+
+## Escenarios de techo (percentiles de los análogos)
+| Escenario | Techo estimado (M) |
+|---|---|
+{esc_md}
+
+## Proyecciones por escenario
+| Año | Conservador | Base | Optimista |
+|---|---|---|---|
+{proj_md}
+
+## NOTA DE MÉTODO
+Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de {K} curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
+
+## Análisis
+**Justificación Claude:** {clasif.get('justificacion')}
+**Análogos sugeridos por Claude:** {', '.join(clasif.get('analogos_plausibles', []))}
+"""
+    with open(f"informe_global_{tech}.md", "w", encoding="utf-8") as f:
+        f.write(md)
+
 def main():
     tech = sys.argv[1] if len(sys.argv) > 1 else "electric vehicles"
     print(f"\n{'='*60}\n  BASS v2 FINAL: Gemini ext + GLM fit + Claude ana: '{tech}'\n{'='*60}\n")
@@ -661,9 +769,9 @@ def main():
                         print(f"[verify] Revirtiendo {a} al valor original {serie_pre_correccion[a]}M")
                         serie[a] = serie_pre_correccion[a]
                 non_zeros = sum(1 for v in serie.values() if v > 0.0)
-                if non_zeros < 4:
+                if non_zeros < 3:
                     print(f"[verify] INSERVIBLE: solo {non_zeros} puntos válidos post-corrección")
-                    detalle2 = {"razonamiento_general": f"Tras la re-extracción dirigida, la serie sigue teniendo puntos insuficientes ({non_zeros} válidos). Se requieren mínimo 4 para proyectar fiablemente."}
+                    detalle2 = {"razonamiento_general": f"Tras la re-extracción dirigida, la serie sigue teniendo puntos insuficientes ({non_zeros} válidos). Se requieren mínimo 3 para proyectar por analogía."}
                     generar_informe_insuficiente(tech, serie, detalle2)
                     sys.exit(0)
                     
@@ -676,6 +784,47 @@ def main():
                 # Persistir la serie corregida en BD
                 persistir_serie_corregida(tech, serie)
                 
+    # FIX 45: modo analogía para young-techs
+    pts_reales = sum(1 for v in serie.values() if v > 0)
+    # Check if veredicto2 exists from re-extraction, otherwise use veredicto
+    veredicto_actual = locals().get('veredicto2', veredicto)
+    
+    if pts_reales < 6 and veredicto_actual != "INSERVIBLE":
+        print(f"[analogia] Young tech: {pts_reales} pts reales → PROYECCIÓN POR ANALOGÍA")
+        
+        # 1. Claude clasifica
+        clasif = claude_classify_youngtech(tech, serie)
+        print(f"[analogia] Categoría: {clasif.get('categoria', '?')}, ritmo: {clasif.get('ritmo_observado', '?')}")
+        
+        # 2. Match + prior (determinista)
+        serie_vals = [serie[y] for y in sorted(serie.keys()) if serie[y] > 0]
+        ritmo = clasif.get("ritmo_observado")
+        
+        from models.analogical_forecast import find_analogues, prior_ceiling, fit_with_fixed_ceiling, project
+        analogos = find_analogues(serie_vals, pool_rhythm=ritmo)
+        prior = prior_ceiling(analogos)
+        
+        if not analogos or prior is None:
+            print("[analogia] INSERVIBLE: No hay análogos aplicables en el catálogo para esta serie.")
+            detalle = {"razonamiento_general": "INSERVIBLE: Sin análogos en el pool tras el modo analogía."}
+            generar_informe_insuficiente(tech, serie, detalle)
+            sys.exit(0)
+            
+        # 3. ESCALAR el prior al dominio (penetración→M via mercado direccionable)
+        prior_M = escalar_prior(prior, clasif, analogos)
+        
+        # 4. Fit con techo fijado en 3 escenarios
+        escenarios = {}
+        for nombre, techo_M in prior_M.items():
+            params = fit_with_fixed_ceiling(serie_vals, techo_M)
+            proj = project(serie_vals, params, techo_M, years_ahead=10)
+            escenarios[nombre] = {"techo": techo_M, "params": params, "proyeccion": proj}
+            
+        # 5. Generar informe early-tech (NO continúa al fit GLM normal)
+        generar_informe_analogia(tech, serie, clasif, analogos, prior_M, escenarios)
+        print(f"[analogia] Informe de proyección por analogía generado")
+        sys.exit(0)  # terminación limpia — NO sigue al pipeline maduro
+        
     log("2/3", "Verificando y ajustando con GLM...")
     verify_and_fit(tech)
     
