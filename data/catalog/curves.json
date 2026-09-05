@@ -70,7 +70,8 @@
    0.8314,
    0.8586
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Algeria",
@@ -145,7 +146,8 @@
    0.762,
    0.7742
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Angola",
@@ -216,7 +218,8 @@
    0.3789,
    0.407
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Antigua and Barbuda",
@@ -289,7 +292,8 @@
    0.7212,
    0.7273
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Argentina",
@@ -368,7 +372,8 @@
    0.8923,
    0.8967
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Aruba",
@@ -421,7 +426,8 @@
    0.9354,
    0.9717
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Australia",
@@ -496,7 +502,8 @@
    0.9612,
    0.9613
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Azerbaijan",
@@ -569,7 +576,8 @@
    0.9044,
    0.908
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Bangladesh",
@@ -638,7 +646,8 @@
    0.445,
    0.5342
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Barbados",
@@ -711,7 +720,8 @@
    0.6968,
    0.7036
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "internet_Belarus",
@@ -780,7 +790,8 @@
    0.9151,
    0.9426
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Belgium",
@@ -861,7 +872,8 @@
    0.9463,
    0.9578
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Benin",
@@ -932,7 +944,8 @@
    0.3239,
    0.3398
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Bermuda",
@@ -991,7 +1004,8 @@
    0.98,
    0.9837
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Bhutan",
@@ -1056,7 +1070,8 @@
    0.9002,
    0.9128
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Bosnia and Herzegovina",
@@ -1127,7 +1142,8 @@
    0.8338,
    0.861
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "internet_Brazil",
@@ -1208,7 +1224,8 @@
    0.8415,
    0.8446
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Bulgaria",
@@ -1285,7 +1302,8 @@
    0.8039,
    0.8244
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Cameroon",
@@ -1354,7 +1372,8 @@
    0.4224,
    0.4626
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Cape Verde",
@@ -1423,7 +1442,8 @@
    0.746,
    0.7474
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Cayman Islands",
@@ -1468,7 +1488,8 @@
    0.79,
    0.8107
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Chile",
@@ -1547,7 +1568,8 @@
    0.9446,
    0.9559
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "internet_China",
@@ -1626,7 +1648,8 @@
    0.92,
    0.916
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Colombia",
@@ -1701,7 +1724,8 @@
    0.7734,
    0.7935
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Comoros",
@@ -1768,7 +1792,8 @@
    0.3193,
    0.3252
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Congo",
@@ -1839,7 +1864,8 @@
    0.4315,
    0.4725
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Czechia",
@@ -1916,7 +1942,8 @@
    0.8599,
    0.8769
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Denmark",
@@ -1997,7 +2024,8 @@
    0.9878,
    0.9977
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Djibouti",
@@ -2070,7 +2098,8 @@
    0.6476,
    0.653
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Dominica",
@@ -2139,7 +2168,8 @@
    0.8134,
    0.8205
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_East Timor",
@@ -2188,7 +2218,8 @@
    0.3201,
    0.3504
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Egypt",
@@ -2265,7 +2296,8 @@
    0.7401,
    0.7465
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_El Salvador",
@@ -2336,7 +2368,8 @@
    0.6262,
    0.6648
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Equatorial Guinea",
@@ -2405,7 +2438,8 @@
    0.6352,
    0.633
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Estonia",
@@ -2484,7 +2518,8 @@
    0.9318,
    0.9224
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Eswatini",
@@ -2557,7 +2592,8 @@
    0.6133,
    0.634
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Faroe Islands",
@@ -2616,7 +2652,8 @@
    0.9511,
    0.9758
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Fiji",
@@ -2693,7 +2730,8 @@
    0.7412,
    0.7471
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_French Polynesia",
@@ -2750,7 +2788,8 @@
    0.6844,
    0.727
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Gabon",
@@ -2821,7 +2860,8 @@
    0.682,
    0.6872
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Gambia",
@@ -2894,7 +2934,8 @@
    0.4873,
    0.4949
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Gibraltar",
@@ -2941,7 +2982,8 @@
    0.6502,
    0.9444
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Greece",
@@ -3022,7 +3064,8 @@
    0.8501,
    0.8627
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Grenada",
@@ -3103,7 +3146,8 @@
    0.6941,
    0.7016
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Guam",
@@ -3164,7 +3208,8 @@
    0.7701,
    0.8051
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Guatemala",
@@ -3237,7 +3282,8 @@
    0.5673,
    0.6022
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Guinea",
@@ -3312,7 +3358,8 @@
    0.3232,
    0.333
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Guyana",
@@ -3383,7 +3430,8 @@
    0.7936,
    0.83
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Haiti",
@@ -3452,7 +3500,8 @@
    0.4799,
    0.4786
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Honduras",
@@ -3525,7 +3574,8 @@
    0.5807,
    0.5862
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Hong Kong",
@@ -3606,7 +3656,8 @@
    0.9598,
    0.9576
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_India",
@@ -3687,7 +3738,8 @@
    0.6494,
    0.7
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Iran",
@@ -3762,7 +3814,8 @@
    0.8371,
    0.8534
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Ireland",
@@ -3843,7 +3896,8 @@
    0.9687,
    0.9719
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Jordan",
@@ -3916,7 +3970,8 @@
    0.9253,
    0.9562
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Kazakhstan",
@@ -3991,7 +4046,8 @@
    0.9288,
    0.9339
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Kenya",
@@ -4064,7 +4120,8 @@
    0.3207,
    0.3498
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Kiribati",
@@ -4131,7 +4188,8 @@
    0.88,
    0.8944
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Kuwait",
@@ -4210,7 +4268,8 @@
    0.9975,
    1.0
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Kyrgyzstan",
@@ -4277,7 +4336,8 @@
    0.9104,
    0.9203
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Laos",
@@ -4344,7 +4404,8 @@
    0.644,
    0.6559
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Latvia",
@@ -4415,7 +4476,8 @@
    0.9219,
    0.9271
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Lesotho",
@@ -4486,7 +4548,8 @@
    0.4899,
    0.518
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Libya",
@@ -4551,7 +4614,8 @@
    0.821,
    0.8195
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Lithuania",
@@ -4622,7 +4686,8 @@
    0.885,
    0.8916
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Luxembourg",
@@ -4703,7 +4768,8 @@
    0.9876,
    0.9913
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Macao",
@@ -4778,7 +4844,8 @@
    0.8983,
    0.8983
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Maldives",
@@ -4859,7 +4926,8 @@
    0.8455,
    0.8524
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Mali",
@@ -4930,7 +4998,8 @@
    0.3604,
    0.368
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Mauritania",
@@ -4999,7 +5068,8 @@
    0.4496,
    0.4578
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Micronesia (country)",
@@ -5068,7 +5138,8 @@
    0.394,
    0.3952
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Moldova",
@@ -5143,7 +5214,8 @@
    0.765,
    0.7737
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Monaco",
@@ -5204,7 +5276,8 @@
    0.9887,
    0.9904
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Mongolia",
@@ -5273,7 +5346,8 @@
    0.8374,
    0.8512
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Myanmar",
@@ -5328,7 +5402,8 @@
    0.3654,
    0.4545
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "internet_Namibia",
@@ -5401,7 +5476,8 @@
    0.637,
    0.6487
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Nepal",
@@ -5482,7 +5558,8 @@
    0.4581,
    0.4632
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_New Caledonia",
@@ -5539,7 +5616,8 @@
    0.74,
    0.8201
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_New Zealand",
@@ -5618,7 +5696,8 @@
    0.9333,
    0.9352
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Nicaragua",
@@ -5693,7 +5772,8 @@
    0.603,
    0.614
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Nigeria",
@@ -5764,7 +5844,8 @@
    0.4006,
    0.4121
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_North Macedonia",
@@ -5839,7 +5920,8 @@
    0.936,
    0.931
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Pakistan",
@@ -5904,7 +5986,8 @@
    0.1893,
    0.5725
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Paraguay",
@@ -5975,7 +6058,8 @@
    0.7809,
    0.8158
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Peru",
@@ -6050,7 +6134,8 @@
    0.7948,
    0.8196
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Poland",
@@ -6131,7 +6216,8 @@
    0.8641,
    0.8858
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Portugal",
@@ -6212,7 +6298,8 @@
    0.8579,
    0.8849
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Qatar",
@@ -6285,7 +6372,8 @@
    0.9815,
    0.9809
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Romania",
@@ -6362,7 +6450,8 @@
    0.892,
    0.9129
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Russia",
@@ -6441,7 +6530,8 @@
    0.9224,
    0.9436
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Saint Kitts and Nevis",
@@ -6512,7 +6602,8 @@
    0.7659,
    0.7688
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Saint Lucia",
@@ -6585,7 +6676,8 @@
    0.6744,
    0.682
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Saint Vincent and the Grenadines",
@@ -6658,7 +6750,8 @@
    0.7554,
    0.7619
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Sao Tome and Principe",
@@ -6725,7 +6818,8 @@
    0.587,
    0.5912
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Saudi Arabia",
@@ -6798,7 +6892,8 @@
    1.0,
    1.0
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Senegal",
@@ -6871,7 +6966,8 @@
    0.5919,
    0.6012
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Seychelles",
@@ -6940,7 +7036,8 @@
    0.86,
    0.8782
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_South Asia (WB)",
@@ -6993,7 +7090,8 @@
    0.628,
    0.678
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_South Korea",
@@ -7074,7 +7172,8 @@
    0.9742,
    0.979
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "internet_Spain",
@@ -7155,7 +7254,8 @@
    0.9545,
    0.9576
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Sri Lanka",
@@ -7230,7 +7330,8 @@
    0.512,
    0.5459
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Sub-Saharan Africa (WB)",
@@ -7283,7 +7384,8 @@
    0.336,
    0.357
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Suriname",
@@ -7348,7 +7450,8 @@
    0.6203,
    0.874
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Syria",
@@ -7417,7 +7520,8 @@
    0.327,
    0.3377
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Tanzania",
@@ -7488,7 +7592,8 @@
    0.2843,
    0.3116
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Togo",
@@ -7569,7 +7674,8 @@
    0.3757,
    0.3948
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Tonga",
@@ -7642,7 +7748,8 @@
    0.6413,
    0.6744
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Tunisia",
@@ -7713,7 +7820,8 @@
    0.6832,
    0.765
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Turkey",
@@ -7792,7 +7900,8 @@
    0.8731,
    0.8977
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Tuvalu",
@@ -7841,7 +7950,8 @@
    0.31,
    0.352
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "internet_Ukraine",
@@ -7918,7 +8028,8 @@
    0.8158,
    0.8247
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_United Arab Emirates",
@@ -7991,7 +8102,8 @@
    1.0,
    1.0
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_United States Virgin Islands",
@@ -8052,7 +8164,8 @@
    0.5961,
    0.6438
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Uruguay",
@@ -8127,7 +8240,8 @@
    0.9093,
    0.9199
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Uzbekistan",
@@ -8200,7 +8314,8 @@
    0.8901,
    0.8951
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Vietnam",
@@ -8271,7 +8386,8 @@
    0.7808,
    0.8415
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "internet_Zimbabwe",
@@ -8346,7 +8462,8 @@
    0.3867,
    0.4164
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "movil_Belarus",
@@ -8447,7 +8564,8 @@
    1.2898,
    1.3112
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "movil_Burkina Faso",
@@ -8548,7 +8666,8 @@
    1.1616,
    1.1659
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Chad",
@@ -8649,7 +8768,8 @@
    0.7019,
    0.7293
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_China",
@@ -8750,7 +8870,8 @@
    1.2825,
    1.3175
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Colombia",
@@ -8851,7 +8972,8 @@
    1.6698,
    1.7409
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "movil_Cote d'Ivoire",
@@ -8952,7 +9074,8 @@
    1.7199,
    1.8388
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Cuba",
@@ -9053,7 +9176,8 @@
    0.6958,
    0.7293
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_East Asia and Pacific (WB)",
@@ -9156,7 +9280,8 @@
    1.329,
    1.351
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Eritrea",
@@ -9251,7 +9376,8 @@
    0.5376,
    0.5912
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Eswatini",
@@ -9352,7 +9478,8 @@
    1.284,
    1.3983
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Europe and Central Asia (WB)",
@@ -9455,7 +9582,8 @@
    1.324,
    1.346
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_France",
@@ -9554,7 +9682,8 @@
    1.1595,
    1.1669
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Iran",
@@ -9655,7 +9784,8 @@
    1.6628,
    1.7407
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Japan",
@@ -9754,7 +9884,8 @@
    1.686,
    1.7843
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Kenya",
@@ -9855,7 +9986,8 @@
    1.2061,
    1.2648
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_New Caledonia",
@@ -9946,7 +10078,8 @@
    0.9116,
    0.9168
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Explosiva"
  },
  {
   "id": "movil_Northern Mariana Islands",
@@ -9997,7 +10130,8 @@
    0.2846,
    0.3202
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Puerto Rico",
@@ -10096,7 +10230,8 @@
    1.2451,
    1.2643
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Senegal",
@@ -10197,7 +10332,8 @@
    1.2391,
    1.2389
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_South Korea",
@@ -10294,7 +10430,8 @@
    1.6211,
    1.7252
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Sweden",
@@ -10395,7 +10532,8 @@
    1.4027,
    1.4069
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_Turks and Caicos Islands",
@@ -10446,7 +10584,8 @@
    0.8911,
    1.0975
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Desconocido"
  },
  {
   "id": "movil_United States",
@@ -10541,7 +10680,8 @@
    1.1241,
    1.1319
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "movil_United States Virgin Islands",
@@ -10600,7 +10740,8 @@
    0.9172,
    0.9146
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "fija_Belarus",
@@ -10741,7 +10882,8 @@
    0.4577,
    0.4576
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "fija_Portugal",
@@ -10882,7 +11024,8 @@
    0.5274,
    0.53
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "banda_ancha_Andorra",
@@ -10939,7 +11082,8 @@
    0.5174,
    0.5236
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Austria",
@@ -11002,7 +11146,8 @@
    0.2937,
    0.3013
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Belgium",
@@ -11067,7 +11212,8 @@
    0.437,
    0.4423
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Bulgaria",
@@ -11118,7 +11264,8 @@
    0.3497,
    0.3702
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Canada",
@@ -11183,7 +11330,8 @@
    0.4252,
    0.4252
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_China",
@@ -11244,7 +11392,8 @@
    0.4473,
    0.4719
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Cyprus",
@@ -11303,7 +11452,8 @@
    0.369,
    0.3756
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Czechia",
@@ -11364,7 +11514,8 @@
    0.3791,
    0.3887
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Denmark",
@@ -11425,7 +11576,8 @@
    0.4404,
    0.4339
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_East Asia and Pacific (WB)",
@@ -11488,7 +11640,8 @@
    0.3475,
    0.3646
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Europe and Central Asia (WB)",
@@ -11547,7 +11700,8 @@
    0.3347,
    0.3445
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_European Union (27)",
@@ -11604,7 +11758,8 @@
    0.3786,
    0.3868
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Faroe Islands",
@@ -11659,7 +11814,8 @@
    0.346,
    0.3459
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_France",
@@ -11724,7 +11880,8 @@
    0.4867,
    0.4893
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_French Polynesia",
@@ -11781,7 +11938,8 @@
    0.2791,
    0.3555
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Georgia",
@@ -11840,7 +11998,8 @@
    0.2931,
    0.3042
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Germany",
@@ -11901,7 +12060,8 @@
    0.4538,
    0.4561
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Greece",
@@ -11956,7 +12116,8 @@
    0.4385,
    0.4468
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Hungary",
@@ -12017,7 +12178,8 @@
    0.3679,
    0.3754
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Ireland",
@@ -12074,7 +12236,8 @@
    0.3189,
    0.323
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Italy",
@@ -12135,7 +12298,8 @@
    0.3184,
    0.3178
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Japan",
@@ -12198,7 +12362,8 @@
    0.3684,
    0.3863
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Malta",
@@ -12259,7 +12424,8 @@
    0.4428,
    0.4451
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Monaco",
@@ -12320,7 +12486,8 @@
    0.5588,
    0.5568
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Montenegro",
@@ -12369,7 +12536,8 @@
    0.3202,
    0.3231
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Netherlands",
@@ -12432,7 +12600,8 @@
    0.4326,
    0.4298
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_New Zealand",
@@ -12493,7 +12662,8 @@
    0.3785,
    0.3805
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Norway",
@@ -12554,7 +12724,8 @@
    0.4544,
    0.4516
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Portugal",
@@ -12617,7 +12788,8 @@
    0.4411,
    0.4524
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Serbia",
@@ -12668,7 +12840,8 @@
    0.3127,
    0.3337
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Slovenia",
@@ -12727,7 +12900,8 @@
    0.3188,
    0.3423
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_South Korea",
@@ -12792,7 +12966,8 @@
    0.4657,
    0.478
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Gradual"
  },
  {
   "id": "banda_ancha_Spain",
@@ -12853,7 +13028,8 @@
    0.3721,
    0.3923
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_Sweden",
@@ -12914,7 +13090,8 @@
    0.4073,
    0.4062
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_United Arab Emirates",
@@ -12977,7 +13154,8 @@
    0.371,
    0.4084
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_United Kingdom",
@@ -13038,7 +13216,8 @@
    0.4144,
    0.4216
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
  },
  {
   "id": "banda_ancha_United States",
@@ -13103,6 +13282,657 @@
    0.3809,
    0.3886
   ],
-  "fuente": "OWID"
+  "fuente": "OWID",
+  "ritmo": "Media"
+ },
+ {
+  "id": "ev_sales_share_China",
+  "tecnologia": "ev_sales_share",
+  "categoria": "ev",
+  "pais": "China",
+  "years": [
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.0001,
+   0.0003,
+   0.0007,
+   0.001,
+   0.0041,
+   0.011,
+   0.015,
+   0.024,
+   0.047,
+   0.05,
+   0.057,
+   0.16,
+   0.29,
+   0.38,
+   0.48,
+   0.53
+  ],
+  "fuente": "OWID",
+  "ritmo": "Media"
+ },
+ {
+  "id": "ev_sales_share_Norway",
+  "tecnologia": "ev_sales_share",
+  "categoria": "ev",
+  "pais": "Norway",
+  "years": [
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.0028,
+   0.014,
+   0.031,
+   0.058,
+   0.15,
+   0.22,
+   0.29,
+   0.39,
+   0.49,
+   0.56,
+   0.75,
+   0.86,
+   0.89,
+   0.9,
+   0.92,
+   0.97
+  ],
+  "fuente": "OWID",
+  "ritmo": "Media"
+ },
+ {
+  "id": "ev_sales_share_United Kingdom",
+  "tecnologia": "ev_sales_share",
+  "categoria": "ev",
+  "pais": "United Kingdom",
+  "years": [
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.0001,
+   0.0006,
+   0.0013,
+   0.0016,
+   0.0059,
+   0.011,
+   0.014,
+   0.019,
+   0.026,
+   0.032,
+   0.11,
+   0.18,
+   0.22,
+   0.23,
+   0.27,
+   0.35
+  ],
+  "fuente": "OWID",
+  "ritmo": "Media"
+ },
+ {
+  "id": "vaccine_dtp_France",
+  "tecnologia": "vaccine_dtp",
+  "categoria": "salud",
+  "pais": "France",
+  "years": [
+   1980,
+   1981,
+   1982,
+   1983,
+   1984,
+   1985,
+   1986,
+   1987,
+   1988,
+   1989,
+   1990,
+   1991,
+   1992,
+   1993,
+   1994,
+   1995,
+   1996,
+   1997,
+   1998,
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024
+  ],
+  "values": [
+   NaN,
+   NaN,
+   NaN,
+   0.15,
+   0.26,
+   0.35,
+   0.39,
+   0.45,
+   0.51,
+   0.58,
+   0.71,
+   0.74,
+   0.76,
+   0.78,
+   0.8,
+   0.83,
+   0.84,
+   0.83,
+   0.82,
+   0.83,
+   0.84,
+   0.85,
+   0.86,
+   0.87,
+   0.88,
+   0.87,
+   0.89,
+   0.9,
+   0.89,
+   0.89,
+   0.89,
+   0.89,
+   0.91,
+   0.9,
+   0.91,
+   0.91,
+   0.9,
+   0.9,
+   0.91,
+   0.92,
+   0.94,
+   0.94,
+   0.95,
+   0.95,
+   0.95
+  ],
+  "fuente": "OWID",
+  "ritmo": "Gradual"
+ },
+ {
+  "id": "sm_Facebook",
+  "tecnologia": "Facebook",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "values": [
+   0.0003,
+   0.0016,
+   0.0039,
+   0.019,
+   0.0475,
+   0.118,
+   0.1993,
+   0.277,
+   0.3462,
+   0.4033,
+   0.4557,
+   0.5213,
+   0.6098,
+   0.6984,
+   0.7607,
+   0.8197,
+   0.918,
+   0.9541,
+   0.9705,
+   1.0
+  ],
+  "fuente": "Public MAU",
+  "ritmo": "Media",
+  "values_abs": [
+   1,
+   5,
+   12,
+   58,
+   145,
+   360,
+   608,
+   845,
+   1056,
+   1230,
+   1390,
+   1590,
+   1860,
+   2130,
+   2320,
+   2500,
+   2800,
+   2910,
+   2960,
+   3050
+  ]
+ },
+ {
+  "id": "sm_WhatsApp",
+  "tecnologia": "WhatsApp",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "values": [
+   0.0004,
+   0.0036,
+   0.018,
+   0.036,
+   0.1439,
+   0.2158,
+   0.3237,
+   0.3597,
+   0.4676,
+   0.5396,
+   0.5755,
+   0.7194,
+   0.7194,
+   0.7194,
+   1.0
+  ],
+  "fuente": "Public MAU",
+  "ritmo": "Explosiva",
+  "values_abs": [
+   1,
+   10,
+   50,
+   100,
+   400,
+   600,
+   900,
+   1000,
+   1300,
+   1500,
+   1600,
+   2000,
+   2000,
+   2000,
+   2780
+  ]
+ },
+ {
+  "id": "sm_YouTube",
+  "tecnologia": "YouTube",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "values": [
+   0.0007,
+   0.0074,
+   0.0185,
+   0.037,
+   0.0741,
+   0.1481,
+   0.2963,
+   0.3704,
+   0.3704,
+   0.4074,
+   0.4815,
+   0.5556,
+   0.5556,
+   0.6667,
+   0.7407,
+   0.8481,
+   0.9481,
+   0.9481,
+   1.0
+  ],
+  "fuente": "Public MAU",
+  "ritmo": "Media",
+  "values_abs": [
+   2,
+   20,
+   50,
+   100,
+   200,
+   400,
+   800,
+   1000,
+   1000,
+   1100,
+   1300,
+   1500,
+   1500,
+   1800,
+   2000,
+   2290,
+   2560,
+   2560,
+   2700
+  ]
+ },
+ {
+  "id": "sm_Twitter",
+  "tecnologia": "Twitter",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "values": [
+   0.0003,
+   0.0013,
+   0.0075,
+   0.045,
+   0.135,
+   0.2925,
+   0.4625,
+   0.6025,
+   0.72,
+   0.7625,
+   0.795,
+   0.825,
+   0.8025,
+   0.825,
+   0.8825,
+   0.99,
+   0.92,
+   0.92
+  ],
+  "fuente": "Public MAU",
+  "ritmo": "Media",
+  "values_abs": [
+   0.1,
+   0.5,
+   3,
+   18,
+   54,
+   117,
+   185,
+   241,
+   288,
+   305,
+   318,
+   330,
+   321,
+   330,
+   353,
+   396,
+   368,
+   368
+  ]
+ },
+ {
+  "id": "sm_Snapchat",
+  "tecnologia": "Snapchat",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "values": [
+   0.002,
+   0.02,
+   0.06,
+   0.12,
+   0.214,
+   0.316,
+   0.356,
+   0.372,
+   0.436,
+   0.53,
+   0.638,
+   0.75,
+   0.828
+  ],
+  "fuente": "Public MAU",
+  "ritmo": "Media",
+  "values_abs": [
+   1,
+   10,
+   30,
+   60,
+   107,
+   158,
+   178,
+   186,
+   218,
+   265,
+   319,
+   375,
+   414
+  ]
+ },
+ {
+  "id": "sm_instagram",
+  "tecnologia": "instagram",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.1121,
+   0.1515,
+   0.2121,
+   0.303,
+   0.3333,
+   0.3939,
+   0.6061,
+   0.6061,
+   0.6061,
+   0.6061,
+   0.9091
+  ],
+  "fuente": "DB historical",
+  "ritmo": "Media",
+  "values_abs": [
+   370.0,
+   500.0,
+   700.0,
+   1000.0,
+   1100.0,
+   1300.0,
+   2000.0,
+   2000.0,
+   2000.0,
+   2000.0,
+   3000.0
+  ]
+ },
+ {
+  "id": "sm_tiktok",
+  "tecnologia": "tiktok",
+  "categoria": "redes-sociales",
+  "pais": "Global",
+  "years": [
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "values": [
+   0.0,
+   0.0344,
+   0.1297,
+   0.2431,
+   0.3349,
+   0.4785,
+   0.488,
+   0.7656,
+   0.8612,
+   0.9091
+  ],
+  "fuente": "DB historical",
+  "ritmo": "Media",
+  "values_abs": [
+   0.0,
+   72.0,
+   271.0,
+   508.0,
+   700.0,
+   1000.0,
+   1020.0,
+   1600.0,
+   1800.0,
+   1900.0
+  ]
  }
 ]
