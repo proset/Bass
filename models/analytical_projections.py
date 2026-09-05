@@ -153,7 +153,19 @@ def project_model(model_key, params, t_array):
     elif model_key == "Muller_Yogev":
         # muller_yogev_model(t, Ni, pi, qi, Nm, pm, qm, qim) -> reconstruct_popt = [m1, p1, q1, m2, p2, q2, q12]
         # Ni = m1, pi = p1, qi = q1, Nm = m2, pm = p2, qm = q2, qim = q12
-        return project_muller_yogev(m1, p1, q1, m2, p2, q2, t_array)
+        from models.rk4_solver import muller_yogev_model
+        import numpy as np
+        import pandas as pd
+        y_proj = muller_yogev_model(t_array, m1, p1, q1, m2, p2, q2, q12)
+        if isinstance(y_proj, pd.Series):
+             y_proj = y_proj.values
+        elif isinstance(y_proj, list):
+             y_proj = np.array(y_proj)
+        y_proj = pd.Series(y_proj).ffill().bfill().values
+        for i in range(1, len(y_proj)):
+            if y_proj[i] < y_proj[i-1]:
+                y_proj[i] = y_proj[i-1]
+        return y_proj
     
     elif model_key == "Ladron_Putsis":
         # ladron_puts_model(t, S, alpha, beta, theta, gamma) -> reconstruct_popt = [m1, p1, q1, m2, p2]
