@@ -30,7 +30,7 @@ def validar_comparabilidad(techs):
         tech_norm = normalize_tech_name(tech)
         df = load_historical_data(tech_norm)
         params = load_model_parameters(tech_norm)
-        if len(df) >= 5 and params:
+        if len(df) >= 3 and params:
             validas.append(tech_norm)
         else:
             st.warning(f"⚠️ **{tech_norm.title()}**: sin datos o fit suficientes en BD — excluida de la comparación. Ejecuta `python generate_report_v2.py \"{tech_norm}\"` en terminal primero.")
@@ -279,6 +279,7 @@ def render_tab_benchmarking(tecnologias_disponibles):
         return
 
     model_labels = {
+        "Analogical_Forecast": "Proyección por Analogía (Early-Tech)",
         "Bass_Clasico": "Bass Clásico",
         "Dual_Market": "Dual Market (Roset & Canals)",
         "Fourt_Woodlock": "Fourt & Woodlock (Innovación Pura)",
@@ -384,7 +385,29 @@ def render_tab_benchmarking(tecnologias_disponibles):
         # Recuperar parámetros y calcular proyección
         p = params.get(m_key, {})
         
-        y_proj = project_model(m_key, p, t_proj)
+        if m_key == "Analogical_Forecast":
+            from data.loaders import load_qualitative_analysis
+            import json
+            analisis_txt = load_qualitative_analysis(tech)
+            try:
+                analisis_json = json.loads(analisis_txt) if analisis_txt else {}
+            except Exception:
+                analisis_json = {}
+            escenario_base = analisis_json.get("analogia", {}).get("base", {})
+            params_analogia = escenario_base.get("params")
+            techo_analogia = escenario_base.get("techo")
+            
+            if params_analogia and techo_analogia:
+                from models.analogical_forecast import project
+                y_proj_full = project(df_hist["adopcion_acumulada"].values, params_analogia, techo_analogia, years_ahead=horizon_years)
+                if y_proj_full is not None:
+                    y_proj = y_proj_full
+                else:
+                    y_proj = np.zeros(len(t_proj))
+            else:
+                y_proj = np.zeros(len(t_proj))
+        else:
+            y_proj = project_model(m_key, p, t_proj)
         
         # Monotonicidad INTERNA: la curva no decrece respecto a sí misma
         for i in range(1, len(y_proj)):
@@ -571,6 +594,11 @@ def render_tab_benchmarking(tecnologias_disponibles):
             
             # 2. Calcular confianza global y abortar si es INSERVIBLE
             confianza_comp = confianza_benchmarking(veredictos)
+            
+            has_analogia = any(brand_data[t]["modelo_usado"] == "Analogical_Forecast" for t in techs_seleccionadas)
+            if has_analogia and confianza_comp != "NO COMPARABLE":
+                confianza_comp = "TENTATIVA"
+                
             if confianza_comp == "NO COMPARABLE":
                 techs_inservibles = [t for t, v in veredictos.items() if v == "INSERVIBLE"]
                 st.error(f"❌ La comparación no puede generarse: {', '.join(techs_inservibles).title()} no tiene datos comparables (veredicto INSERVIBLE).")
