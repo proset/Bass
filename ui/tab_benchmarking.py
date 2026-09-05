@@ -82,10 +82,11 @@ def build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, m
         modelo_str = model_labels[m_usado]
         
         # Extraer métricas si existen
-        params_m = bdata["params"]
-        r2 = params_m.get("r_squared", "N/D")
+        p_raw = bdata["params"]
+        params_m = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
+        r2 = params_m.get("r_cuadrado", "N/D")
         if isinstance(r2, float): r2 = f"{r2:.4f}"
-        mape = params_m.get("mape", "N/D")
+        mape = params_m.get("mape_ajuste", "N/D")
         if isinstance(mape, float): mape = f"{mape:.4f}"
         
         # Proyecciones 2030 / 2035
@@ -177,15 +178,16 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
         bdata = brand_data[tech]
         m_usado = bdata["modelo_usado"]
         modelo_str = model_labels[m_usado]
-        p = bdata["params"]
+        p_raw = bdata["params"]
+        p_dict = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
         
-        r2 = p.get('r_squared', 'N/D')
+        r2 = p_dict.get('r_cuadrado', 'N/D')
         if isinstance(r2, float): r2 = f"{r2:.4f}"
-        mape = p.get('mape', 'N/D')
+        mape = p_dict.get('mape_ajuste', 'N/D')
         if isinstance(mape, float): mape = f"{mape:.4f}"
-        score = p.get('score', 'N/D')
+        score = p_dict.get('score', 'N/D')
         if isinstance(score, float): score = f"{score:.2f}"
-        k = p.get('k', 'N/D')
+        k = p_dict.get('n_params', 'N/D')
         pts = calidad[tech]['puntos_reales']
         
         t2 += f"| {tech.title()} | {modelo_str} | {r2} | {mape} | {score} | {k} | {pts} |\n"
@@ -211,10 +213,10 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
     for tech in techs_data.keys():
         bdata = brand_data[tech]
         m_usado = bdata["modelo_usado"]
-        p = bdata["params"]
-        params_dict = p.get("params", p)
+        p_raw = bdata["params"]
+        params_dict = p_raw.get("params", p_raw) if isinstance(p_raw, dict) else p_raw
         
-        param_m = params_dict.get('param_m', 'N/D')
+        param_m = params_dict.get('param_m1', 'N/D')
         if isinstance(param_m, float): param_m = f"{param_m:.2f}"
         
         if m_usado in ["Bass_Clasico", "Dual_Market", "VdB_Joshi"]:
