@@ -40,37 +40,56 @@ def render_tab_projections(tecnologia_seleccionada):
         st.warning("⚠️ No hay suficientes datos históricos para esta tecnología.")
         return
         
+    import os
+    from app import BASS_DIR
+    
+    is_analogical = False
+    informe_path = os.path.join(BASS_DIR, f"informe_global_{tecnologia_seleccionada}.md")
+    
     params = load_model_parameters(tecnologia_seleccionada)
     if not params:
-        st.warning("⚠️ No se pudieron cargar parámetros para esta tecnología.")
-        return
-        
-    consensus_key, consensus_score = get_consensus_model(tecnologia_seleccionada)
-    if not consensus_key:
-        st.warning("⚠️ No hay modelo de consenso válido con Score.")
-        return
+        # Check if analogical forecast exists (by reading informe)
+        if os.path.exists(informe_path):
+            with open(informe_path, encoding="utf-8") as f:
+                if "PROYECCIÓN POR ANALOGÍA" in f.read():
+                    is_analogical = True
+                    
+        if not is_analogical:
+            st.warning("⚠️ No se pudieron cargar parámetros para esta tecnología ni se encontró proyección por analogía.")
+            return
 
-    available_models = get_available_models(tecnologia_seleccionada)
+    if not is_analogical:
+        consensus_key, consensus_score = get_consensus_model(tecnologia_seleccionada)
+        if not consensus_key:
+            st.warning("⚠️ No hay modelo de consenso válido con Score.")
+            return
+        available_models = get_available_models(tecnologia_seleccionada)
 
-    model_labels = {
-        "Bass_Clasico": "Bass Clásico",
-        "Dual_Market": "Dual Market (Roset & Canals)",
-        "Fourt_Woodlock": "Fourt & Woodlock (Innovación Pura)",
-        "Gompertz": "Gompertz (Asimétrico)",
-        "Generalized_Bass": "Generalized Bass (GBM + Precio)",
-        "Horsky_Simon": "Horsky & Simon (Publicidad)",
-        "Muller_Yogev": "Muller & Yogev (Saddle)",
-        "VdB_Joshi": "Van den Bulte & Joshi",
-        "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
-        "Ladron_Putsis": "Ladrón-de-Guevara & Putsis (Market Dinámico)"
-    }
+    if not is_analogical:
+        model_labels = {
+            "Bass_Clasico": "Bass Clásico",
+            "Dual_Market": "Dual Market (Roset & Canals)",
+            "Fourt_Woodlock": "Fourt & Woodlock (Innovación Pura)",
+            "Gompertz": "Gompertz (Asimétrico)",
+            "Generalized_Bass": "Generalized Bass (GBM + Precio)",
+            "Horsky_Simon": "Horsky & Simon (Publicidad)",
+            "Muller_Yogev": "Muller & Yogev (Saddle)",
+            "VdB_Joshi": "Van den Bulte & Joshi",
+            "Logistic_Diffusion_Convergence": "Modelo Logístico de Convergencia",
+            "Ladron_Putsis": "Ladrón-de-Guevara & Putsis (Market Dinámico)"
+        }
 
-    selected_models = st.multiselect(
-        "Modelos a comparar (el de consenso siempre visible):",
-        options=available_models,
-        default=[consensus_key],  # solo el consenso
-        format_func=lambda x: model_labels.get(x, x)
-    )
+        selected_models = st.multiselect(
+            "Modelos a comparar (el de consenso siempre visible):",
+            options=available_models,
+            default=[consensus_key],  # solo el consenso
+            format_func=lambda x: model_labels.get(x, x)
+        )
+    else:
+        st.info("📌 Esta es una tecnología en adopción temprana (Young Tech). Se muestra el pronóstico **Analogical Forecast** extraído del informe.")
+        selected_models = []
+        model_labels = {}
+        consensus_key = None
 
     anios_reales = df_hist["anio"].values
     adopcion_real = df_hist["adopcion_acumulada"].values
@@ -123,57 +142,113 @@ def render_tab_projections(tecnologia_seleccionada):
         "Ladron_Putsis": "#F97316"
     }
 
-    models_to_plot = set(selected_models)
-    models_to_plot.add(consensus_key)
+    if is_analogical:
+        # Parse analogical scenarios from Markdown
+        try:
+            with open(informe_path, encoding="utf-8") as f:
+                content = f.read()
+            
+            # Find the section ## Proyecciones por escenario
+            import re
+            match = re.search(r"## Proyecciones por escenario\s*\| Año \| Conservador \| Base \| Optimista \|\s*\|---\|---\|---\|---\|\s*((?:\| \d{4} \| [\d\.]+ \| [\d\.]+ \| [\d\.]+ \|\s*)+)", content)
+            if match:
+                table_lines = match.group(1).strip().split('\n')
+                years_ana = []
+                cons_ana = []
+                base_ana = []
+                opt_ana = []
+                for line in table_lines:
+                    parts = [p.strip() for p in line.split('|') if p.strip()]
+                    if len(parts) == 4:
+                        years_ana.append(int(parts[0]))
+                        cons_ana.append(float(parts[1]))
+                        base_ana.append(float(parts[2]))
+                        opt_ana.append(float(parts[3]))
+                
+                # Plot Analogical scenarios
+                # Join historical last point with first projection point to avoid gaps
+                if len(years_ana) > 0 and len(anios_reales) > 0:
+                    years_plot = [anios_reales[-1]] + years_ana
+                    cons_plot = [adopcion_real[-1]] + cons_ana
+                    base_plot = [adopcion_real[-1]] + base_ana
+                    opt_plot = [adopcion_real[-1]] + opt_ana
+                else:
+                    years_plot = years_ana
+                    cons_plot = cons_ana
+                    base_plot = base_ana
+                    opt_plot = opt_ana
 
-    for m_key in models_to_plot:
-        if m_key not in params:
-            continue
+                fig.add_trace(go.Scatter(
+                    x=years_plot, y=opt_plot, mode='lines', name='Optimista (p75)',
+                    line=dict(color="#10B981", width=2, dash='dot')
+                ))
+                fig.add_trace(go.Scatter(
+                    x=years_plot, y=base_plot, mode='lines', name='Base (p50)',
+                    line=dict(color="#3B82F6", width=3, dash='dash')
+                ))
+                fig.add_trace(go.Scatter(
+                    x=years_plot, y=cons_plot, mode='lines', name='Conservador (p25)',
+                    line=dict(color="#F59E0B", width=2, dash='dot')
+                ))
+        except Exception as e:
+            st.error(f"No se pudieron parsear las proyecciones analógicas: {e}")
+    else:
+        models_to_plot = set(selected_models)
+        models_to_plot.add(consensus_key)
+    
+        for m_key in models_to_plot:
+            if m_key not in params:
+                continue
+                
+            y_proj = project_model(m_key, params[m_key], t_proj)
             
-        y_proj = project_model(m_key, params[m_key], t_proj)
-        
-        # Monotonicidad INTERNA: la curva no decrece respecto a sí misma
-        for i in range(1, len(y_proj)):
-            if y_proj[i] < y_proj[i-1]:
-                y_proj[i] = y_proj[i-1]
-        
-        color = color_palette.get(m_key, "#6B7280")
-        is_consensus = (m_key == consensus_key)
-        name = f"{model_labels.get(m_key, m_key)} (recomendado)" if is_consensus else model_labels.get(m_key, m_key)
-        
-        if is_consensus:
-            idx_hist = np.where(np.array(anios_proj) <= ultimo_anio)[0]
-            idx_proj = np.where(np.array(anios_proj) >= ultimo_anio)[0]
+            # Monotonicidad INTERNA: la curva no decrece respecto a sí misma
+            for i in range(1, len(y_proj)):
+                if y_proj[i] < y_proj[i-1]:
+                    y_proj[i] = y_proj[i-1]
             
-            fig.add_trace(go.Scatter(
-                x=np.array(anios_proj)[idx_hist], 
-                y=y_proj[idx_hist], 
-                mode='lines', 
-                name=f'{name} - Ajuste', 
-                line=dict(color=color, width=3, dash='solid'),
-                showlegend=False
-            ))
+            color = color_palette.get(m_key, "#6B7280")
+            is_consensus = (m_key == consensus_key)
+            name = f"{model_labels.get(m_key, m_key)} (recomendado)" if is_consensus else model_labels.get(m_key, m_key)
             
-            fig.add_trace(go.Scatter(
-                x=np.array(anios_proj)[idx_proj], 
-                y=y_proj[idx_proj], 
-                mode='lines', 
-                name=name, 
-                line=dict(color=color, width=3, dash='dash')
-            ))
-        else:
-            fig.add_trace(go.Scatter(
-                x=anios_proj, 
-                y=y_proj, 
-                mode='lines', 
-                name=name, 
-                line=dict(color=color, width=1.5, dash='solid')
-            ))
+            if is_consensus:
+                idx_hist = np.where(np.array(anios_proj) <= ultimo_anio)[0]
+                idx_proj = np.where(np.array(anios_proj) >= ultimo_anio)[0]
+                
+                fig.add_trace(go.Scatter(
+                    x=np.array(anios_proj)[idx_hist], 
+                    y=y_proj[idx_hist], 
+                    mode='lines', 
+                    name=f'{name} - Ajuste', 
+                    line=dict(color=color, width=3, dash='solid'),
+                    showlegend=False
+                ))
+                
+                fig.add_trace(go.Scatter(
+                    x=np.array(anios_proj)[idx_proj], 
+                    y=y_proj[idx_proj], 
+                    mode='lines', 
+                    name=name, 
+                    line=dict(color=color, width=3, dash='dash')
+                ))
+            else:
+                fig.add_trace(go.Scatter(
+                    x=anios_proj, 
+                    y=y_proj, 
+                    mode='lines', 
+                    name=name, 
+                    line=dict(color=color, width=1.5, dash='solid')
+                ))
+
+    if is_analogical:
+        title_text = "Analogical Forecast (Escenarios extraídos del informe)"
+    else:
+        title_text = f"Modelo de Consenso: {model_labels.get(consensus_key, consensus_key)} (Score {consensus_score:.2f})"
 
     apply_dark_theme(
         fig,
         title=dict(
-            text=f"Modelo de Consenso: {model_labels.get(consensus_key, consensus_key)} (Score {consensus_score:.2f})",
+            text=title_text,
             font=dict(color="#f1f5f9", size=15), x=0.02, xanchor="left"
         ),
         xaxis_title="Año",
