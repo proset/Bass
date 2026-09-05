@@ -283,11 +283,9 @@ def build_all_projections_table(params, real_series, model_labels):
     for mk, p in sorted_models:
         try:
             y_proj = project_model(mk, p, t_proj)
-            # Monotonicidad solo en proyecciones futuras
-            last_val = list(real_series.values())[-1]
-            idx_future = np.where(np.array(proj_years) > last_year)[0]
-            if len(idx_future) > 0:
-                y_proj[idx_future] = np.maximum(y_proj[idx_future], last_val)
+            for i in range(1, len(y_proj)):
+                if y_proj[i] < y_proj[i-1]:
+                    y_proj[i] = y_proj[i-1]
             projections[mk] = y_proj
         except Exception:
             projections[mk] = None
@@ -368,7 +366,9 @@ def build_scenarios_table(params, real_series, model_labels):
     for mk, p in params.items():
         try:
             y_proj = project_model(mk, p, t_proj)
-            y_proj = np.maximum(y_proj, last_val)
+            for i in range(1, len(y_proj)):
+                if y_proj[i] < y_proj[i-1]:
+                    y_proj[i] = y_proj[i-1]
             v2035 = float(y_proj[9])
             if v2035 <= last_val * 3 and v2035 > opt_2035:
                 opt_2035 = v2035
@@ -382,7 +382,9 @@ def build_scenarios_table(params, real_series, model_labels):
     for label, mk in [("Conservador", cons_key), ("Base (recomendado)", rec_key), ("Optimista", opt_key)]:
         p = params[mk]
         y_proj = project_model(mk, p, t_proj)
-        y_proj = np.maximum(y_proj, last_val)
+        for i in range(1, len(y_proj)):
+            if y_proj[i] < y_proj[i-1]:
+                y_proj[i] = y_proj[i-1]
         name = model_labels.get(mk, mk)
         rows.append(f"| {label} | {name} | {float(y_proj[4]):.2f} | {float(y_proj[9]):.2f} |")
         
@@ -458,8 +460,9 @@ def analyze_with_claude(tech):
     last_year = max(real_series.keys())
     t_proj = np.arange(len(real_series), len(real_series) + 10, dtype=float)
     y_proj = project_model(recommended_model_key, recommended_params, t_proj)
-    last_val = list(real_series.values())[-1]
-    y_proj = np.maximum(y_proj, last_val)
+    for i in range(1, len(y_proj)):
+        if y_proj[i] < y_proj[i-1]:
+            y_proj[i] = y_proj[i-1]
     
     # Extraer contexto cualitativo
     extraction_context = get_extraction_context(tech)
