@@ -716,7 +716,7 @@ def persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios):
     """
     import json
     import numpy as np
-    from db.connection import get_conn, release_conn
+    from config import get_conn, release_conn
     from data.loaders import normalize_tech_name
     
     tech_norm = normalize_tech_name(tech)
@@ -731,7 +731,7 @@ def persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios):
         # 1. model_parameters: registro neutro
         cur.execute("DELETE FROM model_parameters WHERE LOWER(TRIM(tecnologia)) = %s AND modelo_tipo = 'Analogical_Forecast'", (tech_norm,))
         
-        techo_base = float(prior_M.get("Base", prior_M.get("Optimista", 0)))
+        techo_base = float(prior_M.get("base", prior_M.get("optimista", 0)))
         
         # Helper para sanitizar numpy a tipos Python para JSON
         def sanitize(obj):
@@ -744,9 +744,9 @@ def persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios):
             
         params_json = sanitize({
             "analogia": {
-                "conservador": escenarios.get("Conservador", {}),
-                "base": escenarios.get("Base", {}),
-                "optimista": escenarios.get("Optimista", {}),
+                "conservador": escenarios.get("conservador", {}),
+                "base": escenarios.get("base", {}),
+                "optimista": escenarios.get("optimista", {}),
                 "analogos": analogos,
                 "mercado_direccionable_M": clasif.get('mercado_direccionable_M')
             }

@@ -62,5 +62,5 @@
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** ChatGPT alcanzó 100M de usuarios en 2 meses, ritmo sin precedentes comparable al despliegue de internet y smartphones, con potencial de penetración en toda la población conectada global (~5000M). Su naturaleza de plataforma de acceso universal a información y productividad la asemeja a motores de búsqueda y redes de conectividad más que a un producto de consumo específico.
+**Justificación Claude:** ChatGPT alcanzó 100M de usuarios en 2 meses, superando la velocidad de adopción de cualquier tecnología de consumo masivo previa, comparable al despliegue de internet y smartphones por su carácter de plataforma horizontal. Su mercado direccionable se aproxima al total de usuarios de internet mundial (~5.000M), dado que actúa como interfaz universal de acceso a información y productividad.
 **Análogos sugeridos por Claude:** internet, smartphone, google-search, facebook, whatsapp

@@ -9,12 +9,12 @@ Este informe no incluye proyecciones de adopción porque la calidad de los datos
 |---|---|
 | 2021 | 0.00 M |
 | 2022 | 0.00 M |
-| 2023 | 0.10 M |
-| 2024 | 0.04 M |
-| 2025 | 64.00 M |
+| 2023 | 0.00 M |
+| 2024 | 5.00 M |
+| 2025 | 35.00 M |
 
 ### Motivo
-Tras la re-extracción dirigida, la serie sigue teniendo puntos insuficientes (3 válidos). Se requieren mínimo 4 para proyectar fiablemente.
+Tras la re-extracción dirigida, la serie sigue teniendo puntos insuficientes (2 válidos). Se requieren mínimo 3 para proyectar por analogía.
 
 ### Qué haría falta
 - Serie histórica más larga (mínimo 4-6 puntos con datos verificados)
