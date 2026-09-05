@@ -163,7 +163,19 @@ IMPORTANTE: 'valor' DEBE ser estrictamente un NÚMERO (flotante) representando M
 Ejemplo: si son 300,000 usuarios, valor = 0.3. Si son 1,500 millones, valor = 1500.0. NO uses texto ni rangos en 'valor'."""
     
     try:
-        respuesta = generate_content_with_fallback(prompt=prompt, tools=[{"google_search": {}}])
+        import time
+        respuesta = None
+        for attempt in range(2):
+            try:
+                respuesta = generate_content_with_fallback(prompt=prompt, tools=[{"google_search": {}}])
+                break
+            except Exception as e:
+                if attempt == 0:
+                    print(f"[verify] Error de red en re-extracción: {e}. Reintentando en 5s...")
+                    time.sleep(5)
+                else:
+                    raise e
+                    
         text = respuesta.text.strip()
         
         if text.startswith("```"):
@@ -784,12 +796,18 @@ def main():
                 # Persistir la serie corregida en BD
                 persistir_serie_corregida(tech, serie)
                 
-    # FIX 45: modo analogía para young-techs
+    # FIX 47: modo analogía para young-techs
     pts_reales = sum(1 for v in serie.values() if v > 0)
     # Check if veredicto2 exists from re-extraction, otherwise use veredicto
     veredicto_actual = locals().get('veredicto2', veredicto)
     
-    if pts_reales < 6 and veredicto_actual != "INSERVIBLE":
+    if pts_reales < 3 and veredicto_actual != "INSERVIBLE":
+        print(f"[analogia] Young tech: {pts_reales} pts reales -> INSUFICIENTE para analogía (mínimo 3)")
+        detalle_insuf = {"razonamiento_general": "DATOS INSUFICIENTES para analogía: mínimo 3 puntos, reintentar con más historial. Cada año añade un punto."}
+        generar_informe_insuficiente(tech, serie, detalle_insuf)
+        sys.exit(0)
+        
+    if 3 <= pts_reales < 6 and veredicto_actual != "INSERVIBLE":
         print(f"[analogia] Young tech: {pts_reales} pts reales -> PROYECCIÓN POR ANALOGÍA")
         
         # 1. Claude clasifica
