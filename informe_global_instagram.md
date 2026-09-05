@@ -6,15 +6,15 @@
 
 ## 1. Resumen Ejecutivo
 
-Instagram es una plataforma de redes sociales de propiedad de Meta Platforms que publica periódicamente datos de usuarios activos mensuales, por lo que los datos históricos empleados en este análisis se consideran de fuente oficial o ampliamente verificada por medios especializados.
+Instagram es una plataforma de redes sociales de propiedad de Meta Platforms que publica periódicamente datos de usuarios activos, por lo que los datos históricos empleados en este análisis se consideran de fuente oficial o ampliamente verificada por fuentes secundarias de referencia del sector.
 
-El modelo seleccionado para describir la trayectoria de adopción de Instagram es el **Difusión Logística R&K**, que obtuvo la puntuación compuesta más alta entre los diez modelos evaluados. Su superioridad se explica por la combinación de un ajuste estadístico muy elevado y un error de predicción notablemente bajo, lo que indica que captura con fidelidad tanto la aceleración inicial de la plataforma como la desaceleración gradual propia de mercados que se aproximan a la saturación.
+El modelo seleccionado para describir la trayectoria de adopción de Instagram es **Gompertz**, que obtuvo la puntuación compuesta más alta entre los diez modelos evaluados. Su ventaja diferencial frente a los modelos alternativos reside en la combinación de un ajuste elevado al histórico y un error de predicción notablemente bajo, lo que lo convierte en el candidato más equilibrado entre precisión y parsimonia relativa. El modelo Gompertz captura de forma natural la asimetría característica de las curvas de difusión tardía: una aceleración inicial pronunciada seguida de una desaceleración progresiva hacia la saturación, patrón que se observa con claridad en los datos de Instagram.
 
-La plataforma se encuentra en una **fase de crecimiento tardío / madurez temprana**. Tras una expansión explosiva durante su primera década de vida, el ritmo de incorporación de nuevos usuarios se ha moderado, aunque sigue siendo positivo. Las proyecciones apuntan a que la base de usuarios continuará creciendo, pero a tasas decrecientes, convergiendo hacia un techo estructural de mercado en el horizonte de largo plazo.
+**Fase de crecimiento:** Instagram se encuentra en una **fase de madurez avanzada con reactivación puntual**. Tras un período de estabilización en el que la base de usuarios permaneció prácticamente constante durante varios años consecutivos, los datos más recientes sugieren un salto significativo que podría reflejar expansión en mercados emergentes, cambios metodológicos en la definición de usuario activo, o el efecto de nuevas funcionalidades que han ampliado el universo de adopción. Las proyecciones del modelo apuntan a un crecimiento adicional moderado hacia horizontes de medio y largo plazo, convergiendo hacia un techo de saturación.
 
-**Nivel de confianza de la proyección: MEDIO-ALTO**
+**Nivel de confianza de la proyección: MEDIO**
 
-La serie histórica disponible es suficientemente larga para alimentar modelos de difusión, y el modelo ganador muestra un ajuste robusto. Sin embargo, la existencia de un salto abrupto en los datos entre ciertos años —posiblemente atribuible a cambios metodológicos en la definición de usuario activo o a la incorporación de nuevos mercados— introduce incertidumbre estructural que limita la confianza plena. Las proyecciones a corto y medio plazo son razonablemente fiables; las de largo plazo deben tratarse con mayor cautela.
+La confianza se califica como media por las siguientes razones: el ajuste estadístico del modelo es sólido, pero la serie histórica presenta una discontinuidad notable —un salto abrupto en el último dato disponible— que introduce incertidumbre sobre si dicho salto representa una tendencia estructural o un evento puntual. Además, el número de observaciones es limitado para la complejidad del fenómeno subyacente, y el entorno competitivo de las redes sociales es altamente volátil.
 
 ---
 
@@ -22,23 +22,23 @@ La serie histórica disponible es suficientemente larga para alimentar modelos d
 
 ### Drivers de adopción
 
-Instagram ha sido impulsado por una confluencia de factores que explican su crecimiento sostenido durante más de una década. En primer lugar, la **penetración global de smartphones y conectividad móvil** ha democratizado el acceso a plataformas visuales, especialmente en mercados emergentes de Asia, América Latina y África, donde la incorporación de nuevos usuarios sigue siendo el principal motor de crecimiento. En segundo lugar, la **evolución del formato de contenido** —de fotografías estáticas a Stories, Reels y contenido de vídeo corto— ha permitido a la plataforma retener a usuarios existentes y atraer a nuevas cohortes demográficas, particularmente jóvenes. En tercer lugar, el **ecosistema de creadores de contenido y la economía de influencers** ha convertido a Instagram en una herramienta profesional y de monetización, generando un efecto de red que refuerza la adopción. Finalmente, la **integración con el ecosistema de Meta** —incluyendo Facebook, WhatsApp y Threads— facilita la incorporación de usuarios mediante identidades compartidas y funcionalidades cruzadas.
+Instagram ha consolidado su posición global apoyándose en varios factores estructurales de impulso. En primer lugar, la **penetración masiva del smartphone** y la mejora continua de las cámaras móviles han convertido la fotografía y el vídeo en el lenguaje natural de comunicación digital, terreno en el que Instagram fue pionero y sigue siendo referencia. En segundo lugar, el **ecosistema de creadores de contenido** —influencers, marcas, artistas y medios— ha generado un ciclo virtuoso de producción y consumo que retiene a los usuarios existentes y atrae a nuevos. En tercer lugar, la integración progresiva de funcionalidades de comercio electrónico (Instagram Shopping) ha transformado la plataforma en un canal de conversión directa, aumentando su valor percibido tanto para usuarios como para anunciantes. Finalmente, la expansión hacia mercados emergentes en Asia meridional, América Latina y África subsahariana representa una fuente de crecimiento estructural aún no agotada.
 
 ### Competidores clave y dinámica competitiva
 
-El entorno competitivo de Instagram es intenso y ha evolucionado significativamente. **TikTok** representa la amenaza más directa, habiendo redefinido el consumo de contenido de vídeo corto y captando masivamente a la audiencia joven que históricamente era el núcleo de Instagram. **YouTube** compite en el segmento de vídeo de formato largo y medio, mientras que **Snapchat** mantiene una base de usuarios fiel en el segmento adolescente con formatos efímeros. **Pinterest** compite en el nicho de contenido visual inspiracional. La respuesta de Instagram ha sido la imitación acelerada de funcionalidades —Reels como réplica directa a TikTok— con resultados mixtos en términos de diferenciación. La dinámica competitiva favorece a las plataformas que logran retener el tiempo de atención del usuario, un recurso cada vez más disputado.
+El entorno competitivo de Instagram es uno de los más dinámicos del sector tecnológico. **TikTok** representa la amenaza más significativa, especialmente entre audiencias jóvenes, al haber redefinido el formato de vídeo corto y haber forzado a Instagram a replicar su modelo con Reels. **YouTube** compite en el segmento de vídeo largo y semilargo, mientras que **Snapchat** mantiene una base de usuarios fiel en franjas de edad más jóvenes con formatos efímeros. **Pinterest** disputa el segmento de descubrimiento visual e inspiración de compra. Dentro del propio ecosistema Meta, **Facebook** y **WhatsApp** comparten infraestructura y datos, lo que genera sinergias pero también canibalización potencial. La dinámica competitiva se caracteriza por una carrera de funcionalidades en la que la diferenciación sostenida es difícil de mantener, y donde la atención del usuario es el recurso escaso disputado.
 
 ### Barreras de adopción
 
-Entre los factores que frenan el crecimiento futuro destacan la **saturación en mercados maduros** —Europa Occidental, Norteamérica y partes de Asia— donde la penetración ya es muy elevada y el margen de incorporación de nuevos usuarios es limitado. La **fatiga de plataformas** y la preocupación creciente por el bienestar digital, especialmente entre adolescentes, generan presión social e institucional. Las **restricciones regulatorias** en materia de privacidad de datos —GDPR en Europa, leyes estatales en Estados Unidos— elevan los costes de cumplimiento y limitan las capacidades de segmentación publicitaria. Adicionalmente, la **competencia por el tiempo de atención** con plataformas emergentes representa una barrera estructural al crecimiento del engagement, incluso cuando la base de usuarios sigue expandiéndose.
+Entre los factores que frenan el crecimiento futuro destacan: la **saturación en mercados maduros** (Europa Occidental, América del Norte, Australia), donde la penetración ya es muy elevada y el crecimiento marginal es escaso; la **fatiga de plataforma**, fenómeno por el cual los usuarios reducen el tiempo dedicado a redes sociales ante la sobrecarga de contenido; las **preocupaciones sobre salud mental**, especialmente documentadas en adolescentes, que han generado presión regulatoria y social sobre la plataforma; y la **competencia por el tiempo de pantalla**, que se intensifica con el auge de los videojuegos, el streaming y otras formas de entretenimiento digital.
 
 ### Tendencias tecnológicas y regulatorias
 
-La inteligencia artificial generativa está transformando la producción y distribución de contenido, lo que puede tanto beneficiar a Instagram —mediante herramientas de creación asistida— como amenazarla, al reducir las barreras de entrada para plataformas competidoras. La **realidad aumentada** y los formatos inmersivos representan una apuesta estratégica de Meta para diferenciar la experiencia de usuario. En el plano regulatorio, la presión sobre las grandes plataformas tecnológicas se intensifica globalmente: investigaciones antimonopolio, leyes de protección de menores y marcos de responsabilidad sobre contenidos son vectores de riesgo que podrían imponer restricciones operativas significativas.
+Desde el punto de vista tecnológico, la **inteligencia artificial generativa** está transformando tanto la creación de contenido como los algoritmos de recomendación, lo que puede ampliar el universo de creadores y aumentar el engagement. La **realidad aumentada** integrada en filtros y experiencias de compra representa otra palanca de diferenciación. Sin embargo, el entorno regulatorio es crecientemente adverso: la **regulación europea** (DSA, DMA) impone obligaciones de transparencia algorítmica, portabilidad de datos e interoperabilidad que aumentan los costes de cumplimiento y pueden limitar ciertas prácticas de monetización. En Estados Unidos, los debates legislativos sobre privacidad de menores y posibles restricciones a TikTok —que podrían beneficiar indirectamente a Instagram— añaden incertidumbre bidireccional al panorama.
 
 ### Factores externos relevantes
 
-La pandemia de COVID-19 actuó como acelerador de la adopción digital global, impulsando el uso de plataformas sociales durante los períodos de confinamiento. Este efecto se refleja en el salto de usuarios observado en los primeros años de la década de 2020. Sin embargo, parte de ese crecimiento acelerado puede haber anticipado adopción que de otro modo se habría producido más gradualmente, lo que podría explicar la moderación posterior del ritmo de crecimiento. Las tensiones geopolíticas —restricciones a plataformas occidentales en determinados mercados, como China— limitan el potencial de expansión en algunas de las regiones más pobladas del mundo.
+La pandemia de COVID-19 actuó como acelerador extraordinario de la adopción de plataformas digitales, efecto visible en el salto de usuarios registrado en el período de confinamiento global. Este impulso exógeno distorsiona la curva de adopción natural y dificulta la separación entre tendencia estructural y efecto coyuntural. Las tensiones geopolíticas —especialmente las restricciones a plataformas occidentales en determinados mercados asiáticos— limitan el potencial de expansión en algunas de las regiones de mayor crecimiento demográfico del mundo.
 
 ---
 
@@ -46,169 +46,166 @@ La pandemia de COVID-19 actuó como acelerador de la adopción digital global, i
 
 ### Análisis cualitativo del ajuste
 
-El modelo **Difusión Logística R&K** captura con notable precisión la forma en S característica de la adopción de Instagram: una fase de despegue acelerado, una inflexión hacia el crecimiento moderado y una convergencia progresiva hacia un techo de mercado. Su ventaja sobre modelos alternativos reside en su capacidad para ajustar tanto la velocidad de difusión como el punto de saturación de manera flexible, sin incurrir en la complejidad paramétrica excesiva que penaliza a otros modelos.
+El modelo **Gompertz** describe la adopción de Instagram con notable coherencia teórica. La curva gompertziana, asimétrica por construcción, sitúa el punto de inflexión antes de la mitad del recorrido hacia la saturación, lo que se alinea con el comportamiento observado: Instagram alcanzó su mayor velocidad de crecimiento en sus primeros años de vida, para luego desacelerar progresivamente. Esta asimetría es precisamente lo que distingue al modelo Gompertz del logístico simétrico, y resulta más adecuada para plataformas que experimentan adopción temprana muy rápida impulsada por efectos de red.
 
-Los modelos **Dual Market** y **Van den Bulte & Joshi** obtuvieron puntuaciones compuestas muy similares entre sí, lo que sugiere que ambos describen el fenómeno con eficacia comparable. El modelo **Gompertz** y **Muller & Yogev** también muestran un ajuste sólido, aunque con errores de predicción algo superiores. Los modelos de la familia Bass —Bass Clásico, GBM, Horsky & Simon y Ladrón-de-Guevara & Putsis— presentan un rendimiento notablemente inferior, lo que indica que la estructura de imitación-innovación pura no captura adecuadamente la dinámica de una plataforma que ha experimentado múltiples reinvenciones de producto.
+El resto de modelos evaluados se agrupan en dos bloques de rendimiento. Un primer bloque —**Dual Market**, **Muller & Yogev**, **Van den Bulte & Joshi** y **Difusión Logística R&K**— muestra ajustes elevados y errores de predicción moderados, constituyendo alternativas razonables. Un segundo bloque —**Bass Clásico**, **Bass Generalizado**, **Horsky & Simon**, **Fourt & Woodlock** y **Ladrón-de-Guevara & Putsis**— presenta ajustes algo inferiores y errores de predicción más elevados, lo que sugiere que sus supuestos estructurales capturan peor la dinámica específica de Instagram.
+
+---
 
 ### a) Control de sobreajuste (AIC mental)
 
-La serie histórica disponible comprende once puntos de datos. El modelo **Difusión Logística R&K** opera con un número reducido de parámetros —típicamente dos o tres, según la formulación específica de Richards y Kingsland—, lo que sitúa la relación entre parámetros y observaciones en un rango aceptable. No se activa la advertencia de riesgo alto de sobreajuste, ya que el número de parámetros es claramente inferior a la mitad del número de observaciones. No obstante, con once puntos, cualquier modelo con más de cuatro o cinco parámetros debería ser examinado con cautela. Los modelos de mayor complejidad paramétrica evaluados en este análisis —como GBM o Van den Bulte & Joshi— deben interpretarse con reservas adicionales en este contexto de datos limitados.
+El modelo Gompertz opera con un número reducido de parámetros libres —típicamente tres: el nivel de saturación, la tasa de crecimiento y el parámetro de desplazamiento temporal— sobre una serie histórica de once observaciones. La relación entre el número de parámetros y el número de puntos de datos es favorable: el número de parámetros es muy inferior a la mitad del tamaño muestral, por lo que **no se activa la advertencia de riesgo alto de sobreajuste**. El modelo es parsimonioso y su complejidad está justificada por la mejora real en el ajuste y, sobre todo, por la reducción sustancial del error de predicción respecto a modelos alternativos con parámetros similares o superiores.
+
+No obstante, conviene señalar que once observaciones constituyen una muestra modesta para proyecciones a horizontes de una o dos décadas. La parsimonia del Gompertz es una virtud en este contexto, pero no elimina la incertidumbre inherente a la extrapolación lejana.
+
+---
 
 ### b) Detección de degeneración paramétrica
 
-Se observa un fenómeno de **colapso paramétrico** entre tres modelos: Bass Clásico, Horsky & Simon y Ladrón-de-Guevara & Putsis muestran métricas de ajuste prácticamente idénticas —mismo coeficiente de determinación y mismo error porcentual medio—. Esto no es un error de cálculo, sino una manifestación de **degeneración paramétrica**: con una serie de datos de longitud moderada, los parámetros adicionales que diferencian teóricamente a estos modelos no encuentran señal suficiente en los datos para identificarse de forma independiente. El resultado es que los modelos más complejos colapsan matemáticamente al comportamiento del más simple. Este fenómeno refuerza la preferencia por el modelo ganador, que logra mejor ajuste con menor complejidad. Asimismo, la coincidencia exacta entre Dual Market y Van den Bulte & Joshi sugiere que ambos convergen a la misma solución numérica bajo los datos disponibles, lo que debe tenerse en cuenta al interpretar sus proyecciones como independientes.
+El análisis revela un fenómeno de **colapso paramétrico** entre varios modelos del segundo bloque. **Bass Clásico**, **Bass Generalizado (GBM)**, **Horsky & Simon** y **Ladrón-de-Guevara & Putsis** presentan métricas de ajuste prácticamente idénticas entre sí —tanto en bondad de ajuste como en error de predicción—. Este comportamiento no es un error de cálculo: es una manifestación de **degeneración paramétrica** o pérdida de identificabilidad. Con una serie histórica de once puntos, los parámetros adicionales que diferencian al Bass Generalizado del Bass Clásico —o a Horsky & Simon del Bass estándar— no encuentran suficiente variación en los datos para ser estimados de forma independiente. Matemáticamente, el modelo más complejo colapsa hacia el más simple porque los parámetros extra convergen a valores que los hacen irrelevantes. La implicación práctica es que, en este caso, la complejidad adicional de esos modelos no aporta valor predictivo y el modelo más parsimonioso dentro del grupo es preferible. Esta observación refuerza la elección del Gompertz, que sí logra diferenciarse estadísticamente del grupo degenerado.
+
+De forma análoga, **Dual Market** y **Van den Bulte & Joshi** muestran métricas prácticamente idénticas entre sí, lo que sugiere que ambos modelos están capturando la misma estructura subyacente de los datos con formulaciones matemáticamente equivalentes en la práctica para este conjunto de observaciones.
+
+---
 
 ### c) Contraste con referencias externas
 
-Según el conocimiento disponible del sector, diversas fuentes especializadas en análisis de redes sociales —incluyendo informes de Statista, DataReportal y análisis de Gartner sobre plataformas digitales— han proyectado que Instagram continuará creciendo en usuarios activos durante la presente década, con especial dinamismo en mercados emergentes. Las proyecciones del modelo para el horizonte de medio plazo se sitúan en un rango que resulta **cualitativamente coherente** con las estimaciones del sector, que anticipan una base de usuarios global de Instagram en el entorno de los cuatro mil millones para finales de la década, aunque con incertidumbre considerable. No se identificó una referencia externa única y autoritativa —equivalente a IEA para energía o IDC para hardware— que publique proyecciones de usuarios de Instagram con metodología transparente y comparable. Por tanto, el contraste es cualitativo y no debe interpretarse como validación cuantitativa.
+Desde la perspectiva de analistas del sector tecnológico —incluyendo estimaciones publicadas por firmas como **Statista**, **DataReportal** y **eMarketer**, que son referencias habituales para el seguimiento de plataformas de redes sociales—, las proyecciones de crecimiento de Instagram a medio plazo apuntan a una base de usuarios que continúa expandiéndose, impulsada principalmente por mercados emergentes, aunque a tasas decrecientes en los mercados maduros. Las proyecciones del modelo **Gompertz** para los horizontes de medio y largo plazo se sitúan en un rango que resulta **cualitativamente coherente** con las estimaciones del sector: no se detecta una divergencia de orden de magnitud que requiera advertencia explícita de sobreestimación o subestimación severa.
+
+Sin embargo, debe señalarse que el salto observado en el último dato disponible —que representa un incremento muy significativo respecto al período de estabilización previo— es el principal factor de incertidumbre. Si dicho salto refleja un cambio metodológico en la definición de usuario activo más que un crecimiento orgánico real, las proyecciones podrían estar sobreestimando el potencial futuro. Las referencias del sector no identifican un crecimiento tan abrupto en ese período, lo que invita a la cautela interpretativa.
+
+---
 
 ### d) Modulación de confianza
 
-| Dimensión | Evaluación | Justificación |
+| Dimensión | Valoración | Justificación |
 |---|---|---|
-| Datos (n puntos) | Suficientes con reservas | Once observaciones permiten ajustar modelos de difusión, pero limitan la identificabilidad de modelos complejos |
-| Sobreajuste | Riesgo bajo-medio | El modelo ganador tiene pocos parámetros; riesgo bajo para él, medio para modelos alternativos evaluados |
-| Salto estructural en datos | Riesgo medio | El incremento abrupto observado en ciertos años puede reflejar cambio metodológico, no solo adopción real |
-| Proyección a corto plazo | OPERATIVA | Fiable para decisiones de planificación a uno-tres años |
-| Proyección a largo plazo | INDICATIVA | Sujeta a revisión ante cambios regulatorios, competitivos o tecnológicos |
-
-**Conclusión de confianza:** La proyección a corto y medio plazo se clasifica como **OPERATIVA**, adecuada para orientar decisiones estratégicas con las cautelas señaladas. La proyección a largo plazo —horizonte de una década— se clasifica como **INDICATIVA**, y debe revisarse periódicamente a medida que se incorporen nuevos datos y se clarifiquen las dinámicas competitivas y regulatorias.
+| Datos (n puntos) | Suficientes con reservas | Once observaciones permiten ajustar el Gompertz, pero son insuficientes para proyecciones a más de una década con alta confianza |
+| Sobreajuste | Riesgo bajo | El número de parámetros del Gompertz es muy inferior a la mitad del tamaño muestral |
+| Discontinuidad en datos | Riesgo medio-alto | El salto en el último dato introduce incertidumbre sobre la tendencia estructural real |
+| Conclusión | **Proyección INDICATIVA** | Útil como referencia de planificación estratégica, pero sujeta a revisión ante nuevos datos o aclaración sobre el origen del salto en la serie |
 
 ---
 
 ## 6. Marco Académico Teórico
 
-### Formulación conceptual del modelo seleccionado
+### Formulación conceptual del modelo Gompertz
 
-El modelo **Difusión Logística R&K** —formulado en la tradición de Richards y Kingsland— es una generalización flexible de la curva logística estándar. A diferencia de la logística simétrica clásica, este modelo incorpora un parámetro de asimetría que permite que el punto de inflexión —el momento de máxima velocidad de adopción— no se sitúe necesariamente en la mitad del techo de mercado, sino en cualquier fracción de él. Esto lo hace especialmente adecuado para plataformas digitales, cuya adopción frecuentemente muestra una aceleración inicial muy pronunciada seguida de una desaceleración más gradual, generando una curva asimétrica hacia la derecha.
+El modelo **Gompertz** pertenece a la familia de modelos de difusión de innovaciones de curva en S, pero se distingue por su **asimetría intrínseca**. A diferencia del modelo logístico —que sitúa el punto de inflexión exactamente en la mitad del mercado potencial—, la curva gompertziana alcanza su máxima velocidad de crecimiento en una fracción menor del mercado potencial, típicamente en torno a un tercio del techo de saturación. Esta propiedad la hace especialmente adecuada para describir tecnologías o plataformas que experimentan una adopción inicial muy rápida —impulsada por early adopters y efectos de red— seguida de una desaceleración más gradual hacia la saturación.
 
-Conceptualmente, el modelo asume que la adopción está limitada por un mercado potencial máximo —el techo de saturación— y que la velocidad de adopción en cada momento es proporcional tanto al número de adoptantes actuales como al potencial no realizado restante, modulada por el parámetro de asimetría.
+Conceptualmente, el modelo captura tres elementos fundamentales: el **mercado potencial máximo** (techo de saturación), la **velocidad de crecimiento** hacia ese techo, y el **punto de desplazamiento temporal** que determina cuándo se produce la inflexión. La forma funcional implica que la tasa de crecimiento decrece de forma logarítmica, lo que genera la asimetría característica.
 
 ### Comparación con modelos alternativos
 
-| Modelo | Fortaleza principal | Limitación principal |
-|---|---|---|
-| Bass Clásico | Separación explícita de innovadores e imitadores | Asume simetría en la curva de adopción |
-| Gompertz | Captura asimetría; buena para adopciones con despegue lento | Menos flexible que R&K en el punto de inflexión |
-| Dual Market | Modela dos segmentos de mercado diferenciados | Mayor complejidad; riesgo de sobreajuste con pocos datos |
-| Difusión Logística R&K | Flexibilidad en asimetría; parsimonia paramétrica | Asume un único techo de mercado estático |
-| GBM (Bass Generalizado) | Incorpora variables de marketing mix | Requiere datos adicionales de esfuerzo comercial |
+El **modelo Bass Clásico** es el referente canónico de la difusión de innovaciones, distinguiendo entre innovadores (adoptantes por influencia externa) e imitadores (adoptantes por influencia social). Su fortaleza reside en la interpretabilidad de sus parámetros, pero su curva simétrica puede no capturar bien las dinámicas de plataformas digitales con efectos de red muy pronunciados en las fases iniciales.
 
-### Relación con la teoría de difusión de innovaciones
+Los modelos **Dual Market** y **Van den Bulte & Joshi** extienden el Bass incorporando heterogeneidad en el mercado potencial —distinguiendo segmentos con diferentes propensiones a adoptar—, lo que teóricamente los hace más ricos. Sin embargo, como se ha señalado, con datos limitados esta riqueza paramétrica puede no traducirse en mejor capacidad predictiva.
 
-El modelo se inscribe en la tradición inaugurada por Everett Rogers en su obra sobre la difusión de innovaciones, que describe cómo las nuevas tecnologías o productos se propagan a través de sistemas sociales siguiendo patrones predecibles. La curva en S —característica de todos los modelos evaluados— refleja la secuencia de adopción por parte de innovadores, adoptantes tempranos, mayoría temprana, mayoría tardía y rezagados. El modelo R&K añade rigor matemático a esta intuición sociológica, permitiendo estimar con precisión el ritmo de transición entre fases y el techo estructural de adopción. En el contexto de plataformas digitales, los efectos de red —ausentes en la formulación original de Rogers— amplifican la fase de crecimiento acelerado, lo que justifica la asimetría que el modelo captura eficazmente.
+El modelo **Difusión Logística R&K** ofrece una alternativa simétrica con buen desempeño en este caso, aunque su error de predicción es superior al del Gompertz, lo que sugiere que la asimetría capturada por este último es estadísticamente relevante para Instagram.
 
----
+### Relación con la teoría de difusión
 
-## 7. Recomendación a la Dirección
-
-### Síntesis estratégica
-
-La trayectoria de adopción de Instagram describe una plataforma que ha superado con éxito las fases de despegue y crecimiento acelerado, y que se adentra en una etapa de madurez donde el crecimiento de usuarios, aunque positivo, es estructuralmente más lento. Este es el patrón típico de plataformas que han alcanzado una penetración elevada en sus mercados naturales y dependen del acceso a nuevas geografías y segmentos demográficos para sostener el crecimiento.
-
-### Recomendaciones
-
-**Dado que la proyección a corto y medio plazo es
+El análisis se inscribe en la tradición inaugurada por **Everett Rogers** con su teoría de la difusión de innovaciones, que describe cómo las nuevas tecnologías se propagan a través de sistemas sociales siguiendo patrones predecibles
 
 ## 2. Datos Históricos y Desviaciones
 
 ### 2.1 Serie Histórica Real
 | Año | Adopción (M) |
 |---|---|
-| 2015 | 400.00 M |
-| 2016 | 600.00 M |
-| 2017 | 800.00 M |
+| 2015 | 370.00 M |
+| 2016 | 500.00 M |
+| 2017 | 700.00 M |
 | 2018 | 1000.00 M |
-| 2019 | 1000.00 M |
-| 2020 | 1071.34 M |
-| 2021 | 1213.38 M |
+| 2019 | 1100.00 M |
+| 2020 | 1300.00 M |
+| 2021 | 2000.00 M |
 | 2022 | 2000.00 M |
-| 2023 | 2110.00 M |
-| 2024 | 2350.00 M |
+| 2023 | 2000.00 M |
+| 2024 | 2000.00 M |
 | 2025 | 3000.00 M |
 
 
 ### 2.2 Desviaciones por Modelo (Ajuste Histórico)
 | Año | Real (M) | Bass Clásico (M) | Dual Market (M) | Fourt & Woodlock (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Horsky & Simon (M) | Muller & Yogev (M) | Van den Bulte & Joshi (M) | Difusión Logística R&K (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2015 | 400.00 | 0.00 | 0.00 | 0.00 | 312.93 | 0.00 | 0.00 | 0.00 | 0.00 | 404.99 | 0.00 |
-| 2016 | 600.00 | 232.00 | 602.02 | 332.10 | 458.40 | 232.30 | 232.00 | 447.79 | 1285.63 | 516.18 | 232.00 |
-| 2017 | 800.00 | 481.13 | 813.38 | 642.14 | 637.09 | 479.76 | 481.13 | 734.79 | 2029.88 | 653.55 | 481.13 |
-| 2018 | 1000.00 | 745.27 | 903.55 | 931.59 | 846.19 | 741.09 | 745.27 | 927.34 | 2461.04 | 820.79 | 745.27 |
-| 2019 | 1000.00 | 1021.58 | 1006.44 | 1201.81 | 1080.81 | 1014.43 | 1021.58 | 1074.09 | 2711.22 | 1020.78 | 1021.58 |
-| 2020 | 1071.34 | 1306.56 | 1162.14 | 1454.08 | 1334.72 | 1297.37 | 1306.56 | 1218.70 | 2856.46 | 1254.87 | 1306.56 |
-| 2021 | 1213.38 | 1596.26 | 1393.50 | 1689.60 | 1601.06 | 1586.95 | 1596.26 | 1408.97 | 2940.79 | 1522.10 | 1596.26 |
-| 2022 | 2000.00 | 1886.43 | 1711.66 | 1909.48 | 1873.00 | 1879.78 | 1886.43 | 1693.73 | 2989.75 | 1818.61 | 1886.43 |
-| 2023 | 2110.00 | 2172.80 | 2103.83 | 2114.75 | 2144.29 | 2172.09 | 2172.80 | 2089.61 | 3018.19 | 2137.38 | 2172.80 |
-| 2024 | 2350.00 | 2451.32 | 2526.77 | 2306.39 | 2409.55 | 2459.98 | 2451.32 | 2534.83 | 3034.69 | 2468.67 | 2451.32 |
-| 2025 | 3000.00 | 2718.38 | 2921.94 | 2485.29 | 2664.47 | 2739.56 | 2718.38 | 2918.04 | 3044.28 | 2801.06 | 2718.38 |
+| 2015 | 370.00 | 0.00 | 0.00 | 0.00 | 384.47 | 0.00 | 0.00 | 0.00 | 0.00 | 434.23 | 0.00 |
+| 2016 | 500.00 | 323.81 | 352.69 | 344.26 | 538.35 | 323.40 | 323.81 | 349.97 | 352.69 | 564.48 | 323.81 |
+| 2017 | 700.00 | 633.41 | 693.07 | 664.81 | 721.25 | 632.17 | 633.41 | 691.77 | 693.07 | 724.76 | 633.42 |
+| 2018 | 1000.00 | 928.55 | 1002.49 | 963.29 | 929.90 | 926.41 | 928.55 | 1003.70 | 1002.49 | 916.64 | 928.56 |
+| 2019 | 1100.00 | 1209.08 | 1269.41 | 1241.22 | 1159.59 | 1206.29 | 1209.08 | 1271.84 | 1269.42 | 1138.92 | 1209.09 |
+| 2020 | 1300.00 | 1475.00 | 1491.14 | 1500.02 | 1404.73 | 1472.01 | 1475.00 | 1492.51 | 1491.13 | 1386.85 | 1475.00 |
+| 2021 | 2000.00 | 1726.41 | 1674.28 | 1741.00 | 1659.40 | 1723.83 | 1726.41 | 1672.74 | 1674.27 | 1651.96 | 1726.41 |
+| 2022 | 2000.00 | 1963.52 | 1837.31 | 1965.38 | 1917.84 | 1962.04 | 1963.52 | 1832.39 | 1837.30 | 1922.96 | 1963.51 |
+| 2023 | 2000.00 | 2186.62 | 2020.66 | 2174.32 | 2174.83 | 2186.98 | 2186.62 | 2014.28 | 2020.65 | 2187.50 | 2186.61 |
+| 2024 | 2000.00 | 2396.09 | 2311.20 | 2368.87 | 2425.89 | 2399.01 | 2396.09 | 2309.10 | 2311.19 | 2434.40 | 2396.08 |
+| 2025 | 3000.00 | 2592.35 | 2869.64 | 2550.03 | 2667.42 | 2598.51 | 2592.35 | 2881.14 | 2869.65 | 2655.35 | 2592.33 |
 
 ### 2.3 Fuentes de Datos
 | Año | Valor (M) | Tipo |
 | --- | --- | --- |
-| 2015 | 400.00 | Real (reportado) |
-| 2016 | 600.00 | Real (reportado) |
-| 2017 | 800.00 | Real (reportado) |
+| 2015 | 370.00 | Real (reportado) |
+| 2016 | 500.00 | Real (reportado) |
+| 2017 | 700.00 | Real (reportado) |
 | 2018 | 1000.00 | Real (reportado) |
-| 2019 | 1000.00 | Real (reportado) |
-| 2020 | 1071.34 | Real (reportado) |
-| 2021 | 1213.38 | Real (reportado) |
+| 2019 | 1100.00 | Real (reportado) |
+| 2020 | 1300.00 | Real (reportado) |
+| 2021 | 2000.00 | Real (reportado) |
 | 2022 | 2000.00 | Real (reportado) |
-| 2023 | 2110.00 | Real (reportado) |
-| 2024 | 2350.00 | Real (reportado) |
+| 2023 | 2000.00 | Real (reportado) |
+| 2024 | 2000.00 | Real (reportado) |
 | 2025 | 3000.00 | Real (reportado) |
 
 ## 3bis. Métricas
 
 | Modelo | R² | MAPE | Score | k |
 |---|---|---|---|---|
-| Bass Clásico | 0.8864 | 27.70% | 85.56 | 3 |
-| Dual Market | 0.9513 | 14.59% | 93.01 | 6 |
-| Fourt & Woodlock | 0.8600 | 26.38% | 83.91 | 2 |
-| Gompertz | 0.9356 | 15.22% | 91.39 | 3 |
-| Bass Generalizado (GBM) | 0.8889 | 27.53% | 85.79 | 4 |
-| Horsky & Simon | 0.8864 | 27.70% | 85.56 | 4 |
-| Muller & Yogev | 0.9421 | 18.63% | 91.76 | 7 |
-| Van den Bulte & Joshi | 0.9513 | 14.59% | 93.01 | 6 |
-| Difusión Logística R&K | 0.9591 | 10.74% | 94.66 | 4 |
-| Ladrón-de-Guevara & Putsis | 0.8864 | 27.70% | 85.56 | 5 |
+| Bass Clásico | 0.9008 | 21.23% | 87.41 | 3 |
+| Dual Market | 0.9286 | 18.74% | 89.57 | 6 |
+| Fourt & Woodlock | 0.8997 | 20.45% | 87.45 | 2 |
+| Gompertz | 0.9292 | 8.85% | 91.21 | 3 |
+| Bass Generalizado (GBM) | 0.9011 | 21.24% | 87.43 | 4 |
+| Horsky & Simon | 0.9008 | 21.23% | 87.41 | 4 |
+| Muller & Yogev | 0.9285 | 18.81% | 89.55 | 7 |
+| Van den Bulte & Joshi | 0.9286 | 18.74% | 89.57 | 6 |
+| Difusión Logística R&K | 0.9250 | 10.56% | 90.59 | 4 |
+| Ladrón-de-Guevara & Putsis | 0.9008 | 21.23% | 87.41 | 5 |
 
 
 ## 4. Proyecciones
 
 ### 4.1 Proyecciones de Todos los Modelos
-| Año | Difusión Logística R&K (M) | Van den Bulte & Joshi (M) | Dual Market (M) | Muller & Yogev (M) | Gompertz (M) | Bass Generalizado (GBM) (M) | Bass Clásico (M) | Ladrón-de-Guevara & Putsis (M) | Horsky & Simon (M) | Fourt & Woodlock (M) |
+| Año | Gompertz (M) | Difusión Logística R&K (M) | Dual Market (M) | Van den Bulte & Joshi (M) | Muller & Yogev (M) | Fourt & Woodlock (M) | Bass Generalizado (GBM) (M) | Bass Clásico (M) | Horsky & Simon (M) | Ladrón-de-Guevara & Putsis (M) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2015 | 404.99 | 0.00 | 0.00 | 0.00 | 312.93 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
-| 2016 | 516.18 | 1285.63 | 602.02 | 447.79 | 458.40 | 232.30 | 232.00 | 232.00 | 232.00 | 332.10 |
-| 2017 | 653.55 | 2029.88 | 813.38 | 734.79 | 637.09 | 479.76 | 481.13 | 481.13 | 481.13 | 642.14 |
-| 2018 | 820.79 | 2461.04 | 903.55 | 927.34 | 846.19 | 741.09 | 745.27 | 745.27 | 745.27 | 931.59 |
-| 2019 | 1020.78 | 2711.22 | 1006.44 | 1074.09 | 1080.81 | 1014.43 | 1021.58 | 1021.58 | 1021.58 | 1201.81 |
-| 2020 | 1254.87 | 2856.46 | 1162.14 | 1218.70 | 1334.72 | 1297.37 | 1306.56 | 1306.56 | 1306.56 | 1454.08 |
-| 2021 | 1522.10 | 2940.79 | 1393.50 | 1408.97 | 1601.06 | 1586.95 | 1596.26 | 1596.26 | 1596.26 | 1689.60 |
-| 2022 | 1818.61 | 2989.75 | 1711.66 | 1693.73 | 1873.00 | 1879.78 | 1886.43 | 1886.43 | 1886.43 | 1909.48 |
-| 2023 | 2137.38 | 3018.19 | 2103.83 | 2089.61 | 2144.29 | 2172.09 | 2172.80 | 2172.80 | 2172.80 | 2114.75 |
-| 2024 | 2468.67 | 3034.69 | 2526.77 | 2534.83 | 2409.55 | 2459.98 | 2451.32 | 2451.32 | 2451.32 | 2306.39 |
-| 2025 | 2801.06 | 3044.28 | 2921.94 | 2918.04 | 2664.47 | 2739.56 | 2718.38 | 2718.38 | 2718.38 | 2485.29 |
-| 2026 | 3122.99 | 3049.85 | 3244.66 | 3177.01 | 3000.00 | 3007.20 | 3000.00 | 3000.00 | 3000.00 | 3000.00 |
-| 2027 | 3424.30 | 3053.08 | 3480.47 | 3324.53 | 3131.41 | 3259.71 | 3206.88 | 3206.88 | 3206.88 | 3000.00 |
-| 2028 | 3697.42 | 3054.96 | 3639.13 | 3400.56 | 3339.93 | 3494.48 | 3424.50 | 3424.51 | 3424.51 | 3000.00 |
-| 2029 | 3937.88 | 3056.04 | 3740.04 | 3437.76 | 3530.83 | 3709.63 | 3623.06 | 3623.07 | 3623.07 | 3089.73 |
-| 2030 | 4144.23 | 3056.68 | 3801.94 | 3455.55 | 3704.18 | 3904.02 | 3802.40 | 3802.40 | 3802.40 | 3216.61 |
-| 2031 | 4317.43 | 3057.04 | 3839.08 | 3463.97 | 3860.46 | 4077.26 | 3962.89 | 3962.89 | 3962.89 | 3335.06 |
-| 2032 | 4460.15 | 3057.26 | 3861.06 | 3467.95 | 4000.50 | 4229.62 | 4105.34 | 4105.34 | 4105.34 | 3445.65 |
-| 2033 | 4575.96 | 3057.38 | 3873.96 | 3469.84 | 4125.31 | 4361.92 | 4230.86 | 4230.86 | 4230.86 | 3548.89 |
-| 2034 | 4668.77 | 3057.45 | 3881.51 | 3470.74 | 4236.05 | 4475.43 | 4340.76 | 4340.76 | 4340.76 | 3645.27 |
-| 2035 | 4742.41 | 3057.50 | 3885.90 | 3471.17 | 4333.93 | 4571.71 | 4436.43 | 4436.43 | 4436.44 | 3735.25 |
+| 2015 | 384.47 | 434.23 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
+| 2016 | 538.35 | 564.48 | 352.69 | 352.69 | 349.97 | 344.26 | 323.40 | 323.81 | 323.81 | 323.81 |
+| 2017 | 721.25 | 724.76 | 693.07 | 693.07 | 691.77 | 664.81 | 632.17 | 633.41 | 633.41 | 633.42 |
+| 2018 | 929.90 | 916.64 | 1002.49 | 1002.49 | 1003.70 | 963.29 | 926.41 | 928.55 | 928.55 | 928.56 |
+| 2019 | 1159.59 | 1138.92 | 1269.41 | 1269.42 | 1271.84 | 1241.22 | 1206.29 | 1209.08 | 1209.08 | 1209.09 |
+| 2020 | 1404.73 | 1386.85 | 1491.14 | 1491.13 | 1492.51 | 1500.02 | 1472.01 | 1475.00 | 1475.00 | 1475.00 |
+| 2021 | 1659.40 | 1651.96 | 1674.28 | 1674.27 | 1672.74 | 1741.00 | 1723.83 | 1726.41 | 1726.41 | 1726.41 |
+| 2022 | 1917.84 | 1922.96 | 1837.31 | 1837.30 | 1832.39 | 1965.38 | 1962.04 | 1963.52 | 1963.52 | 1963.51 |
+| 2023 | 2174.83 | 2187.50 | 2020.66 | 2020.65 | 2014.28 | 2174.32 | 2186.98 | 2186.62 | 2186.62 | 2186.61 |
+| 2024 | 2425.89 | 2434.40 | 2311.20 | 2311.19 | 2309.10 | 2368.87 | 2399.01 | 2396.09 | 2396.09 | 2396.08 |
+| 2025 | 2667.42 | 2655.35 | 2869.64 | 2869.65 | 2881.14 | 2550.03 | 2598.51 | 2592.35 | 2592.35 | 2592.33 |
+| 2026 | 2896.68 | 2845.75 | 3853.13 | 3853.18 | 3880.82 | 2718.71 | 2785.89 | 2775.89 | 2775.89 | 2775.86 |
+| 2027 | 3111.80 | 3004.58 | 5102.74 | 5102.83 | 5127.31 | 2875.78 | 2961.58 | 2947.21 | 2947.21 | 2947.19 |
+| 2028 | 3311.62 | 3133.52 | 6125.14 | 6125.28 | 6126.38 | 3022.03 | 3126.03 | 3106.88 | 3106.88 | 3106.85 |
+| 2029 | 3495.60 | 3235.88 | 6697.87 | 6698.03 | 6677.71 | 3158.22 | 3279.68 | 3255.44 | 3255.44 | 3255.40 |
+| 2030 | 3663.71 | 3315.74 | 6954.10 | 6954.28 | 6922.10 | 3285.03 | 3423.01 | 3393.47 | 3393.47 | 3393.43 |
+| 2031 | 3816.31 | 3377.18 | 7058.26 | 7058.46 | 7020.68 | 3403.10 | 3556.46 | 3521.54 | 3521.54 | 3521.50 |
+| 2032 | 3954.04 | 3423.95 | 7099.75 | 7099.94 | 7059.52 | 3513.05 | 3680.53 | 3640.22 | 3640.22 | 3640.17 |
+| 2033 | 4077.72 | 3459.27 | 7116.67 | 7116.86 | 7075.06 | 3615.43 | 3795.66 | 3750.07 | 3750.07 | 3750.02 |
+| 2034 | 4188.30 | 3485.78 | 7123.97 | 7124.17 | 7081.56 | 3710.76 | 3902.32 | 3851.64 | 3851.64 | 3851.60 |
+| 2035 | 4286.81 | 3505.59 | 7127.41 | 7127.60 | 7084.48 | 3799.52 | 4000.98 | 3945.47 | 3945.47 | 3945.42 |
 
 ### 4.2 Escenarios de Consenso
 | Escenario | Modelo | 2030 (M) | 2035 (M) |
 | --- | --- | --- | --- |
-| Conservador | Gompertz | 3704.18 | 4333.93 |
-| Base (recomendado) | Difusión Logística R&K | 4144.23 | 4742.41 |
-| Optimista | Difusión Logística R&K | 4144.23 | 4742.41 |
+| Conservador | Gompertz | 3663.71 | 4286.81 |
+| Base (recomendado) | Gompertz | 3663.71 | 4286.81 |
+| Optimista | Van den Bulte & Joshi | 6954.28 | 7127.60 |
 
-**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Difusión Logística R&K): R²=0.9591, MAPE de ajuste=10.74%, Score=94.66.
+**Datos oficiales (del motor):** - MÉTRICAS OFICIALES del modelo recomendado (Gompertz): R²=0.9292, MAPE de ajuste=8.85%, Score=91.21.
 
 ### 📐 Formulación Matemática de los Modelos Evaluados
 
