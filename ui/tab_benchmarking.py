@@ -71,6 +71,51 @@ def calidad_relativa(techs_data):
         }
     return info
 
+def gate_coherencia_competitiva(techs_data, clasifs, brand_data):
+    """
+    Si las techs comparadas son competidoras directas entre sí 
+    (según clasificador), la suma de sus techos no puede superar 
+    TAM × factor_multiplataforma (~1.5: un usuario puede usar 2-3 
+    asistentes, no 10).
+    """
+    FACTOR_MULTIPLATAFORMA = 1.5
+    
+    # Detectar cluster competitivo: techs que se listan mutuamente como 
+    # competidores directos
+    ids = list(techs_data.keys())
+    clusters = set()
+    for t1 in ids:
+        for t2 in ids:
+            if t1 == t2: continue
+            comp1 = set(c.lower() for c in clasifs.get(t1, {}).get("competidores_directos", []))
+            if any(t2.lower() in c or c in t2.lower() for c in comp1):
+                clusters.add(t1)
+                clusters.add(t2)
+                
+    if not clusters:
+        return None  # no hay competencia cruzada -> sin gate
+        
+    # Suma de techos del cluster vs mercado común
+    mercados = [float(clasifs.get(t, {}).get("mercado_direccionable_M", 0)) for t in clusters]
+    tam = max(mercados) if mercados else 0
+    
+    suma_techos = 0
+    for t in clusters:
+        p = brand_data[t]["params"]
+        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
+        m = pdict.get('param_m1', pdict.get('param_m', 0))
+        if m == 'N/D': m = 0
+        suma_techos += float(m)
+        
+    if tam > 0 and suma_techos > tam * FACTOR_MULTIPLATAFORMA:
+        warning = (f"⚠️ INCOHERENCIA COMPETITIVA: la suma de techos proyectados "
+                   f"({suma_techos:.0f}M) supera {FACTOR_MULTIPLATAFORMA}x el mercado "
+                   f"direccionable común ({tam:.0f}M). Las proyecciones tratan a "
+                   f"competidores como monopolios independientes — interpretar como "
+                   f"escenarios teóricos individuales, no como reparto real del mercado.")
+        return warning
+    return None
+
 def build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels):
     """Prompt con honestidad estructural: confianza, asimetría, nombres reales."""
     bloques = []
@@ -399,9 +444,23 @@ def render_tab_benchmarking(tecnologias_disponibles):
             
             if params_analogia and techo_analogia:
                 from models.analogical_forecast import project
-                y_proj_full = project(df_hist["adopcion_acumulada"].values, params_analogia, techo_analogia, years_ahead=horizon_years)
-                if y_proj_full is not None:
-                    y_proj = y_proj_full
+                
+                # FIX: The analogical fit in generate_report_v2 was done ONLY on non-zero points.
+                # If we pass the full df_hist (with zeros), t=0 is shifted, causing huge projection differences.
+                reales_no_zero = [v for v in df_hist["adopcion_acumulada"].values if v > 0]
+                zeros_count = len(df_hist) - len(reales_no_zero)
+                
+                proj_no_zero = project(reales_no_zero, params_analogia, techo_analogia, years_ahead=horizon_years)
+                
+                if proj_no_zero is not None:
+                    y_proj = np.zeros(len(t_proj))
+                    # Align the projection with the correct starting year
+                    y_proj[zeros_count : zeros_count + len(proj_no_zero)] = proj_no_zero
+                    
+                    # For analogical forecast, the theoretical curve fit on the first few points is loose
+                    # due to the fixed ceiling. Overwrite the historical portion with real data to connect the dots.
+                    hist_len = len(df_hist)
+                    y_proj[:hist_len] = df_hist["adopcion_acumulada"].values
                 else:
                     y_proj = np.zeros(len(t_proj))
             else:
@@ -604,10 +663,29 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 st.error(f"❌ La comparación no puede generarse: {', '.join(techs_inservibles).title()} no tiene datos comparables (veredicto INSERVIBLE).")
                 return
                 
-            # 3. Calcular métricas de calidad y construir prompt
             calidad = calidad_relativa(techs_data)
-            prompt = build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels)
             
+            # Cargar clasificaciones para el gate competitivo
+            clasifs = {}
+            for tech in techs_seleccionadas:
+                from data.loaders import load_qualitative_analysis
+                import json
+                txt = load_qualitative_analysis(tech)
+                try:
+                    js = json.loads(txt) if txt else {}
+                    # Para analogical forecast, la info de claude está en js["analogia"]
+                    clasifs[tech] = js.get("analogia", js)
+                except:
+                    clasifs[tech] = {}
+                    
+            warning_competitivo = gate_coherencia_competitiva(techs_data, clasifs, brand_data)
+            if warning_competitivo:
+                st.warning(warning_competitivo)
+            
+            prompt = build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels)
+            if warning_competitivo:
+                prompt = warning_competitivo + "\n\n" + prompt
+                
             try:
                 ia_text = claude_benchmarking_writer(prompt)
                 informe_final = ensamblar_informe_benchmarking(

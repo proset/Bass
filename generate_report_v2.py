@@ -658,6 +658,24 @@ def escalar_prior(prior, clasif, analogos):
     cuota = float(clasif.get("cuota_plausible_max", 0.5))  # default conservador 0.5
     return {k: v * mercado_M * cuota for k, v in prior.items()}
 
+def gate_plausibilidad_techo(prior_M, clasif):
+    """
+    Invariante: el techo base no puede superar mercado × cuota_max.
+    Si Claude dio cuota alta o el prior colapsó en 1.0, se trunca.
+    """
+    mercado = float(clasif.get("mercado_direccionable_M", 0))
+    cuota = float(clasif.get("cuota_plausible_max", 0.5))
+    techo_max_abs = mercado * cuota
+    
+    corregido = False
+    for nombre, techo in prior_M.items():
+        if techo > techo_max_abs:
+            print(f"[analogia-gate] Techo {nombre} ({techo:.0f}M) > mercado×cuota "
+                  f"({techo_max_abs:.0f}M) -> truncado")
+            prior_M[nombre] = techo_max_abs
+            corregido = True
+    return prior_M, corregido
+
 def generar_informe_analogia(tech, serie, clasif, analogos, prior_M, escenarios):
     K = len(analogos)
     
@@ -910,6 +928,9 @@ def main():
             
         # 3. ESCALAR el prior al dominio (penetración→M via mercado direccionable)
         prior_M = escalar_prior(prior, clasif, analogos)
+        
+        # GATE 1.1: Truncar techo si supera mercado x cuota_max
+        prior_M, _ = gate_plausibilidad_techo(prior_M, clasif)
         
         # 4. Fit con techo fijado en 3 escenarios
         escenarios = {}
