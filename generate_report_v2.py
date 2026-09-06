@@ -604,7 +604,7 @@ Si la empresa es privada (no publica usuarios oficiales), incluye al inicio del 
 def claude_classify_youngtech(tech, serie):
     """
     1 llamada Claude: categoría, mercado direccionable (M), 
-    ritmo observado, análogos sugeridos.
+    ritmo observado, análogos sugeridos, cuota plausible máxima, competidores directos y justificación.
     """
     import anthropic, os, json
     client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
@@ -621,10 +621,17 @@ Devuelve EXCLUSIVAMENTE JSON:
 {{
   "categoria": "conectividad|redes-sociales|consumo|ev|salud|otra",
   "mercado_direccionable_M": <número: tamaño máximo plausible del mercado en M>,
+  "cuota_plausible_max": <número entre 0.01 y 1.0>,
+  "competidores_directos": ["lista de 1-3 competidores actuales fuertes, ej: gemini, anthropic, chatgpt"],
+  "justificacion_cuota": "compite con X e Y por el mismo usuario; escenarios históricos de cuota en mercados oligopólicos...",
   "ritmo_observado": "explosiva|media|gradual",
   "analogos_plausibles": ["lista de 3-5 tecnologías históricas comparables"],
   "justificacion": "1-2 frases"
-}}"""}])
+}}
+
+INSTRUCCIONES CLAVE:
+"cuota_plausible_max": estima la CUOTA MÁXIMA de mercado que esta tecnología podría capturar, dado que NO está sola. Regla: si tiene competidores directos fuertes (mismo usuario, mismo caso de uso), la cuota raramente supera 0.30-0.60 (histórico de oligopolios: buscadores, redes, streaming). Si domina un nicho sin rival directo (efecto de red ganador-se-lleva-todo, como WhatsApp en mensajería), puede acercarse a 0.80-0.90. NUNCA 1.0 salvo monopolio tecnológico literal. Justifica con los competidores que conozcas.
+"""}])
     
     text = response.content[0].text.strip()
     if text.startswith("```"):
@@ -637,7 +644,10 @@ Devuelve EXCLUSIVAMENTE JSON:
     except Exception:
         return {
             "categoria": "otra", 
-            "mercado_direccionable_M": 1000.0, 
+            "mercado_direccionable_M": 1000.0,
+            "cuota_plausible_max": 0.5,
+            "competidores_directos": [],
+            "justificacion_cuota": "Fallback por fallo JSON",
             "ritmo_observado": "media", 
             "analogos_plausibles": [], 
             "justificacion": "Fallback conservador por fallo en JSON"
@@ -645,7 +655,8 @@ Devuelve EXCLUSIVAMENTE JSON:
 
 def escalar_prior(prior, clasif, analogos):
     mercado_M = float(clasif.get("mercado_direccionable_M", 1000.0))
-    return {k: v * mercado_M for k, v in prior.items()}
+    cuota = float(clasif.get("cuota_plausible_max", 0.5))  # default conservador 0.5
+    return {k: v * mercado_M * cuota for k, v in prior.items()}
 
 def generar_informe_analogia(tech, serie, clasif, analogos, prior_M, escenarios):
     K = len(analogos)
