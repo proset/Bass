@@ -799,21 +799,22 @@ def render_tab_benchmarking(tecnologias_disponibles):
                     logger.error(f"Error parsing json for {tech}: {e}")
                     clasifs[tech] = {}
                     
-            # FIX 52B: Normalización de TAM en clusters competitivos
+            # FIX 54: Verificador de coherencia de TAM de categoría (no re-escala)
             brand_data, norm_info = normalizar_tam_cluster(techs_data, clasifs, brand_data)
             nota_tam = ""
             if norm_info:
-                techs_norm = list(norm_info['techs'].keys())
-                nota_tam = (f"\n\n*Nota de normalización: {', '.join(techs_norm).title()} compiten por "
-                            f"el mismo mercado. Las proyecciones se han re-escalado contra el mercado común "
-                            f"({norm_info['tam_comun']:.0f}M) para que la comparación refleje cuotas reales "
-                            f"del mismo mercado — la suma de sus proyecciones representa la cuota total "
-                            f"capturada por el cluster, no monopolios independientes.*\n")
-                            
-            # FIX 53-lite: Anclar cuotas al presente
+                advertencia_norm = norm_info.get("advertencia", "")
+                if advertencia_norm:
+                    nota_tam = "\n\n" + advertencia_norm
+                    st.warning(advertencia_norm)
+                    
+            # FIX 54: Verificador de coherencia de cuotas (no re-escala)
             brand_data, anclaje_info = anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info)
             if anclaje_info:
-                nota_tam += "\n\n" + anclaje_info["nota"]
+                nota_divergencia = anclaje_info.get("nota", "")
+                if nota_divergencia:
+                    nota_tam += "\n\n" + nota_divergencia
+                    st.warning(nota_divergencia)
                     
             warning_competitivo = gate_coherencia_competitiva(techs_data, clasifs, brand_data)
             if warning_competitivo:

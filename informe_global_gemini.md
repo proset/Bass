@@ -1,6 +1,6 @@
 # Informe de Adopción: gemini — PROYECCIÓN POR ANALOGÍA
 
-**CLASIFICACIÓN: otra | Ritmo: explosiva | Mercado direccionable: 3000M**
+**CLASIFICACIÓN: otra | Ritmo: explosiva | Mercado direccionable: 4000M**
 
 > **CONFIANZA: PROYECCIÓN POR ANALOGÍA — error esperado ±34% (5y) / ±48% (10y) según backtest del método. Se refina con cada año de datos nuevos.**
 
@@ -38,28 +38,28 @@
 ## Escenarios de techo (percentiles de los análogos)
 | Escenario | Techo estimado (M) |
 |---|---|
-| Conservador (p25) | 707.54 |
-| Base (p50) | 855.99 |
-| Optimista (p75) | 898.45 |
+| Conservador (p25) | 943.38 |
+| Base (p50) | 1141.32 |
+| Optimista (p75) | 1197.93 |
 
 ## Proyecciones por escenario
 | Año | Conservador | Base | Optimista |
 |---|---|---|---|
-| 2026 | 702.56 | 839.23 | 872.21 |
-| 2027 | 707.22 | 854.25 | 895.19 |
-| 2028 | 707.52 | 855.81 | 898.05 |
-| 2029 | 707.53 | 855.97 | 898.40 |
-| 2030 | 707.53 | 855.99 | 898.44 |
-| 2031 | 707.53 | 855.99 | 898.45 |
-| 2032 | 707.53 | 855.99 | 898.45 |
-| 2033 | 707.53 | 855.99 | 898.45 |
-| 2034 | 707.53 | 855.99 | 898.45 |
-| 2035 | 707.53 | 855.99 | 898.45 |
+| 2026 | 905.16 | 1029.74 | 1060.21 |
+| 2027 | 937.89 | 1117.86 | 1166.85 |
+| 2028 | 942.62 | 1136.70 | 1191.42 |
+| 2029 | 943.27 | 1140.42 | 1196.59 |
+| 2030 | 943.37 | 1141.15 | 1197.66 |
+| 2031 | 943.38 | 1141.29 | 1197.87 |
+| 2032 | 943.38 | 1141.31 | 1197.92 |
+| 2033 | 943.38 | 1141.32 | 1197.93 |
+| 2034 | 943.38 | 1141.32 | 1197.93 |
+| 2035 | 943.38 | 1141.32 | 1197.93 |
 
 
 ## NOTA DE MÉTODO
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** Gemini muestra adopción explosiva típica de plataformas de IA generativa con fuerte respaldo ecosistémico (Google), comparable al lanzamiento de Chrome o Android que aprovecharon infraestructura existente para escalar rápidamente. La triplicación de 250M a 750M en un año refleja el patrón de curva S en fase de crecimiento acelerado, aunque la saturación competitiva limitará la cuota final.
-**Análogos sugeridos por Claude:** google-search, android, spotify, chrome, youtube
+**Justificación Claude:** Gemini muestra adopción explosiva típica de plataformas respaldadas por ecosistemas gigantes (Google), comparable al despliegue de Chrome o Android que escalaron rápidamente gracias a distribución integrada. Sin embargo, como segundo jugador relevante en un duopolio/oligopolio de IA, su techo de cuota queda limitado históricamente al 25-35% del mercado total compartido.
+**Análogos sugeridos por Claude:** google-chrome, android, youtube, google-maps, bing
