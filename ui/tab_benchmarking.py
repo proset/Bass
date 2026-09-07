@@ -98,37 +98,31 @@ def normalizar_tam_cluster(techs_data, clasifs, brand_data):
     if tam_comun <= 0:
         return brand_data, None
         
-    # 3. Re-escalar en memoria
+    # 3. Verificar coherencia del cluster vs TAM de categoría (Fix 54)
     info_normalizacion = {"tam_comun": tam_comun, "techs": {}}
+    suma_techos = 0
     for tech in cluster:
         mercado_propio = mercados[tech]
-        if mercado_propio <= 0: continue
-        factor = tam_comun / mercado_propio
+        info_normalizacion["techs"][tech] = {"mercado_original": mercado_propio, "factor": 1.0}
         
         bdata = brand_data[tech]
-        bdata["tam_normalizado_M"] = tam_comun
-        bdata["factor_normalizacion"] = factor
-        
-        # Escalar proyecciones ("proj")
-        if "proj" in bdata:
-            bdata["proj"] = [p * factor for p in bdata["proj"]]
-            
-        # Escalar el techo ("param_m1") guardado en params
-        p = bdata["params"]
         pdict = bdata["params"].get("params", bdata["params"])
-        if 'param_m1' in pdict and pdict['param_m1'] != 'N/D':
-            pdict['param_m1'] = float(pdict['param_m1']) * factor
-        elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
-            pdict['param_m'] = float(pdict['param_m']) * factor
-        elif 'techo' in pdict:
-            pdict['techo'] = float(pdict['techo']) * factor
-            
-        info_normalizacion["techs"][tech] = {
-            "mercado_original": mercado_propio,
-            "factor": factor,
-        }
-        
-    return brand_data, info_normalizacion
+        techo = float(pdict.get("param_m1") or pdict.get("param_m") or pdict.get("techo") or 0)
+        suma_techos += techo
+
+    if tam_comun > 0:
+        delta = abs(suma_techos - tam_comun) / tam_comun
+        if delta > 0.15:
+            techs_str = ", ".join([t.title() for t in cluster])
+            advertencia = (
+                f"*Advertencia de Divergencia (Fix 54): los techos persistidos de {techs_str} "
+                f"suman {suma_techos:.0f}M, lo que diverge del mercado común de su categoría "
+                f"({tam_comun:.0f}M) en más del 15%. Probablemente provienen de corridas en momentos "
+                f"distintos con datos distintos. Regenerar los informes individuales para unificar.*\n"
+            )
+            return brand_data, {"tam_comun": tam_comun, "techs": info_normalizacion["techs"], "advertencia": advertencia}
+
+    return brand_data, {"tam_comun": tam_comun, "techs": info_normalizacion["techs"], "advertencia": ""}
 
 def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
     """
@@ -172,46 +166,20 @@ def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
             "techo_actual": techo_actual
         }
         
-    # 3. Si alguna delta > 10 puntos -> anclar + advertir
+    # 3. Si alguna delta > 10 puntos -> ADVERTENCIA de divergencia (Fix 54)
     max_delta = max(abs(d["delta"]) for d in divergencia_info.values())
     if max_delta <= 0.10:
         return brand_data, None  # coherente -> sin acción
         
-    # 4. ANCLAJE: re-escalar techos para que las cuotas FINALES respeten el presente
-    suma_ajustada = 0
-    ultimo_anio_global = 0
-    for tech in cluster:
-        cuota_hoy = divergencia_info[tech]["cuota_hoy"]
-        techo_actual = divergencia_info[tech]["techo_actual"]
-        techo_anclado = tam_comun * cuota_hoy
-        factor_anclaje = techo_anclado / max(techo_actual, 1)
-        
-        bdata = brand_data[tech]
-        if "proj" in bdata:
-            bdata["proj"] = [p * factor_anclaje for p in bdata["proj"]]
-        pdict = bdata["params"].get("params", bdata["params"])
-        if 'param_m1' in pdict and pdict['param_m1'] != 'N/D':
-            pdict['param_m1'] = float(pdict['param_m1']) * factor_anclaje
-        elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
-            pdict['param_m'] = float(pdict['param_m']) * factor_anclaje
-        elif 'techo' in pdict:
-            pdict['techo'] = float(pdict['techo']) * factor_anclaje
-            
-        suma_ajustada += techo_anclado
-        
-        serie = techs_data[tech][0] 
-        if serie:
-            ultimo_anio_global = max(ultimo_anio_global, max(serie.keys()))
-        
-    ultimo_anio_max = ultimo_anio_global if ultimo_anio_global > 0 else "reciente"
+    techs_str = ", ".join([t.title() for t in cluster])
+    ultimo_anio_max = max(divergencia_info.keys(), key=lambda t: divergencia_info[t]["cuota_hoy"]) # fallback simple
     
     nota_anclaje = (
-        f"*Nota de anclaje competitivo (Fix 53): las cuotas proyectadas originales "
-        f"divergían de las cuotas observadas en {ultimo_anio_max} (paridad) sin mecanismo "
-        f"dinámico que lo justifique. Los techos del escenario base se han re-escalado "
-        f"para preservar el reparto observado en el último dato real; las cuotas "
-        f"alternativas del clasificador quedan como referencia de desviación posible. "
-        f"El reparto futuro real dependerá de dinámicas competitivas no modeladas.*\n"
+        f"*Advertencia de Divergencia (Fix 54): el reparto proyectado de {techs_str} "
+        f"diverge de las cuotas observadas en la actualidad en más de 10 puntos. "
+        f"Esto indica que los informes individuales se generaron con asunciones competitivas "
+        f"desactualizadas. Regenerar los informes individuales para sincronizar las cuotas "
+        f"con el reparto actual.*\n"
     )
     return brand_data, {"nota": nota_anclaje, "divergencias": divergencia_info}
 
