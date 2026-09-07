@@ -104,7 +104,6 @@ def normalizar_tam_cluster(techs_data, clasifs, brand_data):
         mercado_propio = mercados[tech]
         if mercado_propio <= 0: continue
         factor = tam_comun / mercado_propio
-        if factor == 1.0: continue  # ya está en el TAM común
         
         bdata = brand_data[tech]
         bdata["tam_normalizado_M"] = tam_comun
@@ -116,11 +115,13 @@ def normalizar_tam_cluster(techs_data, clasifs, brand_data):
             
         # Escalar el techo ("param_m1") guardado en params
         p = bdata["params"]
-        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
+        pdict = bdata["params"].get("params", bdata["params"])
         if 'param_m1' in pdict and pdict['param_m1'] != 'N/D':
             pdict['param_m1'] = float(pdict['param_m1']) * factor
         elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
             pdict['param_m'] = float(pdict['param_m']) * factor
+        elif 'techo' in pdict:
+            pdict['techo'] = float(pdict['techo']) * factor
             
         info_normalizacion["techs"][tech] = {
             "mercado_original": mercado_propio,
@@ -162,7 +163,7 @@ def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
         cuota_hoy = valores_hoy[tech] / total_hoy
         bdata = brand_data[tech]
         pdict = bdata["params"].get("params", bdata["params"])
-        techo_actual = float(pdict.get("param_m1", 0) or 0)
+        techo_actual = float(pdict.get("param_m1") or pdict.get("param_m") or pdict.get("techo") or 0)
         cuota_proyectada = techo_actual / tam_comun if tam_comun else 0
         divergencia_info[tech] = {
             "cuota_hoy": cuota_hoy,
@@ -178,6 +179,7 @@ def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
         
     # 4. ANCLAJE: re-escalar techos para que las cuotas FINALES respeten el presente
     suma_ajustada = 0
+    ultimo_anio_global = 0
     for tech in cluster:
         cuota_hoy = divergencia_info[tech]["cuota_hoy"]
         techo_actual = divergencia_info[tech]["techo_actual"]
@@ -192,12 +194,20 @@ def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
             pdict['param_m1'] = float(pdict['param_m1']) * factor_anclaje
         elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
             pdict['param_m'] = float(pdict['param_m']) * factor_anclaje
+        elif 'techo' in pdict:
+            pdict['techo'] = float(pdict['techo']) * factor_anclaje
             
         suma_ajustada += techo_anclado
         
+        serie = techs_data[tech][0] 
+        if serie:
+            ultimo_anio_global = max(ultimo_anio_global, max(serie.keys()))
+        
+    ultimo_anio_max = ultimo_anio_global if ultimo_anio_global > 0 else "reciente"
+    
     nota_anclaje = (
         f"*Nota de anclaje competitivo (Fix 53): las cuotas proyectadas originales "
-        f"divergían de las cuotas observadas en 2025 (paridad) sin mecanismo "
+        f"divergían de las cuotas observadas en {ultimo_anio_max} (paridad) sin mecanismo "
         f"dinámico que lo justifique. Los techos del escenario base se han re-escalado "
         f"para preservar el reparto observado en el último dato real; las cuotas "
         f"alternativas del clasificador quedan como referencia de desviación posible. "
@@ -809,10 +819,16 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 import json
                 txt = load_qualitative_analysis(tech)
                 try:
-                    js = json.loads(txt) if txt else {}
+                    if txt and "{" in txt:
+                        start = txt.find("{")
+                        end = txt.rfind("}") + 1
+                        js = json.loads(txt[start:end])
+                    else:
+                        js = {}
                     # Para analogical forecast, la info de claude está en js["analogia"]
                     clasifs[tech] = js.get("analogia", js)
-                except:
+                except Exception as e:
+                    logger.error(f"Error parsing json for {tech}: {e}")
                     clasifs[tech] = {}
                     
             # FIX 52B: Normalización de TAM en clusters competitivos

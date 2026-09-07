@@ -1,6 +1,6 @@
 # Informe de Adopción: chatgpt — PROYECCIÓN POR ANALOGÍA
 
-**CLASIFICACIÓN: conectividad | Ritmo: explosiva | Mercado direccionable: 5000M**
+**CLASIFICACIÓN: otra | Ritmo: explosiva | Mercado direccionable: 4000M**
 
 > **CONFIANZA: PROYECCIÓN POR ANALOGÍA — error esperado ±34% (5y) / ±48% (10y) según backtest del método. Se refina con cada año de datos nuevos.**
 
@@ -39,28 +39,28 @@
 ## Escenarios de techo (percentiles de los análogos)
 | Escenario | Techo estimado (M) |
 |---|---|
-| Conservador (p25) | 3346.50 |
-| Base (p50) | 4750.75 |
-| Optimista (p75) | 4991.38 |
+| Conservador (p25) | 1204.74 |
+| Base (p50) | 1710.27 |
+| Optimista (p75) | 1796.89 |
 
 ## Proyecciones por escenario
 | Año | Conservador | Base | Optimista |
 |---|---|---|---|
-| 2026 | 1549.22 | 1651.01 | 1663.22 |
-| 2027 | 2353.28 | 2771.47 | 2828.24 |
-| 2028 | 2901.05 | 3735.89 | 3862.29 |
-| 2029 | 3169.45 | 4305.82 | 4489.71 |
-| 2030 | 3279.85 | 4571.08 | 4786.93 |
-| 2031 | 3321.94 | 4680.77 | 4911.21 |
-| 2032 | 3337.52 | 4723.88 | 4960.43 |
-| 2033 | 3343.23 | 4740.50 | 4979.50 |
-| 2034 | 3345.31 | 4746.84 | 4986.83 |
-| 2035 | 3346.07 | 4749.26 | 4989.64 |
+| 2026 | 1066.70 | 1266.42 | 1291.61 |
+| 2027 | 1168.93 | 1546.56 | 1603.24 |
+| 2028 | 1196.06 | 1657.28 | 1732.29 |
+| 2029 | 1202.67 | 1693.91 | 1776.44 |
+| 2030 | 1204.25 | 1705.30 | 1790.53 |
+| 2031 | 1204.62 | 1708.76 | 1794.92 |
+| 2032 | 1204.71 | 1709.82 | 1796.29 |
+| 2033 | 1204.73 | 1710.13 | 1796.71 |
+| 2034 | 1204.74 | 1710.23 | 1796.84 |
+| 2035 | 1204.74 | 1710.26 | 1796.88 |
 
 
 ## NOTA DE MÉTODO
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** ChatGPT alcanzó 100M de usuarios en 2 meses, superando la velocidad de adopción de cualquier tecnología de consumo masivo previa, comparable al despliegue de internet y smartphones por su carácter de plataforma horizontal. Su mercado direccionable se aproxima al total de usuarios de internet mundial (~5.000M), dado que actúa como interfaz universal de acceso a información y productividad.
-**Análogos sugeridos por Claude:** internet, smartphone, google-search, facebook, whatsapp
+**Justificación Claude:** ChatGPT muestra una curva de adopción explosiva comparable al lanzamiento de Facebook o la masificación de smartphones, con crecimiento de 0 a 810M en 4 años. La analogía más cercana es Google Search en su fase de consolidación (2000-2005), donde un producto claramente superior capturó mercado rápidamente pero enfrentó competencia estructural de actores con gran distribución.
+**Análogos sugeridos por Claude:** smartphone-apps, google-search, facebook, netflix, whatsapp

@@ -1,6 +1,6 @@
 # Informe de Adopción: anthropic — PROYECCIÓN POR ANALOGÍA
 
-**CLASIFICACIÓN: otra | Ritmo: explosiva | Mercado direccionable: 4000M**
+**CLASIFICACIÓN: otra | Ritmo: explosiva | Mercado direccionable: 1800M**
 
 > **CONFIANZA: PROYECCIÓN POR ANALOGÍA — error esperado ±34% (5y) / ±48% (10y) según backtest del método. Se refina con cada año de datos nuevos.**
 
@@ -38,28 +38,28 @@
 ## Escenarios de techo (percentiles de los análogos)
 | Escenario | Techo estimado (M) |
 |---|---|
-| Conservador (p25) | 3144.60 |
-| Base (p50) | 3804.40 |
-| Optimista (p75) | 3993.10 |
+| Conservador (p25) | 353.77 |
+| Base (p50) | 428.00 |
+| Optimista (p75) | 449.22 |
 
 ## Proyecciones por escenario
 | Año | Conservador | Base | Optimista |
 |---|---|---|---|
-| 2026 | 497.08 | 503.63 | 505.12 |
-| 2027 | 1139.80 | 1197.11 | 1210.79 |
-| 2028 | 1989.17 | 2207.01 | 2262.76 |
-| 2029 | 2638.48 | 3066.77 | 3183.07 |
-| 2030 | 2957.27 | 3522.82 | 3681.34 |
-| 2031 | 3080.16 | 3705.96 | 3883.65 |
-| 2032 | 3123.02 | 3771.11 | 3956.00 |
-| 2033 | 3137.44 | 3793.27 | 3980.68 |
-| 2034 | 3142.23 | 3800.70 | 3988.96 |
-| 2035 | 3143.82 | 3803.17 | 3991.72 |
+| 2026 | 294.89 | 323.84 | 330.88 |
+| 2027 | 339.18 | 397.12 | 412.71 |
+| 2028 | 350.52 | 420.10 | 439.61 |
+| 2029 | 353.06 | 426.06 | 446.81 |
+| 2030 | 353.62 | 427.53 | 448.62 |
+| 2031 | 353.73 | 427.88 | 449.08 |
+| 2032 | 353.76 | 427.97 | 449.19 |
+| 2033 | 353.77 | 427.99 | 449.21 |
+| 2034 | 353.77 | 427.99 | 449.22 |
+| 2035 | 353.77 | 427.99 | 449.22 |
 
 
 ## NOTA DE MÉTODO
 Este informe usa Analogical Forecast: el techo no se estima de 4-5 puntos (insuficientes) sino de 20 curvas históricas de adopción con despegue similar. Método validado por backtest leave-one-out (MAPE mediano 34% a 5 años). Actualizar con datos de cada año estrechará los escenarios.
 
 ## Análisis
-**Justificación Claude:** Anthropic (Claude) muestra una curva de adopción explosiva comparable al lanzamiento de smartphones e internet de consumo masivo, pasando de 0 a 182M usuarios en apenas 2 años. El mercado direccionable es el de trabajadores del conocimiento y consumidores digitales globales, estimado en varios miles de millones de usuarios potenciales.
-**Análogos sugeridos por Claude:** Google Search, iPhone, Facebook, ChatGPT/OpenAI, Zoom
+**Justificación Claude:** Anthropic muestra adopción explosiva típica de plataformas SaaS/AI con efecto red, pasando de 0 a 182M usuarios en ~2 años, comparable al crecimiento inicial de ChatGPT o Zoom durante COVID. Opera en un mercado oligopólico de IA generativa donde la cuota máxima estará limitada por competidores con mayor distribución y recursos.
+**Análogos sugeridos por Claude:** chatgpt, spotify, zoom, slack, netflix

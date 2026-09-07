@@ -46,8 +46,10 @@ def render_tab_projections(tecnologia_seleccionada):
     informe_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", f"informe_global_{tecnologia_seleccionada}.md"))
     
     params = load_model_parameters(tecnologia_seleccionada)
-    if not params:
-        # Check if analogical forecast exists (by reading informe)
+    if params and "Analogical_Forecast" in params:
+        is_analogical = True
+    elif not params:
+        # Check if analogical forecast exists (by reading informe, fallback for old runs)
         if os.path.exists(informe_path):
             with open(informe_path, encoding="utf-8") as f:
                 if "PROYECCIÓN POR ANALOGÍA" in f.read():
