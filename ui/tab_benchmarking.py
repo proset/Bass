@@ -71,6 +71,64 @@ def calidad_relativa(techs_data):
         }
     return info
 
+def normalizar_tam_cluster(techs_data, clasifs, brand_data):
+    """
+    Cluster competitivo (competidores mutuos) -> TAM común -> re-escalar 
+    las proyecciones de las techs del cluster contra el TAM común.
+    Las cuotas relativas no cambian; la suma del cluster pasa a significar 
+    la cuota total capturada del mercado común.
+    """
+    # 1. Detectar cluster mutuo (misma lógica que gate_coherencia_competitiva)
+    ids = list(techs_data.keys())
+    cluster = set()
+    for t1 in ids:
+        for t2 in ids:
+            if t1 == t2: continue
+            comp1 = set(c.lower() for c in clasifs.get(t1, {}).get("competidores_directos", []))
+            if any(t2.lower() in c or c in t2.lower() for c in comp1):
+                cluster.add(t1)
+                cluster.add(t2)
+                
+    if not cluster:
+        return brand_data, None  # sin cluster -> sin normalización
+        
+    # 2. TAM común = máximo de los mercados del cluster
+    mercados = {t: float(clasifs.get(t, {}).get("mercado_direccionable_M", 0)) for t in cluster}
+    tam_comun = max(mercados.values()) if mercados else 0
+    if tam_comun <= 0:
+        return brand_data, None
+        
+    # 3. Re-escalar en memoria
+    info_normalizacion = {"tam_comun": tam_comun, "techs": {}}
+    for tech in cluster:
+        mercado_propio = mercados[tech]
+        if mercado_propio <= 0: continue
+        factor = tam_comun / mercado_propio
+        if factor == 1.0: continue  # ya está en el TAM común
+        
+        bdata = brand_data[tech]
+        bdata["tam_normalizado_M"] = tam_comun
+        bdata["factor_normalizacion"] = factor
+        
+        # Escalar proyecciones ("proj")
+        if "proj" in bdata:
+            bdata["proj"] = [p * factor for p in bdata["proj"]]
+            
+        # Escalar el techo ("param_m1") guardado en params
+        p = bdata["params"]
+        pdict = p.get("params", p) if isinstance(p.get("params", None), dict) else p
+        if 'param_m1' in pdict and pdict['param_m1'] != 'N/D':
+            pdict['param_m1'] = float(pdict['param_m1']) * factor
+        elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
+            pdict['param_m'] = float(pdict['param_m']) * factor
+            
+        info_normalizacion["techs"][tech] = {
+            "mercado_original": mercado_propio,
+            "factor": factor,
+        }
+        
+    return brand_data, info_normalizacion
+
 def gate_coherencia_competitiva(techs_data, clasifs, brand_data):
     """
     Si las techs comparadas son competidoras directas entre sí 
@@ -194,7 +252,7 @@ def claude_benchmarking_writer(prompt):
     )
     return response.content[0].text
 
-def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text):
+def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text, nota_tam=""):
     """Ensambla el informe final con las 4 tablas determinísticas y el texto de la IA."""
     techs_names = [t.title() for t in techs_data.keys()]
     titulo = f"# Informe de Consenso y Benchmarking Estratégico: {' vs '.join(techs_names)}\n"
@@ -252,7 +310,10 @@ def ensamblar_informe_benchmarking(techs_data, calidad, confianza_comp, brand_da
         p35 = f"{proj_map.get(2035, 0):.2f}"
         conf = techs_data[tech][1]
         t3 += f"| {tech.title()} | {p30} | {p35} | {conf} |\n"
-    t3 += "\n*Nota: 'Calidad de Datos' es el veredicto del juez sobre la serie de entrada (CONFIABLE/SOSPECHOSO). La confianza de la PROYECCIÓN (OPERATIVA/INDICATIVA/TENTATIVA) está en cada informe individual.*\n\n"
+    t3 += "\n*Nota: 'Calidad de Datos' es el veredicto del juez sobre la serie de entrada (CONFIABLE/SOSPECHOSO). La confianza de la PROYECCIÓN (OPERATIVA/INDICATIVA/TENTATIVA) está en cada informe individual.*\n"
+    if nota_tam:
+        t3 += nota_tam + "\n"
+    t3 += "\n"
     
     # 4. Parámetros de difusión
     t4 = "### 4. Parámetros de Difusión\n"
@@ -678,18 +739,31 @@ def render_tab_benchmarking(tecnologias_disponibles):
                 except:
                     clasifs[tech] = {}
                     
+            # FIX 52B: Normalización de TAM en clusters competitivos
+            brand_data, norm_info = normalizar_tam_cluster(techs_data, clasifs, brand_data)
+            nota_tam = ""
+            if norm_info:
+                techs_norm = list(norm_info['techs'].keys())
+                nota_tam = (f"\n\n*Nota de normalización: {', '.join(techs_norm).title()} compiten por "
+                            f"el mismo mercado. Las proyecciones se han re-escalado contra el mercado común "
+                            f"({norm_info['tam_comun']:.0f}M) para que la comparación refleje cuotas reales "
+                            f"del mismo mercado — la suma de sus proyecciones representa la cuota total "
+                            f"capturada por el cluster, no monopolios independientes.*\n")
+                    
             warning_competitivo = gate_coherencia_competitiva(techs_data, clasifs, brand_data)
             if warning_competitivo:
                 st.warning(warning_competitivo)
             
             prompt = build_benchmarking_prompt(techs_data, calidad, confianza_comp, brand_data, model_labels)
+            if nota_tam:
+                prompt = nota_tam + "\n" + prompt
             if warning_competitivo:
                 prompt = warning_competitivo + "\n\n" + prompt
                 
             try:
                 ia_text = claude_benchmarking_writer(prompt)
                 informe_final = ensamblar_informe_benchmarking(
-                    techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text
+                    techs_data, calidad, confianza_comp, brand_data, model_labels, ia_text, nota_tam
                 )
                 st.session_state.bench_ia_report[selected_key] = informe_final
             except Exception as e:
