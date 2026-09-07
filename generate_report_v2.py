@@ -620,7 +620,9 @@ Serie (adopción acumulada, M): {serie_str}
 Devuelve EXCLUSIVAMENTE JSON:
 {{
   "categoria": "conectividad|redes-sociales|consumo|ev|salud|otra",
-  "mercado_direccionable_M": <número: tamaño máximo plausible del mercado en M>,
+  "categoria_mercado": "asistentes-ia | redes-sociales | ... (nombre de la categoría compartida)",
+  "mercado_direccionable_M": <tamaño del mercado QUE COMPARTES con tus competidores directos, en M. Si compites con otras tecnologías por el mismo usuario (ej: asistentes de IA), este número es el mercado TOTAL de esa categoría — el mismo para todos sus competidores. NO es tu mercado privado: es el del mercado común en el que compites. Ejemplo: un asistente de IA compite por el mercado de asistentes (~4,000M), no por un mercado propio separado.>,
+  "techo_estimado_M": <mercado × cuota — el número FINAL que esta tech mostrará en TODAS las vistas>,
   "cuota_plausible_max": <número entre 0.01 y 1.0>,
   "competidores_directos": ["lista de 1-3 competidores actuales fuertes, ej: gemini, anthropic, chatgpt"],
   "justificacion_cuota": "compite con X e Y por el mismo usuario; escenarios históricos de cuota en mercados oligopólicos...",
