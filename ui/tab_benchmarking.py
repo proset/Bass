@@ -808,13 +808,9 @@ def render_tab_benchmarking(tecnologias_disponibles):
                     nota_tam = "\n\n" + advertencia_norm
                     st.warning(advertencia_norm)
                     
-            # FIX 54: Verificador de coherencia de cuotas (no re-escala)
-            brand_data, anclaje_info = anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info)
-            if anclaje_info:
-                nota_divergencia = anclaje_info.get("nota", "")
-                if nota_divergencia:
-                    nota_tam += "\n\n" + nota_divergencia
-                    st.warning(nota_divergencia)
+            # FIX 54: anclar_cuotas_al_presente obsoleto — Fix 54 garantiza TAM correcto desde el generador.
+            # La función comparaba cuota_hoy (dentro del cluster) vs cuota_proyectada (del TAM total)
+            # en escalas distintas → falso positivo en mercados en crecimiento. Deshabilitada.
                     
             warning_competitivo = gate_coherencia_competitiva(techs_data, clasifs, brand_data)
             if warning_competitivo:
