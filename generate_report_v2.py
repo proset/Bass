@@ -777,7 +777,11 @@ def persistir_analogia_bd(tech, clasif, analogos, prior_M, escenarios):
                 "base": escenarios.get("base", {}),
                 "optimista": escenarios.get("optimista", {}),
                 "analogos": analogos,
-                "mercado_direccionable_M": clasif.get('mercado_direccionable_M')
+                "mercado_direccionable_M": clasif.get('mercado_direccionable_M'),
+                "cuota_plausible_max": clasif.get("cuota_plausible_max"),
+                "competidores_directos": clasif.get("competidores_directos", []),
+                "categoria": clasif.get("categoria"),
+                "ritmo_observado": clasif.get("ritmo_observado"),
             }
         })
         
@@ -910,7 +914,7 @@ def main():
         
         # 1. Claude clasifica
         clasif = claude_classify_youngtech(tech, serie)
-        print(f"[analogia] Categoría: {clasif.get('categoria', '?')}, ritmo: {clasif.get('ritmo_observado', '?')}")
+        print(f"[analogia] Categoría: {clasif.get('categoria', '?')}, ritmo: {clasif.get('ritmo_observado', '?')}, cuota: {clasif.get('cuota_plausible_max', '?')}")
         
         # 2. Match + prior (determinista)
         serie_vals = [serie[y] for y in sorted(serie.keys()) if serie[y] > 0]
