@@ -129,6 +129,82 @@ def normalizar_tam_cluster(techs_data, clasifs, brand_data):
         
     return brand_data, info_normalizacion
 
+def anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info):
+    """
+    Fix 53: las cuotas de ESCENARIO BASE se anclan a las cuotas OBSERVADAS 
+    hoy (último dato real de cada tech del cluster). Las cuotas de Claude 
+    quedan como desviación escénica (optimista/pesimista), no como default.
+    
+    Racional: sin modelo dinámico, el presente es la mejor predicción del 
+    reparto futuro cercano. Cambiar el reparto requiere mecanismo — y no lo hay.
+    """
+    if not norm_info:
+        return brand_data, None  # sin cluster -> sin anclaje
+        
+    cluster = list(norm_info["techs"].keys())
+    tam_comun = norm_info["tam_comun"]
+    
+    # 1. Cuotas OBSERVADAS hoy (último valor real de cada serie)
+    valores_hoy = {}
+    for tech in cluster:
+        serie = techs_data[tech][0]  # (serie, veredicto, detalle)
+        if serie:
+            ultimo_anio = max(serie.keys())
+            valores_hoy[tech] = serie[ultimo_anio]
+            
+    total_hoy = sum(valores_hoy.values())
+    if total_hoy <= 0:
+        return brand_data, None
+        
+    # 2. Detectar divergencia: cuota hoy vs cuota proyectada del techo
+    divergencia_info = {}
+    for tech in cluster:
+        cuota_hoy = valores_hoy[tech] / total_hoy
+        bdata = brand_data[tech]
+        pdict = bdata["params"].get("params", bdata["params"])
+        techo_actual = float(pdict.get("param_m1", 0) or 0)
+        cuota_proyectada = techo_actual / tam_comun if tam_comun else 0
+        divergencia_info[tech] = {
+            "cuota_hoy": cuota_hoy,
+            "cuota_proyectada": cuota_proyectada,
+            "delta": cuota_proyectada - cuota_hoy,
+            "techo_actual": techo_actual
+        }
+        
+    # 3. Si alguna delta > 10 puntos -> anclar + advertir
+    max_delta = max(abs(d["delta"]) for d in divergencia_info.values())
+    if max_delta <= 0.10:
+        return brand_data, None  # coherente -> sin acción
+        
+    # 4. ANCLAJE: re-escalar techos para que las cuotas FINALES respeten el presente
+    suma_ajustada = 0
+    for tech in cluster:
+        cuota_hoy = divergencia_info[tech]["cuota_hoy"]
+        techo_actual = divergencia_info[tech]["techo_actual"]
+        techo_anclado = tam_comun * cuota_hoy
+        factor_anclaje = techo_anclado / max(techo_actual, 1)
+        
+        bdata = brand_data[tech]
+        if "proj" in bdata:
+            bdata["proj"] = [p * factor_anclaje for p in bdata["proj"]]
+        pdict = bdata["params"].get("params", bdata["params"])
+        if 'param_m1' in pdict and pdict['param_m1'] != 'N/D':
+            pdict['param_m1'] = float(pdict['param_m1']) * factor_anclaje
+        elif 'param_m' in pdict and pdict['param_m'] != 'N/D':
+            pdict['param_m'] = float(pdict['param_m']) * factor_anclaje
+            
+        suma_ajustada += techo_anclado
+        
+    nota_anclaje = (
+        f"*Nota de anclaje competitivo (Fix 53): las cuotas proyectadas originales "
+        f"divergían de las cuotas observadas en 2025 (paridad) sin mecanismo "
+        f"dinámico que lo justifique. Los techos del escenario base se han re-escalado "
+        f"para preservar el reparto observado en el último dato real; las cuotas "
+        f"alternativas del clasificador quedan como referencia de desviación posible. "
+        f"El reparto futuro real dependerá de dinámicas competitivas no modeladas.*\n"
+    )
+    return brand_data, {"nota": nota_anclaje, "divergencias": divergencia_info}
+
 def gate_coherencia_competitiva(techs_data, clasifs, brand_data):
     """
     Si las techs comparadas son competidoras directas entre sí 
@@ -749,6 +825,11 @@ def render_tab_benchmarking(tecnologias_disponibles):
                             f"({norm_info['tam_comun']:.0f}M) para que la comparación refleje cuotas reales "
                             f"del mismo mercado — la suma de sus proyecciones representa la cuota total "
                             f"capturada por el cluster, no monopolios independientes.*\n")
+                            
+            # FIX 53-lite: Anclar cuotas al presente
+            brand_data, anclaje_info = anclar_cuotas_al_presente(techs_data, clasifs, brand_data, norm_info)
+            if anclaje_info:
+                nota_tam += "\n\n" + anclaje_info["nota"]
                     
             warning_competitivo = gate_coherencia_competitiva(techs_data, clasifs, brand_data)
             if warning_competitivo:
